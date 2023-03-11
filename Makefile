@@ -45,7 +45,7 @@ libsundown.so:	libsundown.so.1
 	ln -f -s $^ $@
 
 libsundown.so.1: $(SUNDOWN_SRC)
-	$(CC) $(LDFLAGS) -shared -Wl $^ -o $@
+	$(CC) $(LDFLAGS) -shared $^ -o $@
 
 libsundown.a: $(SUNDOWN_SRC)
 	$(AR) rcs libsundown.a $^
