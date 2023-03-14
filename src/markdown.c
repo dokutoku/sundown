@@ -447,7 +447,7 @@ tag_length(uint8_t *data, size_t size, enum mkd_autolink *autolink)
 	if (i >= size)
 		*autolink = MKDA_NOT_AUTOLINK;
 
-	else if (*autolink) {
+	else if (*autolink != MKDA_NOT_AUTOLINK) {
 		j = i;
 
 		while (i < size) {
@@ -2601,7 +2601,7 @@ parse_table(
 				data + row_start,
 				i - row_start,
 				columns,
-				col_data, 0
+				col_data, MKD_TABLE_NONE
 			);
 
 			i++;

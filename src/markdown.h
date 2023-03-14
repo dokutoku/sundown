@@ -56,6 +56,7 @@ enum mkd_autolink {
 };
 
 enum mkd_tableflags {
+	MKD_TABLE_NONE = 0,
 	MKD_TABLE_ALIGN_L = 1,
 	MKD_TABLE_ALIGN_R = 2,
 	MKD_TABLE_ALIGN_CENTER = 3,

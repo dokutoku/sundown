@@ -423,15 +423,15 @@ rndr_raw_html(struct buf *ob, const struct buf *text, void *opaque)
 		return 1;
 
 	if ((options->flags & HTML_SKIP_STYLE) != 0 &&
-		sdhtml_is_tag(text->data, text->size, "style"))
+		sdhtml_is_tag(text->data, text->size, "style") != HTML_TAG_NONE)
 		return 1;
 
 	if ((options->flags & HTML_SKIP_LINKS) != 0 &&
-		sdhtml_is_tag(text->data, text->size, "a"))
+		sdhtml_is_tag(text->data, text->size, "a") != HTML_TAG_NONE)
 		return 1;
 
 	if ((options->flags & HTML_SKIP_IMAGES) != 0 &&
-		sdhtml_is_tag(text->data, text->size, "img"))
+		sdhtml_is_tag(text->data, text->size, "img") != HTML_TAG_NONE)
 		return 1;
 
 	bufput(ob, text->data, text->size);
