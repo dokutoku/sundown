@@ -31,13 +31,11 @@
 int
 sdhtml_is_tag(const uint8_t *tag_data, size_t tag_size, const char *tagname)
 {
-	size_t i;
-	int closed = 0;
-
 	if (tag_size < 3 || tag_data[0] != '<')
 		return HTML_TAG_NONE;
 
-	i = 1;
+	size_t i = 1;
+	int closed = 0;
 
 	if (tag_data[i] == '/') {
 		closed = 1;
@@ -122,11 +120,9 @@ rndr_blockcode(struct buf *ob, const struct buf *text, const struct buf *lang, v
 	if (ob->size) bufputc(ob, '\n');
 
 	if (lang && lang->size) {
-		size_t i;
-		size_t cls;
 		BUFPUTSL(ob, "<pre><code class=\"");
 
-		for (i = 0, cls = 0; i < lang->size; ++i, ++cls) {
+		for (size_t i = 0, cls = 0; i < lang->size; ++i, ++cls) {
 			while (i < lang->size && isspace(lang->data[i]))
 				i++;
 
@@ -313,12 +309,13 @@ static void
 rndr_paragraph(struct buf *ob, const struct buf *text, void *opaque)
 {
 	struct html_renderopt *options = opaque;
-	size_t i = 0;
 
 	if (ob->size) bufputc(ob, '\n');
 
 	if (!text || !text->size)
 		return;
+
+	size_t i = 0;
 
 	while (i < text->size && isspace(text->data[i])) i++;
 
@@ -327,9 +324,8 @@ rndr_paragraph(struct buf *ob, const struct buf *text, void *opaque)
 
 	BUFPUTSL(ob, "<p>");
 	if (options->flags & HTML_HARD_WRAP) {
-		size_t org;
 		while (i < text->size) {
-			org = i;
+			size_t org = i;
 			while (i < text->size && text->data[i] != '\n')
 				i++;
 
@@ -355,12 +351,10 @@ rndr_paragraph(struct buf *ob, const struct buf *text, void *opaque)
 static void
 rndr_raw_block(struct buf *ob, const struct buf *text, void *opaque)
 {
-	size_t org;
-	size_t sz;
 	if (!text) return;
-	sz = text->size;
+	size_t sz = text->size;
 	while (sz > 0 && text->data[sz - 1] == '\n') sz--;
-	org = 0;
+	size_t org = 0;
 	while (org < sz && text->data[org] == '\n') org++;
 	if (org >= sz) return;
 	if (ob->size) bufputc(ob, '\n');
@@ -519,10 +513,9 @@ static void
 rndr_finalize(struct buf *ob, void *opaque)
 {
 	struct html_renderopt *options = opaque;
-	int i;
 
 	if (options->flags & HTML_OUTLINE) {
-		for(i = 0; i < options->outline_data.open_section_count; i++)
+		for(int i = 0; i < options->outline_data.open_section_count; i++)
 		{
 			BUFPUTSL(ob, "\n</section>\n");
 		}

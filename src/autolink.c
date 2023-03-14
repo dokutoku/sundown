@@ -34,9 +34,7 @@ sd_autolink_issafe(const uint8_t *link, size_t link_len)
 		"/", "http://", "https://", "ftp://", "mailto:",
 	};
 
-	size_t i;
-
-	for (i = 0; i < valid_uris_count; ++i) {
+	for (size_t i = 0; i < valid_uris_count; ++i) {
 		size_t len = strlen(valid_uris[i]);
 
 		if (link_len > len &&
@@ -51,11 +49,7 @@ sd_autolink_issafe(const uint8_t *link, size_t link_len)
 static size_t
 autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, size_t size)
 {
-	uint8_t cclose;
-	uint8_t copen = 0;
-	size_t i;
-
-	for (i = 0; i < link_end; ++i)
+	for (size_t i = 0; i < link_end; ++i)
 		if (data[i] == '<') {
 			link_end = i;
 			break;
@@ -82,7 +76,8 @@ autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, size_t size)
 	if (link_end == 0)
 		return 0;
 
-	cclose = data[link_end - 1];
+	uint8_t cclose = data[link_end - 1];
+	uint8_t copen = 0;
 
 	switch (cclose) {
 	case '"':	copen = '"'; break;
@@ -137,11 +132,11 @@ autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, size_t size)
 static size_t
 check_domain(uint8_t *data, size_t size, int allow_short)
 {
-	size_t i;
-	size_t np = 0;
-
 	if (!isalnum(data[0]))
 		return 0;
+
+	size_t i;
+	size_t np = 0;
 
 	for (i = 1; i < size - 1; ++i) {
 		if (data[i] == '.') np++;
@@ -174,15 +169,13 @@ sd_autolink__www(
 	size_t size,
 	unsigned int flags)
 {
-	size_t link_end;
-
 	if (max_rewind > 0 && !ispunct(data[-1]) && !isspace(data[-1]))
 		return 0;
 
 	if (size < 4 || memcmp(data, "www.", strlen("www.")) != 0)
 		return 0;
 
-	link_end = check_domain(data, size, 0);
+	size_t link_end = check_domain(data, size, 0);
 
 	if (link_end == 0)
 		return 0;
@@ -210,10 +203,7 @@ sd_autolink__email(
 	size_t size,
 	unsigned int flags)
 {
-	size_t link_end;
 	size_t rewind;
-	int nb = 0;
-	int np = 0;
 
 	for (rewind = 0; rewind < max_rewind; ++rewind) {
 		uint8_t c = data[-rewind - 1];
@@ -229,6 +219,10 @@ sd_autolink__email(
 
 	if (rewind == 0)
 		return 0;
+
+	size_t link_end;
+	int nb = 0;
+	int np = 0;
 
 	for (link_end = 0; link_end < size; ++link_end) {
 		uint8_t c = data[link_end];
@@ -268,12 +262,10 @@ sd_autolink__url(
 	size_t size,
 	unsigned int flags)
 {
-	size_t link_end;
-	size_t rewind = 0;
-	size_t domain_len;
-
 	if (size < 4 || data[1] != '/' || data[2] != '/')
 		return 0;
+
+	size_t rewind = 0;
 
 	while (rewind < max_rewind && isalpha(data[-rewind - 1]))
 		rewind++;
@@ -281,9 +273,9 @@ sd_autolink__url(
 	if (!sd_autolink_issafe(data - rewind, size + rewind))
 		return 0;
 
-	link_end = strlen("://");
+	size_t link_end = strlen("://");
 
-	domain_len = check_domain(
+	size_t domain_len = check_domain(
 		data + link_end,
 		size - link_end,
 		flags & SD_AUTOLINK_SHORT_DOMAINS);

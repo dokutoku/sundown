@@ -49,16 +49,15 @@ static const char *HTML_ESCAPES[] = {
 void
 houdini_escape_html0(struct buf *ob, const uint8_t *src, size_t size, int secure)
 {
-	size_t i = 0;
-	size_t org;
-	size_t esc = 0;
-
 	if (bufgrow(ob, ESCAPE_GROW_FACTOR(size)) != BUF_OK) {
 		return;
 	}
 
+	size_t i = 0;
+	size_t esc = 0;
+
 	while (i < size) {
-		org = i;
+		size_t org = i;
 		while (i < size && (esc = HTML_ESCAPE_TABLE[src[i]]) == 0)
 			i++;
 

@@ -30,9 +30,6 @@
 int
 main(int argc, char **argv)
 {
-	struct buf *ib;
-	struct buf *ob;
-	size_t ret;
 	FILE *in_ = stdin;
 
 	/* opening the file if given from the command line */
@@ -45,7 +42,7 @@ main(int argc, char **argv)
 	}
 
 	/* reading everything */
-	ib = bufnew(READ_UNIT);
+	struct buf *ib = bufnew(READ_UNIT);
 
 	if (bufgrow(ib, READ_UNIT) != BUF_OK) {
 		fprintf(stderr, "Error: bufgrow()\n");
@@ -57,6 +54,8 @@ main(int argc, char **argv)
 
 		return -1;
 	}
+
+	size_t ret;
 
 	while ((ret = fread(ib->data + ib->size, 1, ib->asize - ib->size, in_)) > 0) {
 		ib->size += ret;
@@ -77,7 +76,7 @@ main(int argc, char **argv)
 		fclose(in_);
 
 	/* performing markdown parsing */
-	ob = bufnew(OUTPUT_UNIT);
+	struct buf *ob = bufnew(OUTPUT_UNIT);
 
 	sdhtml_smartypants(ob, ib->data, ib->size);
 

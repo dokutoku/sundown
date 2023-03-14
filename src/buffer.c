@@ -35,10 +35,9 @@
 int
 bufprefix(const struct buf *buf, const char *prefix)
 {
-	size_t i;
 	assert(buf && buf->unit);
 
-	for (i = 0; i < buf->size; ++i) {
+	for (size_t i = 0; i < buf->size; ++i) {
 		if (prefix[i] == '\0')
 			return 0;
 
@@ -55,9 +54,6 @@ bufprefix(const struct buf *buf, const char *prefix)
 int
 bufgrow(struct buf *buf, size_t neosz)
 {
-	size_t neoasz;
-	void *neodata;
-
 	assert(buf && buf->unit);
 
 	if (neosz > BUFFER_MAX_ALLOC_SIZE)
@@ -66,11 +62,11 @@ bufgrow(struct buf *buf, size_t neosz)
 	if (buf->asize >= neosz)
 		return BUF_OK;
 
-	neoasz = buf->asize + buf->unit;
+	size_t neoasz = buf->asize + buf->unit;
 	while (neoasz < neosz)
 		neoasz += buf->unit;
 
-	neodata = realloc(buf->data, neoasz);
+	void *neodata = realloc(buf->data, neoasz);
 	if (!neodata)
 		return BUF_ENOMEM;
 
@@ -86,8 +82,7 @@ bufgrow(struct buf *buf, size_t neosz)
 struct buf *
 bufnew(size_t unit)
 {
-	struct buf *ret;
-	ret = malloc(sizeof (struct buf));
+	struct buf *ret = malloc(sizeof (struct buf));
 
 	if (ret) {
 		ret->data = NULL;
@@ -123,16 +118,14 @@ bufcstr(struct buf *buf)
 void
 bufprintf(struct buf *buf, const char *fmt, ...)
 {
-	va_list ap;
-	int n;
-
 	assert(buf && buf->unit);
 
 	if (buf->size >= buf->asize && bufgrow(buf, buf->size + 1) != BUF_OK)
 		return;
 
+	va_list ap;
 	va_start(ap, fmt);
-	n = _buf_vsnprintf((char *)buf->data + buf->size, buf->asize - buf->size, fmt, ap);
+	int n = _buf_vsnprintf((char *)buf->data + buf->size, buf->asize - buf->size, fmt, ap);
 	va_end(ap);
 
 	if (n < 0) {

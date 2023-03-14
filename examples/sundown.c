@@ -32,14 +32,7 @@
 int
 main(int argc, char **argv)
 {
-	struct buf *ib;
-	struct buf *ob;
-	int ret;
 	FILE *in_ = stdin;
-
-	struct sd_callbacks callbacks;
-	struct html_renderopt options;
-	struct sd_markdown *markdown;
 
 	/* opening the file if given from the command line */
 	if (argc > 1) {
@@ -51,7 +44,7 @@ main(int argc, char **argv)
 	}
 
 	/* reading everything */
-	ib = bufnew(READ_UNIT);
+	struct buf *ib = bufnew(READ_UNIT);
 
 	if (bufgrow(ib, READ_UNIT) != BUF_OK) {
 		fprintf(stderr, "Error: bufgrow()\n");
@@ -63,6 +56,8 @@ main(int argc, char **argv)
 
 		return -1;
 	}
+
+	int ret;
 
 	while ((ret = fread(ib->data + ib->size, 1, ib->asize - ib->size, in_)) > 0) {
 		ib->size += ret;
@@ -83,10 +78,12 @@ main(int argc, char **argv)
 		fclose(in_);
 
 	/* performing markdown parsing */
-	ob = bufnew(OUTPUT_UNIT);
+	struct buf *ob = bufnew(OUTPUT_UNIT);
 
+	struct sd_callbacks callbacks;
+	struct html_renderopt options;
 	sdhtml_renderer(&callbacks, &options, 0);
-	markdown = sd_markdown_new(0, 16, &callbacks, &options);
+	struct sd_markdown *markdown = sd_markdown_new(0, 16, &callbacks, &options);
 
 	if (markdown != NULL) {
 		bufrelease(ib);

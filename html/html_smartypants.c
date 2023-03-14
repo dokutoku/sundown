@@ -107,14 +107,13 @@ word_boundary(uint8_t c)
 static int
 smartypants_quotes(struct buf *ob, uint8_t previous_char, uint8_t next_char, uint8_t quote, int *is_open)
 {
-	char ent[8];
-
 	if (*is_open && !word_boundary(next_char))
 		return 0;
 
 	if (!(*is_open) && !word_boundary(previous_char))
 		return 0;
 
+	char ent[8];
 	snprintf(ent, sizeof(ent), "&%c%cquo;", (*is_open) ? 'r' : 'l', quote);
 	*is_open = !(*is_open);
 	bufputs(ob, ent);
@@ -294,13 +293,14 @@ smartypants_cb__ltag(struct buf *ob, struct smartypants_data *smrt, uint8_t prev
 	};
 	static const size_t skip_tags_count = 8;
 
-	size_t tag;
 	size_t i = 0;
 
 	while (i < size && text[i] != '>')
 		i++;
 
-	for (tag = 0; tag < skip_tags_count; ++tag) {
+	size_t tag = 0;
+
+	for (; tag < skip_tags_count; ++tag) {
 		if (sdhtml_is_tag(text, size, skip_tags[tag]) == HTML_TAG_OPEN)
 			break;
 	}
@@ -382,9 +382,6 @@ static struct {
 void
 sdhtml_smartypants(struct buf *ob, const uint8_t *text, size_t size)
 {
-	size_t i;
-	struct smartypants_data smrt = {0, 0};
-
 	if (!text)
 		return;
 
@@ -392,11 +389,12 @@ sdhtml_smartypants(struct buf *ob, const uint8_t *text, size_t size)
 		return;
 	}
 
-	for (i = 0; i < size; ++i) {
-		size_t org;
-		uint8_t action = 0;
+	struct smartypants_data smrt = {0, 0};
 
-		org = i;
+	for (size_t i = 0; i < size; ++i) {
+		uint8_t action = 0;
+		size_t org = i;
+
 		while (i < size && (action = smartypants_cb_chars[text[i]]) == 0)
 			i++;
 
