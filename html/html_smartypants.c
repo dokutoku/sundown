@@ -366,7 +366,9 @@ sdhtml_smartypants(struct buf *ob, const uint8_t *text, size_t size)
 	if (!text)
 		return;
 
-	bufgrow(ob, size);
+	if (bufgrow(ob, size) != BUF_OK) {
+		return;
+	}
 
 	for (i = 0; i < size; ++i) {
 		size_t org;

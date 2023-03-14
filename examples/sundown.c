@@ -49,10 +49,31 @@ main(int argc, char **argv)
 
 	/* reading everything */
 	ib = bufnew(READ_UNIT);
-	bufgrow(ib, READ_UNIT);
+
+	if (bufgrow(ib, READ_UNIT) != BUF_OK) {
+		fprintf(stderr, "Error: bufgrow()\n");
+
+		if (in != stdin)
+			fclose(in);
+
+		bufrelease(ib);
+
+		return -1;
+	}
+
 	while ((ret = fread(ib->data + ib->size, 1, ib->asize - ib->size, in)) > 0) {
 		ib->size += ret;
-		bufgrow(ib, ib->size + READ_UNIT);
+
+		if (bufgrow(ib, ib->size + READ_UNIT) != BUF_OK) {
+			fprintf(stderr, "Error: bufgrow()\n");
+
+			if (in != stdin)
+				fclose(in);
+
+			bufrelease(ib);
+
+			return -1;
+		}
 	}
 
 	if (in != stdin)
@@ -63,6 +84,13 @@ main(int argc, char **argv)
 
 	sdhtml_renderer(&callbacks, &options, 0);
 	markdown = sd_markdown_new(0, 16, &callbacks, &options);
+
+	if (markdown != NULL) {
+		bufrelease(ib);
+		bufrelease(ob);
+
+		return -1;
+	}
 
 	sd_markdown_render(ob, ib->data, ib->size, markdown);
 	sd_markdown_free(markdown);
