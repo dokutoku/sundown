@@ -105,4 +105,3 @@ main(int argc, char **argv)
 	return (ret < 0) ? -1 : 0;
 }
 
-/* vim: set filetype=c: */
