@@ -122,7 +122,8 @@ rndr_blockcode(struct buf *ob, const struct buf *text, const struct buf *lang, v
 	if (ob->size) bufputc(ob, '\n');
 
 	if (lang && lang->size) {
-		size_t i, cls;
+		size_t i;
+		size_t cls;
 		BUFPUTSL(ob, "<pre><code class=\"");
 
 		for (i = 0, cls = 0; i < lang->size; ++i, ++cls) {
@@ -354,7 +355,8 @@ rndr_paragraph(struct buf *ob, const struct buf *text, void *opaque)
 static void
 rndr_raw_block(struct buf *ob, const struct buf *text, void *opaque)
 {
-	size_t org, sz;
+	size_t org;
+	size_t sz;
 	if (!text) return;
 	sz = text->size;
 	while (sz > 0 && text->data[sz - 1] == '\n') sz--;

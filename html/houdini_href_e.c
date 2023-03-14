@@ -54,7 +54,8 @@ void
 houdini_escape_href(struct buf *ob, const uint8_t *src, size_t size)
 {
 	static const char hex_chars[] = "0123456789ABCDEF";
-	size_t  i = 0, org;
+	size_t i = 0;
+	size_t org;
 	char hex_str[3];
 
 	if (bufgrow(ob, ESCAPE_GROW_FACTOR(size)) != BUF_OK) {

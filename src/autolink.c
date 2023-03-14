@@ -51,7 +51,8 @@ sd_autolink_issafe(const uint8_t *link, size_t link_len)
 static size_t
 autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, size_t size)
 {
-	uint8_t cclose, copen = 0;
+	uint8_t cclose;
+	uint8_t copen = 0;
 	size_t i;
 
 	for (i = 0; i < link_end; ++i)
@@ -136,7 +137,8 @@ autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, size_t size)
 static size_t
 check_domain(uint8_t *data, size_t size, int allow_short)
 {
-	size_t i, np = 0;
+	size_t i;
+	size_t np = 0;
 
 	if (!isalnum(data[0]))
 		return 0;
@@ -208,8 +210,10 @@ sd_autolink__email(
 	size_t size,
 	unsigned int flags)
 {
-	size_t link_end, rewind;
-	int nb = 0, np = 0;
+	size_t link_end;
+	size_t rewind;
+	int nb = 0;
+	int np = 0;
 
 	for (rewind = 0; rewind < max_rewind; ++rewind) {
 		uint8_t c = data[-rewind - 1];
@@ -264,7 +268,9 @@ sd_autolink__url(
 	size_t size,
 	unsigned int flags)
 {
-	size_t link_end, rewind = 0, domain_len;
+	size_t link_end;
+	size_t rewind = 0;
+	size_t domain_len;
 
 	if (size < 4 || data[1] != '/' || data[2] != '/')
 		return 0;

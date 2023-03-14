@@ -294,7 +294,8 @@ smartypants_cb__ltag(struct buf *ob, struct smartypants_data *smrt, uint8_t prev
 	};
 	static const size_t skip_tags_count = 8;
 
-	size_t tag, i = 0;
+	size_t tag;
+	size_t i = 0;
 
 	while (i < size && text[i] != '>')
 		i++;

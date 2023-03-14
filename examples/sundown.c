@@ -32,7 +32,8 @@
 int
 main(int argc, char **argv)
 {
-	struct buf *ib, *ob;
+	struct buf *ib;
+	struct buf *ob;
 	int ret;
 	FILE *in = stdin;
 
