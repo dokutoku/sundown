@@ -101,7 +101,7 @@ static const uint8_t smartypants_cb_chars[] = {
 static inline int
 word_boundary(uint8_t c)
 {
-	return c == 0 || isspace(c) || ispunct(c);
+	return c == '\0' || isspace(c) || ispunct(c);
 }
 
 static int
