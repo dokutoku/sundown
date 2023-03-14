@@ -20,7 +20,7 @@ DEPDIR=depends
 #MFLAGS=-fPIC
 
 CFLAGS=-c -g -O3 -fPIC -Wall -Werror -Wsign-compare -Isrc -Ihtml
-LDFLAGS=-g -O3 -Wall -Werror 
+LDFLAGS=-g -O3 -Wall -Werror
 CC=gcc
 AR=ar
 

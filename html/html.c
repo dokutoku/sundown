@@ -227,13 +227,13 @@ rndr_linebreak(struct buf *ob, void *opaque)
 
 static void
 rndr_header(struct buf *ob, const struct buf *text, int level, void *opaque)
-{   
+{
 	struct html_renderopt *options = opaque;
 
 	if (ob->size)
 		bufputc(ob, '\n');
 
-	if (options->flags & HTML_OUTLINE) 
+	if (options->flags & HTML_OUTLINE)
 	{
 		if(options->outline_data.current_level >= level)
 		{
@@ -531,10 +531,10 @@ static void
 rndr_footnotes(struct buf *ob, const struct buf *text, void *opaque)
 {
 	BUFPUTSL(ob, "<div class=\"footnotes\">\n<hr />\n<ol>\n");
-	
+
 	if (text)
 		bufput(ob, text->data, text->size);
-	
+
 	BUFPUTSL(ob, "\n</ol>\n</div>\n");
 }
 
@@ -543,7 +543,7 @@ rndr_footnote_def(struct buf *ob, const struct buf *text, unsigned int num, void
 {
 	size_t i = 0;
 	int pfound = 0;
-	
+
 	/* insert anchor at the end of first paragraph block */
 	if (text) {
 		while ((i+3) < text->size) {
@@ -556,7 +556,7 @@ rndr_footnote_def(struct buf *ob, const struct buf *text, unsigned int num, void
 			break;
 		}
 	}
-	
+
 	bufprintf(ob, "\n<li id=\"fn%d\">\n", num);
 	if (pfound) {
 		bufput(ob, text->data, i);

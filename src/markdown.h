@@ -133,7 +133,7 @@ struct sd_markdown;
 #define MKD_LIST_ORDERED	1
 
 /* <li> containing block data */
-#define MKD_LI_BLOCK		2 
+#define MKD_LI_BLOCK		2
 
 /* *********************
  * EXPORTED FUNCTIONS *
