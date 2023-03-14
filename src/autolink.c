@@ -85,6 +85,7 @@ autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, size_t size)
 	case ')':	copen = '('; break;
 	case ']':	copen = '['; break;
 	case '}':	copen = '{'; break;
+	default:	break;
 	}
 
 	if (copen != '\0') {
