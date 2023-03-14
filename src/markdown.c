@@ -572,10 +572,12 @@ find_emph_char(uint8_t *data, size_t size, uint8_t c)
 
 			switch (data[i]) {
 			case '[':
-				cc = ']'; break;
+				cc = ']';
+				break;
 
 			case '(':
-				cc = ')'; break;
+				cc = ')';
+				break;
 
 			default:
 				if (tmp_i)
