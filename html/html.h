@@ -34,10 +34,10 @@ struct html_renderopt {
 
 	unsigned int flags;
 
-    struct {
-        int current_level;
-        int open_section_count;
-    } outline_data;
+	struct {
+		int current_level;
+		int open_section_count;
+	} outline_data;
 
 	/* extra callbacks */
 	void (*link_attributes)(struct buf *ob, const struct buf *url, void *self);

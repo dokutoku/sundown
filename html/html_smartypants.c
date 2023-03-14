@@ -269,7 +269,7 @@ static size_t
 smartypants_cb__ltag(struct buf *ob, struct smartypants_data *smrt, uint8_t previous_char, const uint8_t *text, size_t size)
 {
 	static const char *skip_tags[] = {
-	  "pre", "code", "var", "samp", "kbd", "math", "script", "style"
+		"pre", "code", "var", "samp", "kbd", "math", "script", "style"
 	};
 	static const size_t skip_tags_count = 8;
 
@@ -329,31 +329,31 @@ smartypants_cb__escape(struct buf *ob, struct smartypants_data *smrt, uint8_t pr
 
 #if 0
 static struct {
-    uint8_t c0;
-    const uint8_t *pattern;
-    const uint8_t *entity;
-    int skip;
+	uint8_t c0;
+	const uint8_t *pattern;
+	const uint8_t *entity;
+	int skip;
 } smartypants_subs[] = {
-    { '\'', "'s>",      "&rsquo;",  0 },
-    { '\'', "'t>",      "&rsquo;",  0 },
-    { '\'', "'re>",     "&rsquo;",  0 },
-    { '\'', "'ll>",     "&rsquo;",  0 },
-    { '\'', "'ve>",     "&rsquo;",  0 },
-    { '\'', "'m>",      "&rsquo;",  0 },
-    { '\'', "'d>",      "&rsquo;",  0 },
-    { '-',  "--",       "&mdash;",  1 },
-    { '-',  "<->",      "&ndash;",  0 },
-    { '.',  "...",      "&hellip;", 2 },
-    { '.',  ". . .",    "&hellip;", 4 },
-    { '(',  "(c)",      "&copy;",   2 },
-    { '(',  "(r)",      "&reg;",    2 },
-    { '(',  "(tm)",     "&trade;",  3 },
-    { '3',  "<3/4>",    "&frac34;", 2 },
-    { '3',  "<3/4ths>", "&frac34;", 2 },
-    { '1',  "<1/2>",    "&frac12;", 2 },
-    { '1',  "<1/4>",    "&frac14;", 2 },
-    { '1',  "<1/4th>",  "&frac14;", 2 },
-    { '&',  "&#0;",      0,       3 },
+	{ '\'', "'s>",      "&rsquo;",  0 },
+	{ '\'', "'t>",      "&rsquo;",  0 },
+	{ '\'', "'re>",     "&rsquo;",  0 },
+	{ '\'', "'ll>",     "&rsquo;",  0 },
+	{ '\'', "'ve>",     "&rsquo;",  0 },
+	{ '\'', "'m>",      "&rsquo;",  0 },
+	{ '\'', "'d>",      "&rsquo;",  0 },
+	{ '-',  "--",       "&mdash;",  1 },
+	{ '-',  "<->",      "&ndash;",  0 },
+	{ '.',  "...",      "&hellip;", 2 },
+	{ '.',  ". . .",    "&hellip;", 4 },
+	{ '(',  "(c)",      "&copy;",   2 },
+	{ '(',  "(r)",      "&reg;",    2 },
+	{ '(',  "(tm)",     "&trade;",  3 },
+	{ '3',  "<3/4>",    "&frac34;", 2 },
+	{ '3',  "<3/4ths>", "&frac34;", 2 },
+	{ '1',  "<1/2>",    "&frac12;", 2 },
+	{ '1',  "<1/4>",    "&frac14;", 2 },
+	{ '1',  "<1/4th>",  "&frac14;", 2 },
+	{ '&',  "&#0;",      0,       3 },
 };
 #endif
 
