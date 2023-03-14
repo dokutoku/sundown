@@ -302,7 +302,8 @@ add_footnote_ref(struct footnote_list *list, struct footnote_ref *ref)
 	item->ref = ref;
 
 	if (list->head == NULL) {
-		list->head = list->tail = item;
+		list->tail = item;
+		list->head = item;
 	} else {
 		list->tail->next = item;
 		list->tail = item;
@@ -1182,7 +1183,8 @@ char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset
 
 			/* checking for closing quote presence */
 			if (data[title_e] != '\'' &&  data[title_e] != '"') {
-				title_b = title_e = 0;
+				title_e = 0;
+				title_b = 0;
 				link_e = i;
 			}
 		}
@@ -1371,7 +1373,8 @@ char_superscript(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t
 		return 0;
 
 	if (data[1] == '(') {
-		sup_start = sup_len = 2;
+		sup_len = 2;
+		sup_start = 2;
 
 		while (sup_len < size && data[sup_len] != ')' && data[sup_len - 1] != '\\')
 			sup_len++;
@@ -1379,7 +1382,8 @@ char_superscript(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t
 		if (sup_len == size)
 			return 0;
 	} else {
-		sup_start = sup_len = 1;
+		sup_len = 1;
+		sup_start = 1;
 
 		while (sup_len < size && !_isspace(data[sup_len]))
 			sup_len++;
@@ -2954,7 +2958,8 @@ is_ref(const uint8_t *data, size_t beg, size_t end, size_t *last, struct link_re
 	 * optional title: any non-newline sequence enclosed in '"()
 	 * alone on its line
 	 */
-	title_offset = title_end = 0;
+	title_end = 0;
+	title_offset = 0;
 	if (i + 1 < end
 	&& (data[i] == '\'' || data[i] == '"' || data[i] == '(')) {
 		i++;

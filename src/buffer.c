@@ -91,7 +91,8 @@ bufnew(size_t unit)
 
 	if (ret) {
 		ret->data = NULL;
-		ret->size = ret->asize = 0;
+		ret->asize = 0;
+		ret->size = 0;
 		ret->unit = unit;
 	}
 	return ret;
@@ -224,7 +225,8 @@ bufreset(struct buf *buf)
 
 	free(buf->data);
 	buf->data = NULL;
-	buf->size = buf->asize = 0;
+	buf->asize = 0;
+	buf->size = 0;
 }
 
 /**
