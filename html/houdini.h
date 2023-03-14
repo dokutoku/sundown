@@ -13,7 +13,7 @@ extern "C" {
 #else
 /*
  * Helper _isdigit methods -- do not trust the current locale
- * */
+ */
 #	define _isxdigit(c) (strchr("0123456789ABCDEFabcdef", (c)) != NULL)
 #	define _isdigit(c) ((c) >= '0' && (c) <= '9')
 #endif

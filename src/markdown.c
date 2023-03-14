@@ -34,18 +34,21 @@
 #define BUFFER_BLOCK 0
 #define BUFFER_SPAN 1
 
-#define MKD_LI_END 8	/* internal list flag */
+/* internal list flag */
+#define MKD_LI_END 8
 
 #define gperf_case_strncmp(s1, s2, n) strncasecmp(s1, s2, n)
 #define GPERF_DOWNCASE 1
 #define GPERF_CASE_STRNCMP 1
 #include "html_blocks.h"
 
-/***************
+/* **************
  * LOCAL TYPES *
  ***************/
 
-/* link_ref: reference to a link */
+/**
+ * reference to a link
+ */
 struct link_ref {
 	unsigned int id;
 
@@ -55,7 +58,9 @@ struct link_ref {
 	struct link_ref *next;
 };
 
-/* footnote_ref: reference to a footnote */
+/**
+ * reference to a footnote
+ */
 struct footnote_ref {
 	unsigned int id;
 
@@ -65,20 +70,26 @@ struct footnote_ref {
 	struct buf *contents;
 };
 
-/* footnote_item: an item in a footnote_list */
+/**
+ * an item in a footnote_list
+ */
 struct footnote_item {
 	struct footnote_ref *ref;
 	struct footnote_item *next;
 };
 
-/* footnote_list: linked list of footnote_item */
+/**
+ * linked list of footnote_item
+ */
 struct footnote_list {
 	unsigned int count;
 	struct footnote_item *head;
 	struct footnote_item *tail;
 };
 
-/* char_trigger: function pointer to render active chars */
+/**
+ * function pointer to render active chars
+ */
 /*   returns the number of chars taken care of */
 /*   data is the pointer of the beginning of the span */
 /*   offset is the number of valid chars before data */
@@ -128,7 +139,9 @@ static char_trigger markdown_char_ptrs[] = {
 	&char_superscript,
 };
 
-/* render • structure containing one particular render */
+/**
+ * structure containing one particular render
+ */
 struct sd_markdown {
 	struct sd_callbacks	cb;
 	void *opaque;
@@ -143,7 +156,7 @@ struct sd_markdown {
 	int in_link_body;
 };
 
-/***************************
+/* **************************
  * HELPER FUNCTIONS *
  ***************************/
 
@@ -338,9 +351,9 @@ free_footnote_list(struct footnote_list *list, int free_refs)
 }
 
 
-/*
+/**
  * Check whether a char is a Markdown space.
-
+ *
  * Right now we only consider spaces the actual
  * space and a newline: tabs and carriage returns
  * are filtered out during the preprocessing phase.
@@ -355,11 +368,13 @@ _isspace(int c)
 	return c == ' ' || c == '\n';
 }
 
-/****************************
+/* ***************************
  * INLINE PARSING FUNCTIONS *
  ****************************/
 
-/* is_mail_autolink • looks for the address part of a mail autolink and '>' */
+/**
+ * looks for the address part of a mail autolink and '>'
+ */
 /* this is less strict than the original markdown e-mail address matching */
 static size_t
 is_mail_autolink(uint8_t *data, size_t size)
@@ -391,7 +406,9 @@ is_mail_autolink(uint8_t *data, size_t size)
 	return 0;
 }
 
-/* tag_length • returns the length of the given tag, or 0 is it's not valid */
+/**
+ * returns the length of the given tag, or 0 is it's not valid
+ */
 static size_t
 tag_length(uint8_t *data, size_t size, enum mkd_autolink *autolink)
 {
@@ -453,7 +470,9 @@ tag_length(uint8_t *data, size_t size, enum mkd_autolink *autolink)
 	return i + 1;
 }
 
-/* parse_inline • parses inline markdown elements */
+/**
+ * parses inline markdown elements
+ */
 static void
 parse_inline(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size)
 {
@@ -492,7 +511,9 @@ parse_inline(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t siz
 	}
 }
 
-/* find_emph_char • looks for the next emph uint8_t, skipping other constructs */
+/**
+ * looks for the next emph uint8_t, skipping other constructs
+ */
 static size_t
 find_emph_char(uint8_t *data, size_t size, uint8_t c)
 {
@@ -583,7 +604,9 @@ find_emph_char(uint8_t *data, size_t size, uint8_t c)
 	return 0;
 }
 
-/* parse_emph1 • parsing single emphase */
+/**
+ * parsing single emphase
+ */
 /* closed by a symbol not preceded by whitespace and not followed by symbol */
 static size_t
 parse_emph1(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size, uint8_t c)
@@ -626,7 +649,9 @@ parse_emph1(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size
 	return 0;
 }
 
-/* parse_emph2 • parsing single emphase */
+/**
+ * parsing single emphase
+ */
 static size_t
 parse_emph2(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size, uint8_t c)
 {
@@ -663,7 +688,9 @@ parse_emph2(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size
 	return 0;
 }
 
-/* parse_emph3 • parsing single emphase */
+/**
+ * parsing single emphase
+ */
 /* finds the first closing tag, and delegates to the other emph */
 static size_t
 parse_emph3(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size, uint8_t c)
@@ -709,7 +736,9 @@ parse_emph3(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size
 	return 0;
 }
 
-/* char_emphasis • single and double emphasis parsing */
+/**
+ * single and double emphasis parsing
+ */
 static size_t
 char_emphasis(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset, size_t size)
 {
@@ -722,9 +751,11 @@ char_emphasis(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t of
 	}
 
 	if (size > 2 && data[1] != c) {
-		/* whitespace cannot follow an opening emphasis;
+		/*
+		 * whitespace cannot follow an opening emphasis;
 		 * ins only takes two characters '++'
-		 * strikethrough only takes two characters '~~' */
+		 * strikethrough only takes two characters '~~'
+		 */
 		if (c == '+' || c == '~' || _isspace(data[1]) || (ret = parse_emph1(ob, rndr, data + 1, size - 1, c)) == 0)
 			return 0;
 
@@ -749,7 +780,9 @@ char_emphasis(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t of
 }
 
 
-/* char_linebreak • '\n' preceded by two spaces (assuming linebreak != 0) */
+/**
+ * '\n' preceded by two spaces (assuming linebreak != 0)
+ */
 static size_t
 char_linebreak(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset, size_t size)
 {
@@ -764,7 +797,9 @@ char_linebreak(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t o
 }
 
 
-/* char_codespan • '`' parsing a code span (assuming codespan != 0) */
+/**
+ * '`' parsing a code span (assuming codespan != 0)
+ */
 static size_t
 char_codespan(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset, size_t size)
 {
@@ -781,8 +816,10 @@ char_codespan(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t of
 		else i = 0;
 	}
 
-	if (i < nb && end >= size)
-		return 0; /* no matching delimiter */
+	if (i < nb && end >= size) {
+		/* no matching delimiter */
+		return 0;
+	}
 
 	/* trimming outside whitespaces */
 	f_begin = nb;
@@ -807,7 +844,9 @@ char_codespan(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t of
 }
 
 
-/* char_escape • '\\' backslash escape */
+/**
+ * '\\' backslash escape
+ */
 static size_t
 char_escape(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset, size_t size)
 {
@@ -831,7 +870,9 @@ char_escape(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offs
 	return 2;
 }
 
-/* char_entity • '&' escaped when it doesn't belong to an entity */
+/**
+ * '&' escaped when it doesn't belong to an entity
+ */
 /* valid entities are assumed to be anything matching &#?[A-Za-z0-9]+; */
 static size_t
 char_entity(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset, size_t size)
@@ -845,10 +886,13 @@ char_entity(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offs
 	while (end < size && isalnum(data[end]))
 		end++;
 
-	if (end < size && data[end] == ';')
-		end++; /* real entity */
-	else
-		return 0; /* lone '&' */
+	if (end < size && data[end] == ';') {
+		/* real entity */
+		end++;
+	} else {
+		/* lone '&' */
+		return 0;
+	}
 
 	if (rndr->cb.entity) {
 		work.data = data;
@@ -860,7 +904,9 @@ char_entity(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offs
 	return end;
 }
 
-/* char_langle_tag • '<' when tags or autolinks are allowed */
+/**
+ * '<' when tags or autolinks are allowed
+ */
 static size_t
 char_langle_tag(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset, size_t size)
 {
@@ -985,7 +1031,9 @@ char_autolink_url(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_
 	return link_len;
 }
 
-/* char_link • '[': parsing a link or an image */
+/**
+ * '[': parsing a link or an image
+ */
 static size_t
 char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset, size_t size)
 {
@@ -1243,8 +1291,10 @@ char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset
 		if (is_img) {
 			bufput(content, data + 1, txt_e - 1);
 		} else {
-			/* disable autolinking when parsing inline the
-			 * content of a link */
+			/*
+			 * disable autolinking when parsing inline the
+			 * content of a link
+			 */
 			rndr->in_link_body = 1;
 			parse_inline(content, rndr, data + 1, txt_e - 1);
 			rndr->in_link_body = 0;
@@ -1320,11 +1370,13 @@ char_superscript(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t
 	return (sup_start == 2) ? sup_len + 1 : sup_len;
 }
 
-/*********************************
+/* ********************************
  * BLOCK-LEVEL PARSING FUNCTIONS *
  *********************************/
 
-/* is_empty • returns the line length when it is empty, 0 otherwise */
+/**
+ * returns the line length when it is empty, 0 otherwise
+ */
 static size_t
 is_empty(const uint8_t *data, size_t size)
 {
@@ -1337,7 +1389,9 @@ is_empty(const uint8_t *data, size_t size)
 	return i + 1;
 }
 
-/* is_hrule • returns whether a line is a horizontal rule */
+/**
+ * returns whether a line is a horizontal rule
+ */
 static int
 is_hrule(uint8_t *data, size_t size)
 {
@@ -1368,8 +1422,10 @@ is_hrule(uint8_t *data, size_t size)
 	return n >= 3;
 }
 
-/* check if a line begins with a code fence; return the
- * width of the code fence */
+/**
+ * check if a line begins with a code fence; return the
+ * width of the code fence
+ */
 static size_t
 prefix_codefence(uint8_t *data, size_t size)
 {
@@ -1399,7 +1455,9 @@ prefix_codefence(uint8_t *data, size_t size)
 	return i;
 }
 
-/* check if a line is a code fence; return its size if it is */
+/**
+ * check if a line is a code fence; return its size if it is
+ */
 static size_t
 is_codefence(uint8_t *data, size_t size, struct buf *syntax)
 {
@@ -1425,8 +1483,10 @@ is_codefence(uint8_t *data, size_t size, struct buf *syntax)
 		if (i == size || data[i] != '}')
 			return 0;
 
-		/* strip all whitespace at the beginning and the end
-		 * of the {} block */
+		/*
+		 * strip all whitespace at the beginning and the end
+		 * of the {} block
+		 */
 		while (syn_len > 0 && _isspace(syn_start[0])) {
 			syn_start++; syn_len--;
 		}
@@ -1456,7 +1516,9 @@ is_codefence(uint8_t *data, size_t size, struct buf *syntax)
 	return i + 1;
 }
 
-/* is_atxheader • returns whether the line is a hash-prefixed header */
+/**
+ * returns whether the line is a hash-prefixed header
+ */
 static int
 is_atxheader(struct sd_markdown *rndr, uint8_t *data, size_t size)
 {
@@ -1476,7 +1538,9 @@ is_atxheader(struct sd_markdown *rndr, uint8_t *data, size_t size)
 	return 1;
 }
 
-/* is_headerline • returns whether the line is a setext-style hdr underline */
+/**
+ * returns whether the line is a setext-style hdr underline
+ */
 static int
 is_headerline(uint8_t *data, size_t size)
 {
@@ -1511,7 +1575,9 @@ is_next_headerline(uint8_t *data, size_t size)
 	return is_headerline(data + i, size - i);
 }
 
-/* prefix_quote • returns blockquote prefix length */
+/**
+ * returns blockquote prefix length
+ */
 static size_t
 prefix_quote(uint8_t *data, size_t size)
 {
@@ -1530,7 +1596,9 @@ prefix_quote(uint8_t *data, size_t size)
 	return 0;
 }
 
-/* prefix_code • returns prefix length for block code*/
+/**
+ * returns prefix length for block code
+ */
 static size_t
 prefix_code(uint8_t *data, size_t size)
 {
@@ -1540,7 +1608,9 @@ prefix_code(uint8_t *data, size_t size)
 	return 0;
 }
 
-/* prefix_oli • returns ordered list item prefix */
+/**
+ * returns ordered list item prefix
+ */
 static size_t
 prefix_oli(uint8_t *data, size_t size)
 {
@@ -1565,7 +1635,9 @@ prefix_oli(uint8_t *data, size_t size)
 	return i + 2;
 }
 
-/* prefix_uli • returns ordered list item prefix */
+/**
+ * returns ordered list item prefix
+ */
 static size_t
 prefix_uli(uint8_t *data, size_t size)
 {
@@ -1587,12 +1659,16 @@ prefix_uli(uint8_t *data, size_t size)
 }
 
 
-/* parse_block • parsing of one block, returning next uint8_t to parse */
+/**
+ * parsing of one block, returning next uint8_t to parse
+ */
 static void parse_block(struct buf *ob, struct sd_markdown *rndr,
 			uint8_t *data, size_t size);
 
 
-/* parse_blockquote • handles parsing of a blockquote fragment */
+/**
+ * handles parsing of a blockquote fragment
+ */
 static size_t
 parse_blockquote(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size)
 {
@@ -1612,9 +1688,10 @@ parse_blockquote(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t
 
 		pre = prefix_quote(data + beg, end - beg);
 
-		if (pre)
-			beg += pre; /* skipping prefix */
-
+		if (pre) {
+			/* skipping prefix */
+			beg += pre;
+		}
 		/* empty line followed by non-quote line */
 		else if (is_empty(data + beg, end - beg) &&
 				(end >= size || (prefix_quote(data + end, size - end) == 0 &&
@@ -1642,7 +1719,9 @@ parse_blockquote(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t
 static size_t
 parse_htmlblock(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size, int do_render);
 
-/* parse_blockquote • handles parsing of a regular paragraph */
+/**
+ * handles parsing of a regular paragraph
+ */
 static size_t
 parse_paragraph(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size)
 {
@@ -1651,7 +1730,10 @@ parse_paragraph(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t 
 	struct buf work = { data, 0, 0, 0 };
 
 	while (i < size) {
-		for (end = i + 1; end < size && data[end - 1] != '\n'; end++) /* empty */;
+		for (end = i + 1; end < size && data[end - 1] != '\n'; end++) {
+			/* empty */
+			;
+		}
 
 		if (is_empty(data + i, size - i))
 			break;
@@ -1766,7 +1848,9 @@ parse_paragraph(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t 
 	return end;
 }
 
-/* parse_fencedcode • handles parsing of a block-level code fragment */
+/**
+ * handles parsing of a block-level code fragment
+ */
 static size_t
 parse_fencedcode(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size)
 {
@@ -1796,8 +1880,10 @@ parse_fencedcode(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t
 		for (end = beg + 1; end < size && data[end - 1] != '\n'; end++);
 
 		if (beg < end) {
-			/* verbatim copy to the working buffer,
-				escaping entities */
+			/*
+			 * verbatim copy to the working buffer,
+			 * escaping entities
+			 */
 			if (is_empty(data + beg, end - beg))
 				bufputc(work, '\n');
 			else bufput(work, data + beg, end - beg);
@@ -1832,15 +1918,19 @@ parse_blockcode(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t 
 		for (end = beg + 1; end < size && data[end - 1] != '\n'; end++) {};
 		pre = prefix_code(data + beg, end - beg);
 
-		if (pre)
-			beg += pre; /* skipping prefix */
+		if (pre) {
+			/* skipping prefix */
+			beg += pre;
+		}
 		else if (!is_empty(data + beg, end - beg))
 			/* non-empty non-prefixed line breaks the pre */
 			break;
 
 		if (beg < end) {
-			/* verbatim copy to the working buffer,
-				escaping entities */
+			/*
+			 * verbatim copy to the working buffer,
+			 * escaping entities
+			 */
 			if (is_empty(data + beg, end - beg))
 				bufputc(work, '\n');
 			else bufput(work, data + beg, end - beg);
@@ -1860,7 +1950,9 @@ parse_blockcode(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t 
 	return beg;
 }
 
-/* parse_listitem • parsing of a single list item */
+/**
+ * parsing of a single list item
+ */
 /*	assuming initial prefix is already removed */
 static size_t
 parse_listitem(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size, int *flags)
@@ -1930,8 +2022,10 @@ parse_listitem(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t s
 				in_fence = !in_fence;
 		}
 
-		/* Only check for new list items if we are **not** inside
-		 * a fenced code block */
+		/*
+		 * Only check for new list items if we are **not** inside
+		 * a fenced code block
+		 */
 		if (!in_fence) {
 			has_next_uli = prefix_uli(data + beg + i, end - beg - i);
 			has_next_oli = prefix_oli(data + beg + i, end - beg - i);
@@ -1942,7 +2036,9 @@ parse_listitem(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t s
 			((*flags & MKD_LIST_ORDERED) && has_next_uli) ||
 			(!(*flags & MKD_LIST_ORDERED) && has_next_oli))){
 			*flags |= MKD_LI_END;
-			break; /* the following item must have same list type */
+
+			/* the following item must have same list type */
+			break;
 		}
 
 		/* checking for a new item */
@@ -1950,15 +2046,19 @@ parse_listitem(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t s
 			if (in_empty)
 				has_inside_empty = 1;
 
-			if (pre == orgpre) /* the following item must have */
-				break;             /* the same indentation */
+			if (pre == orgpre) {/* the following item must have */
+				/* the same indentation */
+				break;
+			}
 
 			if (!sublist)
 				sublist = work->size;
 		}
-		/* joining only indented stuff after empty lines;
+		/*
+		 * joining only indented stuff after empty lines;
 		 * note that now we only require 1 space of indentation
-		 * to continue a list */
+		 * to continue a list
+		 */
 		else if (in_empty && pre == 0) {
 			*flags |= MKD_LI_END;
 			break;
@@ -2007,7 +2107,9 @@ parse_listitem(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t s
 }
 
 
-/* parse_list • parsing ordered or unordered list block */
+/**
+ * parsing ordered or unordered list block
+ */
 static size_t
 parse_list(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size, int flags)
 {
@@ -2034,7 +2136,9 @@ parse_list(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size,
 	return i;
 }
 
-/* parse_atxheader • parsing of atx-style headers */
+/**
+ * parsing of atx-style headers
+ */
 static size_t
 parse_atxheader(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size)
 {
@@ -2073,7 +2177,9 @@ parse_atxheader(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t 
 	return skip;
 }
 
-/* parse_footnote_def • parse a single footnote definition */
+/**
+ * parse a single footnote definition
+ */
 static void
 parse_footnote_def(struct buf *ob, struct sd_markdown *rndr, unsigned int num, uint8_t *data, size_t size)
 {
@@ -2091,7 +2197,9 @@ parse_footnote_def(struct buf *ob, struct sd_markdown *rndr, unsigned int num, u
 	rndr_popbuf(rndr, BUFFER_SPAN);
 }
 
-/* parse_footnote_list • render the contents of the footnotes */
+/**
+ * render the contents of the footnotes
+ */
 static void
 parse_footnote_list(struct buf *ob, struct sd_markdown *rndr, struct footnote_list *footnotes)
 {
@@ -2120,7 +2228,9 @@ parse_footnote_list(struct buf *ob, struct sd_markdown *rndr, struct footnote_li
 	rndr_popbuf(rndr, BUFFER_BLOCK);
 }
 
-/* htmlblock_end • checking end of HTML block : </tag>[ \t]*\n[ \t*]\n */
+/**
+ * checking end of HTML block : </tag>[ \t]*\n[ \t*]\n
+ */
 /*	returns the length on match, 0 otherwise */
 static size_t
 htmlblock_end_tag(
@@ -2141,8 +2251,12 @@ htmlblock_end_tag(
 	/* checking white lines */
 	i = tag_len + 3;
 	w = 0;
-	if (i < size && (w = is_empty(data + i, size - i)) == 0)
-		return 0; /* non-blank after tag */
+
+	if (i < size && (w = is_empty(data + i, size - i)) == 0) {
+		/* non-blank after tag */
+		return 0;
+	}
+
 	i += w;
 	w = 0;
 
@@ -2172,7 +2286,8 @@ htmlblock_end(const char *curtag,
 			i++;
 		}
 
-		/* If we are only looking for unindented tags, skip the tag
+		/*
+		 * If we are only looking for unindented tags, skip the tag
 		 * if it doesn't follow a newline.
 		 *
 		 * The only exception to this is if the tag is still on the
@@ -2194,7 +2309,9 @@ htmlblock_end(const char *curtag,
 }
 
 
-/* parse_htmlblock • parsing of inline HTML block */
+/**
+ * parsing of inline HTML block
+ */
 static size_t
 parse_htmlblock(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size, int do_render)
 {
@@ -2500,7 +2617,9 @@ parse_table(
 	return i;
 }
 
-/* parse_block • parsing of one block, returning next uint8_t to parse */
+/**
+ * parsing of one block, returning next uint8_t to parse
+ */
 static void
 parse_block(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size)
 {
@@ -2563,11 +2682,13 @@ parse_block(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size
 
 
 
-/*********************
+/* ********************
  * REFERENCE PARSING *
  *********************/
 
-/* is_footnote • returns whether a line is a footnote definition or not */
+/**
+ * returns whether a line is a footnote definition or not
+ */
 static int
 is_footnote(const uint8_t *data, size_t beg, size_t end, size_t *last, struct footnote_list *list)
 {
@@ -2639,9 +2760,11 @@ is_footnote(const uint8_t *data, size_t beg, size_t end, size_t *last, struct fo
 		while (ind < 4 && start + ind < end && data[start + ind] == ' ')
 			ind++;
 	
-		/* joining only indented stuff after empty lines;
+		/*
+		 * joining only indented stuff after empty lines;
 		 * note that now we only require 1 space of indentation
-		 * to continue, just like lists */
+		 * to continue, just like lists
+		 */
 		if (in_empty && ind == 0) {
 			break;
 		}
@@ -2682,7 +2805,9 @@ is_footnote(const uint8_t *data, size_t beg, size_t end, size_t *last, struct fo
 	return 1;
 }
 
-/* is_ref • returns whether a line is a reference or not */
+/**
+ * returns whether a line is a reference or not
+ */
 static int
 is_ref(const uint8_t *data, size_t beg, size_t end, size_t *last, struct link_ref **refs)
 {
@@ -2749,8 +2874,10 @@ is_ref(const uint8_t *data, size_t beg, size_t end, size_t *last, struct link_re
 		i = line_end + 1;
 		while (i < end && data[i] == ' ') i++; }
 
-	/* optional title: any non-newline sequence enclosed in '"()
-					alone on its line */
+	/*
+	 * optional title: any non-newline sequence enclosed in '"()
+	 * alone on its line
+	 */
 	title_offset = title_end = 0;
 	if (i + 1 < end
 	&& (data[i] == '\'' || data[i] == '"' || data[i] == '(')) {
@@ -2770,8 +2897,10 @@ is_ref(const uint8_t *data, size_t beg, size_t end, size_t *last, struct link_re
 			line_end = title_end;
 			title_end = i; } }
 
-	if (!line_end || link_end == link_offset)
-		return 0; /* garbage after the link empty link */
+	if (!line_end || link_end == link_offset) {
+		/* garbage after the link empty link */
+		return 0;
+	}
 
 	/* a valid ref has been found, filling-in return structures */
 	if (last)
@@ -2831,7 +2960,7 @@ static void expand_tabs(struct buf *ob, const uint8_t *line, size_t size)
 	}
 }
 
-/**********************
+/* *********************
  * EXPORTED FUNCTIONS *
  **********************/
 
@@ -2943,8 +3072,10 @@ sd_markdown_render(struct buf *ob, const uint8_t *document, size_t doc_size, str
 	/* first pass: looking for references, copying everything else */
 	beg = 0;
 
-	/* Skip a possible UTF-8 BOM, even though the Unicode standard
-	 * discourages having these in UTF-8 documents */
+	/*
+	 * Skip a possible UTF-8 BOM, even though the Unicode standard
+	 * discourages having these in UTF-8 documents
+	 */
 	if (doc_size >= 3 && memcmp(document, UTF8_BOM, 3) == 0)
 		beg += 3;
 

@@ -126,7 +126,9 @@ hash_block_tag (str, len)
 	{
 		default:
 			hval += asso_values[(unsigned char)str[1]+1];
-		/*FALLTHROUGH*/
+
+			/* FALLTHROUGH */
+
 		case 1:
 			hval += asso_values[(unsigned char)str[0]];
 			break;

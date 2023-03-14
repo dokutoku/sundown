@@ -26,7 +26,9 @@
 #define READ_UNIT 1024
 #define OUTPUT_UNIT 64
 
-/* main • main function, interfacing STDIO with the parser */
+/**
+ * main function, interfacing STDIO with the parser
+ */
 int
 main(int argc, char **argv)
 {

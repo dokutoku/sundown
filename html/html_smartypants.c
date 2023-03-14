@@ -45,17 +45,38 @@ static size_t smartypants_cb__escape(struct buf *ob, struct smartypants_data *sm
 static size_t (*smartypants_cb_ptrs[])
 	(struct buf *, struct smartypants_data *, uint8_t, const uint8_t *, size_t) =
 {
-	NULL,					/* 0 */
-	smartypants_cb__dash,	/* 1 */
-	smartypants_cb__parens,	/* 2 */
-	smartypants_cb__squote, /* 3 */
-	smartypants_cb__dquote, /* 4 */
-	smartypants_cb__amp,	/* 5 */
-	smartypants_cb__period,	/* 6 */
-	smartypants_cb__number,	/* 7 */
-	smartypants_cb__ltag,	/* 8 */
-	smartypants_cb__backtick, /* 9 */
-	smartypants_cb__escape, /* 10 */
+	/* 0 */
+	NULL,
+
+	/* 1 */
+	smartypants_cb__dash,
+
+	/* 2 */
+	smartypants_cb__parens,
+
+	/* 3 */
+	smartypants_cb__squote,
+
+	/* 4 */
+	smartypants_cb__dquote,
+
+	/* 5 */
+	smartypants_cb__amp,
+
+	/* 6 */
+	smartypants_cb__period,
+
+	/* 7 */
+	smartypants_cb__number,
+
+	/* 8 */
+	smartypants_cb__ltag,
+
+	/* 9 */
+	smartypants_cb__backtick,
+
+	/* 10 */
+	smartypants_cb__escape,
 };
 
 static const uint8_t smartypants_cb_chars[] = {

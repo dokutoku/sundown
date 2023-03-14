@@ -71,7 +71,7 @@ static inline void escape_href(struct buf *ob, const uint8_t *source, size_t len
 	houdini_escape_href(ob, source, length);
 }
 
-/********************
+/* *******************
  * GENERIC RENDERER *
  ********************/
 static int
@@ -410,8 +410,10 @@ rndr_raw_html(struct buf *ob, const struct buf *text, void *opaque)
 {
 	struct html_renderopt *options = opaque;
 
-	/* HTML_ESCAPE overrides SKIP_HTML, SKIP_STYLE, SKIP_LINKS and SKIP_IMAGES
-	* It doens't see if there are any valid tags, just escape all of them. */
+	/*
+	 * HTML_ESCAPE overrides SKIP_HTML, SKIP_STYLE, SKIP_LINKS and SKIP_IMAGES
+	 * It doens't see if there are any valid tags, just escape all of them.
+	 */
 	if((options->flags & HTML_ESCAPE) != 0) {
 		escape_html(ob, text->data, text->size);
 		return 1;
@@ -578,8 +580,10 @@ toc_header(struct buf *ob, const struct buf *text, int level, void *opaque)
 {
 	struct html_renderopt *options = opaque;
 
-	/* set the level offset if this is the first header
-	 * we're parsing for the document */
+	/*
+	 * set the level offset if this is the first header
+	 * we're parsing for the document
+	 */
 	if (options->toc_data.current_level == 0) {
 		options->toc_data.level_offset = level - 1;
 	}
@@ -711,7 +715,8 @@ sdhtml_renderer(struct sd_callbacks *callbacks, struct html_renderopt *options, 
 		NULL,
 		NULL,
 
-		NULL, //rndr_finalize,
+		/* rndr_finalize */
+		NULL,
 	};
 
 	/* Prepare the options pointer */

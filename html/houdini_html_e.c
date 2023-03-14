@@ -4,7 +4,8 @@
 
 #include "houdini.h"
 
-#define ESCAPE_GROW_FACTOR(x) (((x) * 12) / 10) /* this is very scientific, yes */
+/* this is very scientific, yes */
+#define ESCAPE_GROW_FACTOR(x) (((x) * 12) / 10)
 
 /**
  * According to the OWASP rules:
@@ -15,7 +16,6 @@
  * " --> &quot;
  * ' --> &#x27;     &apos; is not recommended
  * / --> &#x2F;     forward slash is included as it helps end an HTML entity
- *
  */
 static const char HTML_ESCAPE_TABLE[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 

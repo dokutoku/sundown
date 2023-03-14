@@ -76,23 +76,29 @@ houdini_escape_href(struct buf *ob, const uint8_t *src, size_t size)
 			break;
 
 		switch (src[i]) {
-		/* amp appears all the time in URLs, but needs
-		 * HTML-entity escaping to be inside an href */
+		/*
+		 * amp appears all the time in URLs, but needs
+		 * HTML-entity escaping to be inside an href
+		 */
 		case '&': 
 			BUFPUTSL(ob, "&amp;");
 			break;
 
-		/* the single quote is a valid URL character
+		/*
+		 * the single quote is a valid URL character
 		 * according to the standard; it needs HTML
-		 * entity escaping too */
+		 * entity escaping too
+		 */
 		case '\'':
 			BUFPUTSL(ob, "&#x27;");
 			break;
 		
-		/* the space can be escaped to %20 or a plus
+		/*
+		 * the space can be escaped to %20 or a plus
 		 * sign. we're going with the generic escape
 		 * for now. the plus thing is more commonly seen
-		 * when building GET strings */
+		 * when building GET strings
+		 */
 #if 0
 		case ' ':
 			bufputc(ob, '+');

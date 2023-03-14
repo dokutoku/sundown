@@ -15,7 +15,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#define BUFFER_MAX_ALLOC_SIZE (1024 * 1024 * 16) //16mb
+/* 16MB */
+#define BUFFER_MAX_ALLOC_SIZE (1024 * 1024 * 16)
 
 #include "buffer.h"
 
@@ -48,7 +49,9 @@ bufprefix(const struct buf *buf, const char *prefix)
 	return 0;
 }
 
-/* bufgrow: increasing the allocated size to the given value */
+/**
+ * increasing the allocated size to the given value
+ */
 int
 bufgrow(struct buf *buf, size_t neosz)
 {
@@ -77,7 +80,9 @@ bufgrow(struct buf *buf, size_t neosz)
 }
 
 
-/* bufnew: allocation of a new buffer */
+/**
+ * allocation of a new buffer
+ */
 struct buf *
 bufnew(size_t unit)
 {
@@ -92,7 +97,9 @@ bufnew(size_t unit)
 	return ret;
 }
 
-/* bufnullterm: NULL-termination of the string array */
+/**
+ * NULL-termination of the string array
+ */
 const char *
 bufcstr(struct buf *buf)
 {
@@ -109,7 +116,9 @@ bufcstr(struct buf *buf)
 	return NULL;
 }
 
-/* bufprintf: formatted printing to a buffer */
+/**
+ * formatted printing to a buffer
+ */
 void
 bufprintf(struct buf *buf, const char *fmt, ...)
 {
@@ -150,7 +159,9 @@ bufprintf(struct buf *buf, const char *fmt, ...)
 	buf->size += n;
 }
 
-/* bufput: appends raw data to a buffer */
+/**
+ * appends raw data to a buffer
+ */
 void
 bufput(struct buf *buf, const void *data, size_t len)
 {
@@ -163,7 +174,9 @@ bufput(struct buf *buf, const void *data, size_t len)
 	buf->size += len;
 }
 
-/* bufputs: appends a NUL-terminated string to a buffer */
+/**
+ * appends a NUL-terminated string to a buffer
+ */
 void
 bufputs(struct buf *buf, const char *str)
 {
@@ -171,7 +184,9 @@ bufputs(struct buf *buf, const char *str)
 }
 
 
-/* bufputc: appends a single uint8_t to a buffer */
+/**
+ * appends a single uint8_t to a buffer
+ */
 void
 bufputc(struct buf *buf, uint8_t c)
 {
@@ -184,7 +199,9 @@ bufputc(struct buf *buf, uint8_t c)
 	buf->size += 1;
 }
 
-/* bufrelease: decrease the reference count and free the buffer if needed */
+/**
+ * decrease the reference count and free the buffer if needed
+ */
 void
 bufrelease(struct buf *buf)
 {
@@ -196,7 +213,9 @@ bufrelease(struct buf *buf)
 }
 
 
-/* bufreset: frees internal data of the buffer */
+/**
+ * frees internal data of the buffer
+ */
 void
 bufreset(struct buf *buf)
 {
@@ -208,7 +227,9 @@ bufreset(struct buf *buf)
 	buf->size = buf->asize = 0;
 }
 
-/* bufslurp: removes a given number of bytes from the head of the array */
+/**
+ * removes a given number of bytes from the head of the array
+ */
 void
 bufslurp(struct buf *buf, size_t len)
 {

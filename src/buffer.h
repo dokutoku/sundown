@@ -36,57 +36,102 @@ typedef enum {
 	BUF_ENOMEM = -1,
 } buferror_t;
 
-/* struct buf: character array buffer */
+/**
+ * character array buffer
+ */
 struct buf {
-	uint8_t *data;		/* actual character data */
-	size_t size;	/* size of the string */
-	size_t asize;	/* allocated size (0 = volatile buffer) */
-	size_t unit;	/* reallocation unit size (0 = read-only buffer) */
+	/**
+	 * actual character data
+	 */
+	uint8_t *data;
+
+	/**
+	 * size of the string
+	 */
+	size_t size;
+
+	/**
+	 * allocated size (0 = volatile buffer)
+	 */
+	size_t asize;
+
+	/**
+	 * reallocation unit size (0 = read-only buffer)
+	 */
+	size_t unit;
 };
 
-/* CONST_BUF: global buffer from a string litteral */
+/*
+ * global buffer from a string litteral
+ */
 #define BUF_STATIC(string) \
 	{ (uint8_t *)string, sizeof string -1, sizeof string, 0, 0 }
 
-/* VOLATILE_BUF: macro for creating a volatile buffer on the stack */
+/*
+ * macro for creating a volatile buffer on the stack
+ */
 #define BUF_VOLATILE(strname) \
 	{ (uint8_t *)strname, strlen(strname), 0, 0, 0 }
 
-/* BUFPUTSL: optimized bufputs of a string litteral */
+/*
+ * optimized bufputs of a string litteral
+ */
 #define BUFPUTSL(output, literal) \
 	bufput(output, literal, sizeof literal - 1)
 
-/* bufgrow: increasing the allocated size to the given value */
+/**
+ * increasing the allocated size to the given value
+ */
 int bufgrow(struct buf *, size_t);
 
-/* bufnew: allocation of a new buffer */
+/**
+ * allocation of a new buffer
+ */
 struct buf *bufnew(size_t) __attribute__ ((malloc));
 
-/* bufnullterm: NUL-termination of the string array (making a C-string) */
+/**
+ * NUL-termination of the string array (making a C-string)
+ */
 const char *bufcstr(struct buf *);
 
-/* bufprefix: compare the beginning of a buffer with a string */
+/**
+ * compare the beginning of a buffer with a string
+ */
 int bufprefix(const struct buf *buf, const char *prefix);
 
-/* bufput: appends raw data to a buffer */
+/**
+ * appends raw data to a buffer
+ */
 void bufput(struct buf *, const void *, size_t);
 
-/* bufputs: appends a NUL-terminated string to a buffer */
+/**
+ * appends a NUL-terminated string to a buffer
+ */
 void bufputs(struct buf *, const char *);
 
-/* bufputc: appends a single char to a buffer */
+/**
+ * appends a single char to a buffer
+ */
 void bufputc(struct buf *, uint8_t);
 
-/* bufrelease: decrease the reference count and free the buffer if needed */
+/**
+ * decrease the reference count and free the buffer if needed
+ */
 void bufrelease(struct buf *);
 
-/* bufreset: frees internal data of the buffer */
+/**
+ * frees internal data of the buffer
+ */
 void bufreset(struct buf *);
 
-/* bufslurp: removes a given number of bytes from the head of the array */
+/**
+ * removes a given number of bytes from the head of the array
+ */
 void bufslurp(struct buf *, size_t);
 
-/* bufprintf: formatted printing to a buffer */
+/**
+ * formatted printing to a buffer
+ */
 void bufprintf(struct buf *, const char *, ...) __attribute__ ((format (printf, 2, 3)));
 
 #ifdef __cplusplus

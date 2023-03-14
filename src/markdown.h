@@ -31,15 +31,28 @@ extern "C" {
 #define SUNDOWN_VER_MINOR 16
 #define SUNDOWN_VER_REVISION 0
 
-/********************
+/* *******************
  * TYPE DEFINITIONS *
  ********************/
 
-/* mkd_autolink - type of autolink */
+/**
+ * type of autolink
+ */
 enum mkd_autolink {
-	MKDA_NOT_AUTOLINK,	/* used internally when it is not an autolink*/
-	MKDA_NORMAL,		/* normal http/http/ftp/mailto/etc link */
-	MKDA_EMAIL,			/* e-mail link without explit mailto: */
+	/**
+	 * used internally when it is not an autolink
+	 */
+	MKDA_NOT_AUTOLINK,
+
+	/**
+	 * normal http/http/ftp/mailto/etc link
+	 */
+	MKDA_NORMAL,
+
+	/**
+	 * e-mail link without explit mailto:
+	 */
+	MKDA_EMAIL,
 };
 
 enum mkd_tableflags {
@@ -63,7 +76,9 @@ enum mkd_extensions {
 	MKDEXT_FOOTNOTES = (1 << 9),
 };
 
-/* sd_callbacks - functions for rendering parsed data */
+/**
+ * functions for rendering parsed data
+ */
 struct sd_callbacks {
 	/* block level callbacks - NULL skips the block */
 	void (*blockcode)(struct buf *ob, const struct buf *text, const struct buf *lang, void *opaque);
@@ -109,15 +124,17 @@ struct sd_callbacks {
 
 struct sd_markdown;
 
-/*********
+/* ********
  * FLAGS *
  *********/
-
 /* list/listitem flags */
-#define MKD_LIST_ORDERED	1
-#define MKD_LI_BLOCK		2  /* <li> containing block data */
 
-/**********************
+#define MKD_LIST_ORDERED	1
+
+/* <li> containing block data */
+#define MKD_LI_BLOCK		2 
+
+/* *********************
  * EXPORTED FUNCTIONS *
  **********************/
 
