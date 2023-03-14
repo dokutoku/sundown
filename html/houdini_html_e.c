@@ -37,7 +37,7 @@ static const char HTML_ESCAPE_TABLE[] = {
 };
 
 static const char *HTML_ESCAPES[] = {
-	"",
+	"\0",
 	"&quot;",
 	"&amp;",
 	"&#39;",
