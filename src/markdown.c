@@ -380,6 +380,8 @@ is_mail_autolink(uint8_t *data, size_t size)
 			case '@':
 				nb++;
 
+				/* ToDo: FALLTHROUGH? */
+
 			case '-':
 			case '.':
 			case '_':

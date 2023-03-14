@@ -480,6 +480,7 @@ rndr_tablecell(struct buf *ob, const struct buf *text, int flags, void *opaque)
 
 	default:
 		BUFPUTSL(ob, ">");
+		break;
 	}
 
 	if (text)

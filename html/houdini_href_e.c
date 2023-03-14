@@ -109,6 +109,7 @@ houdini_escape_href(struct buf *ob, const uint8_t *src, size_t size)
 			hex_str[1] = hex_chars[(src[i] >> 4) & 0xF];
 			hex_str[2] = hex_chars[src[i] & 0xF];
 			bufput(ob, hex_str, 3);
+			break;
 		}
 
 		i++;
