@@ -478,7 +478,7 @@ parse_inline(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t siz
 {
 	size_t i = 0, end = 0;
 	uint8_t action = 0;
-	struct buf work = { 0, 0, 0, 0 };
+	struct buf work = { NULL, 0, 0, 0 };
 
 	if (rndr->work_bufs[BUFFER_SPAN].size +
 		rndr->work_bufs[BUFFER_BLOCK].size > rndr->max_nesting)
@@ -612,7 +612,7 @@ static size_t
 parse_emph1(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size, uint8_t c)
 {
 	size_t i = 0, len;
-	struct buf *work = 0;
+	struct buf *work = NULL;
 	int r;
 
 	if (!rndr->cb.emphasis) return 0;
@@ -657,7 +657,7 @@ parse_emph2(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size
 {
 	int (*render_method)(struct buf *ob, const struct buf *text, void *opaque);
 	size_t i = 0, len;
-	struct buf *work = 0;
+	struct buf *work = NULL;
 	int r;
 
 	render_method = (c == '~') ? rndr->cb.strikethrough : rndr->cb.double_emphasis;
@@ -851,7 +851,7 @@ static size_t
 char_escape(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset, size_t size)
 {
 	static const char *escape_chars = "\\`*_{}[]()#+-.!:|&<>^~$";
-	struct buf work = { 0, 0, 0, 0 };
+	struct buf work = { NULL, 0, 0, 0 };
 
 	if (size > 1) {
 		if (strchr(escape_chars, data[1]) == NULL)
@@ -878,7 +878,7 @@ static size_t
 char_entity(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset, size_t size)
 {
 	size_t end = 1;
-	struct buf work = { 0, 0, 0, 0 };
+	struct buf work = { NULL, 0, 0, 0 };
 
 	if (end < size && data[end] == '#')
 		end++;
@@ -1039,10 +1039,10 @@ char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset
 {
 	int is_img = (offset && data[-1] == '!'), level;
 	size_t i = 1, txt_e, link_b = 0, link_e = 0, title_b = 0, title_e = 0;
-	struct buf *content = 0;
-	struct buf *link = 0;
-	struct buf *title = 0;
-	struct buf *u_link = 0;
+	struct buf *content = NULL;
+	struct buf *link = NULL;
+	struct buf *title = NULL;
+	struct buf *u_link = NULL;
 	size_t org_work_size = rndr->work_bufs[BUFFER_SPAN].size;
 	int text_has_nl = 0, ret = 0;
 	int in_title = 0, qtype = 0;
@@ -1080,7 +1080,7 @@ char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset
 		if (txt_e < 3)
 			goto cleanup;
 	
-		struct buf id = { 0, 0, 0, 0 };
+		struct buf id = { NULL, 0, 0, 0 };
 		struct footnote_ref *fr;
 		
 		id.data = data + 2;
@@ -1191,7 +1191,7 @@ char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset
 
 	/* reference style link */
 	else if (i < size && data[i] == '[') {
-		struct buf id = { 0, 0, 0, 0 };
+		struct buf id = { NULL, 0, 0, 0 };
 		struct link_ref *lr;
 
 		/* looking for the id */
@@ -1241,7 +1241,7 @@ char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset
 
 	/* shortcut reference style link */
 	else {
-		struct buf id = { 0, 0, 0, 0 };
+		struct buf id = { NULL, 0, 0, 0 };
 		struct link_ref *lr;
 
 		/* crafting the id */
@@ -1673,8 +1673,8 @@ static size_t
 parse_blockquote(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size)
 {
 	size_t beg, end = 0, pre, work_size = 0;
-	uint8_t *work_data = 0;
-	struct buf *out = 0;
+	uint8_t *work_data = NULL;
+	struct buf *out = NULL;
 
 	out = rndr_newbuf(rndr, BUFFER_BLOCK);
 
@@ -1855,8 +1855,8 @@ static size_t
 parse_fencedcode(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size)
 {
 	size_t beg, end;
-	struct buf *work = 0;
-	struct buf lang = { 0, 0, 0, 0 };
+	struct buf *work = NULL;
+	struct buf lang = { NULL, 0, 0, 0 };
 
 	beg = is_codefence(data, size, &lang);
 	if (beg == 0) return 0;
@@ -1869,7 +1869,7 @@ parse_fencedcode(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t
 
 	while (beg < size) {
 		size_t fence_end;
-		struct buf fence_trail = { 0, 0, 0, 0 };
+		struct buf fence_trail = { NULL, 0, 0, 0 };
 
 		fence_end = is_codefence(data + beg, size - beg, &fence_trail);
 		if (fence_end != 0 && fence_trail.size == 0) {
@@ -1905,7 +1905,7 @@ static size_t
 parse_blockcode(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size)
 {
 	size_t beg, end, pre;
-	struct buf *work = 0;
+	struct buf *work = NULL;
 
 	work = rndr_newbuf(rndr, BUFFER_BLOCK);
 
@@ -1957,7 +1957,7 @@ parse_blockcode(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t 
 static size_t
 parse_listitem(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size, int *flags)
 {
-	struct buf *work = 0, *inter = 0;
+	struct buf *work = NULL, *inter = NULL;
 	size_t beg = 0, end, pre, sublist = 0, orgpre = 0, i;
 	int in_empty = 0, has_inside_empty = 0, in_fence = 0;
 
@@ -2113,7 +2113,7 @@ parse_listitem(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t s
 static size_t
 parse_list(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size, int flags)
 {
-	struct buf *work = 0;
+	struct buf *work = NULL;
 	size_t i = 0, j;
 
 	work = rndr_newbuf(rndr, BUFFER_BLOCK);
@@ -2183,7 +2183,7 @@ parse_atxheader(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t 
 static void
 parse_footnote_def(struct buf *ob, struct sd_markdown *rndr, unsigned int num, uint8_t *data, size_t size)
 {
-	struct buf *work = 0;
+	struct buf *work = NULL;
 	work = rndr_newbuf(rndr, BUFFER_SPAN);
 
 	if (work == NULL) {
@@ -2203,7 +2203,7 @@ parse_footnote_def(struct buf *ob, struct sd_markdown *rndr, unsigned int num, u
 static void
 parse_footnote_list(struct buf *ob, struct sd_markdown *rndr, struct footnote_list *footnotes)
 {
-	struct buf *work = 0;
+	struct buf *work = NULL;
 	struct footnote_item *item;
 	struct footnote_ref *ref;
 	
@@ -2407,7 +2407,7 @@ parse_table_row(
 	int header_flag)
 {
 	size_t i = 0, col;
-	struct buf *row_work = 0;
+	struct buf *row_work = NULL;
 
 	if (!rndr->cb.table_cell || !rndr->cb.table_row)
 		return;
@@ -2452,7 +2452,7 @@ parse_table_row(
 	}
 
 	for (; col < columns; ++col) {
-		struct buf empty_cell = { 0, 0, 0, 0 };
+		struct buf empty_cell = { NULL, 0, 0, 0 };
 		rndr->cb.table_cell(row_work, &empty_cell, col_data[col] | header_flag, rndr->opaque);
 	}
 
@@ -2559,8 +2559,8 @@ parse_table(
 {
 	size_t i;
 
-	struct buf *header_work = 0;
-	struct buf *body_work = 0;
+	struct buf *header_work = NULL;
+	struct buf *body_work = NULL;
 
 	size_t columns;
 	int *col_data = NULL;
@@ -2693,7 +2693,7 @@ static int
 is_footnote(const uint8_t *data, size_t beg, size_t end, size_t *last, struct footnote_list *list)
 {
 	size_t i = 0;
-	struct buf *contents = 0;
+	struct buf *contents = NULL;
 	size_t ind = 0;
 	int in_empty = 0;
 	size_t start = 0;

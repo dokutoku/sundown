@@ -65,7 +65,7 @@ gperf_case_strncmp (register const char *s1, register const char *s2, register u
 	{
 		unsigned char c1 = gperf_downcase[(unsigned char)*s1++];
 		unsigned char c2 = gperf_downcase[(unsigned char)*s2++];
-		if (c1 != 0 && c1 == c2)
+		if (c1 != '\0' && c1 == c2)
 		{
 			n--;
 			continue;

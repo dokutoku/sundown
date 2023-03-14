@@ -45,7 +45,7 @@ sdhtml_is_tag(const uint8_t *tag_data, size_t tag_size, const char *tagname)
 	}
 
 	for (; i < tag_size; ++i, ++tagname) {
-		if (*tagname == 0)
+		if (*tagname == '\0')
 			break;
 
 		if (tag_data[i] != *tagname)

@@ -128,7 +128,7 @@ smartypants_cb__squote(struct buf *ob, struct smartypants_data *smrt, uint8_t pr
 		uint8_t t1 = tolower(text[1]);
 
 		if (t1 == '\'') {
-			if (smartypants_quotes(ob, previous_char, size >= 3 ? text[2] : 0, 'd', &smrt->in_dquote))
+			if (smartypants_quotes(ob, previous_char, size >= 3 ? text[2] : '\0', 'd', &smrt->in_dquote))
 				return 1;
 		}
 
@@ -151,7 +151,7 @@ smartypants_cb__squote(struct buf *ob, struct smartypants_data *smrt, uint8_t pr
 		}
 	}
 
-	if (smartypants_quotes(ob, previous_char, size > 0 ? text[1] : 0, 's', &smrt->in_squote))
+	if (smartypants_quotes(ob, previous_char, size > 0 ? text[1] : '\0', 's', &smrt->in_squote))
 		return 0;
 
 	bufputc(ob, text[0]);
@@ -206,7 +206,7 @@ static size_t
 smartypants_cb__amp(struct buf *ob, struct smartypants_data *smrt, uint8_t previous_char, const uint8_t *text, size_t size)
 {
 	if (size >= 6 && memcmp(text, "&quot;", 6) == 0) {
-		if (smartypants_quotes(ob, previous_char, size >= 7 ? text[6] : 0, 'd', &smrt->in_dquote))
+		if (smartypants_quotes(ob, previous_char, size >= 7 ? text[6] : '\0', 'd', &smrt->in_dquote))
 			return 5;
 	}
 
@@ -238,7 +238,7 @@ static size_t
 smartypants_cb__backtick(struct buf *ob, struct smartypants_data *smrt, uint8_t previous_char, const uint8_t *text, size_t size)
 {
 	if (size >= 2 && text[1] == '`') {
-		if (smartypants_quotes(ob, previous_char, size >= 3 ? text[2] : 0, 'd', &smrt->in_dquote))
+		if (smartypants_quotes(ob, previous_char, size >= 3 ? text[2] : '\0', 'd', &smrt->in_dquote))
 			return 1;
 	}
 
@@ -280,7 +280,7 @@ smartypants_cb__number(struct buf *ob, struct smartypants_data *smrt, uint8_t pr
 static size_t
 smartypants_cb__dquote(struct buf *ob, struct smartypants_data *smrt, uint8_t previous_char, const uint8_t *text, size_t size)
 {
-	if (!smartypants_quotes(ob, previous_char, size > 0 ? text[1] : 0, 'd', &smrt->in_dquote))
+	if (!smartypants_quotes(ob, previous_char, size > 0 ? text[1] : '\0', 'd', &smrt->in_dquote))
 		BUFPUTSL(ob, "&quot;");
 
 	return 0;
@@ -374,7 +374,7 @@ static struct {
 	{ '1',  "<1/2>",    "&frac12;", 2 },
 	{ '1',  "<1/4>",    "&frac14;", 2 },
 	{ '1',  "<1/4th>",  "&frac14;", 2 },
-	{ '&',  "&#0;",      0,       3 },
+	{ '&',  "&#0;",      NULL,      3 },
 };
 #endif
 
@@ -404,7 +404,7 @@ sdhtml_smartypants(struct buf *ob, const uint8_t *text, size_t size)
 
 		if (i < size) {
 			i += smartypants_cb_ptrs[(int)action]
-				(ob, &smrt, i ? text[i - 1] : 0, text + i, size - i);
+				(ob, &smrt, i ? text[i - 1] : '\0', text + i, size - i);
 		}
 	}
 }

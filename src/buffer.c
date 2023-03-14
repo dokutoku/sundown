@@ -39,7 +39,7 @@ bufprefix(const struct buf *buf, const char *prefix)
 	assert(buf && buf->unit);
 
 	for (i = 0; i < buf->size; ++i) {
-		if (prefix[i] == 0)
+		if (prefix[i] == '\0')
 			return 0;
 
 		if (buf->data[i] != prefix[i])
@@ -90,7 +90,7 @@ bufnew(size_t unit)
 	ret = malloc(sizeof (struct buf));
 
 	if (ret) {
-		ret->data = 0;
+		ret->data = NULL;
 		ret->size = ret->asize = 0;
 		ret->unit = unit;
 	}
@@ -105,11 +105,11 @@ bufcstr(struct buf *buf)
 {
 	assert(buf && buf->unit);
 
-	if (buf->size < buf->asize && buf->data[buf->size] == 0)
+	if (buf->size < buf->asize && buf->data[buf->size] == '\0')
 		return (char *)buf->data;
 
 	if (buf->size + 1 <= buf->asize || bufgrow(buf, buf->size + 1) == 0) {
-		buf->data[buf->size] = 0;
+		buf->data[buf->size] = '\0';
 		return (char *)buf->data;
 	}
 
