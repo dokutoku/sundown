@@ -535,7 +535,8 @@ find_emph_char(uint8_t *data, size_t size, uint8_t c)
 
 		/* not counting escaped chars */
 		if (i && data[i - 1] == '\\') {
-			i++; continue;
+			i++;
+			continue;
 		}
 
 		if (data[i] == '`') {
@@ -545,7 +546,8 @@ find_emph_char(uint8_t *data, size_t size, uint8_t c)
 
 			/* counting the number of opening backticks */
 			while (i < size && data[i] == '`') {
-				i++; span_nb++;
+				i++;
+				span_nb++;
 			}
 
 			if (i >= size) return 0;
@@ -1163,7 +1165,10 @@ char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset
 
 			while (i < size) {
 				if (data[i] == '\\') i += 2;
-				else if (data[i] == qtype) {in_title = 0; i++;}
+				else if (data[i] == qtype) {
+					in_title = 0;
+					i++;
+				}
 				else if ((data[i] == ')') && !in_title) break;
 				else i++;
 			}
@@ -1474,7 +1479,8 @@ prefix_codefence(uint8_t *data, size_t size)
 
 	/* the whole line must be the uint8_t or whitespace */
 	while (i < size && data[i] == c) {
-		n++; i++;
+		n++;
+		i++;
 	}
 
 	if (n < 3)
@@ -1503,10 +1509,12 @@ is_codefence(uint8_t *data, size_t size, struct buf *syntax)
 	syn_start = data + i;
 
 	if (i < size && data[i] == '{') {
-		i++; syn_start++;
+		i++;
+		syn_start++;
 
 		while (i < size && data[i] != '}' && data[i] != '\n') {
-			syn_len++; i++;
+			syn_len++;
+			i++;
 		}
 
 		if (i == size || data[i] != '}')
@@ -1517,7 +1525,8 @@ is_codefence(uint8_t *data, size_t size, struct buf *syntax)
 		 * of the {} block
 		 */
 		while (syn_len > 0 && _isspace(syn_start[0])) {
-			syn_start++; syn_len--;
+			syn_start++;
+			syn_len--;
 		}
 
 		while (syn_len > 0 && _isspace(syn_start[syn_len - 1]))
@@ -1526,7 +1535,8 @@ is_codefence(uint8_t *data, size_t size, struct buf *syntax)
 		i++;
 	} else {
 		while (i < size && !_isspace(data[i])) {
-			syn_len++; i++;
+			syn_len++;
+			i++;
 		}
 	}
 
@@ -2568,16 +2578,19 @@ parse_table_header(
 			i++;
 
 		if (data[i] == ':') {
-			i++; (*column_data)[col] |= MKD_TABLE_ALIGN_L;
+			i++;
+			(*column_data)[col] |= MKD_TABLE_ALIGN_L;
 			dashes++;
 		}
 
 		while (i < under_end && data[i] == '-') {
-			i++; dashes++;
+			i++;
+			dashes++;
 		}
 
 		if (i < under_end && data[i] == ':') {
-			i++; (*column_data)[col] |= MKD_TABLE_ALIGN_R;
+			i++;
+			(*column_data)[col] |= MKD_TABLE_ALIGN_R;
 			dashes++;
 		}
 
@@ -3007,7 +3020,8 @@ static void expand_tabs(struct buf *ob, const uint8_t *line, size_t size)
 		size_t org = i;
 
 		while (i < size && line[i] != '\t') {
-			i++; tab++;
+			i++;
+			tab++;
 		}
 
 		if (i > org)
@@ -3017,7 +3031,8 @@ static void expand_tabs(struct buf *ob, const uint8_t *line, size_t size)
 			break;
 
 		do {
-			bufputc(ob, ' '); tab++;
+			bufputc(ob, ' ');
+			tab++;
 		} while (tab % 4);
 
 		i++;
