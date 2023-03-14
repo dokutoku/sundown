@@ -64,8 +64,8 @@ struct buf {
 /*
  * global buffer from a string litteral
  */
-#define BUF_STATIC(string) \
-	{ (uint8_t *)string, sizeof string -1, sizeof string, 0, 0 }
+#define BUF_STATIC(string_) \
+	{ (uint8_t *)string_, sizeof string_ -1, sizeof string_, 0, 0 }
 
 /*
  * macro for creating a volatile buffer on the stack

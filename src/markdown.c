@@ -74,7 +74,7 @@ struct footnote_ref {
  * an item in a footnote_list
  */
 struct footnote_item {
-	struct footnote_ref *ref;
+	struct footnote_ref *ref_;
 	struct footnote_item *next;
 };
 
@@ -216,12 +216,12 @@ unscape_text(struct buf *ob, struct buf *src)
 }
 
 static unsigned int
-hash_link_ref(const uint8_t *link_ref, size_t length)
+hash_link_ref(const uint8_t *link_ref, size_t length_)
 {
 	size_t i;
 	unsigned int hash = 0;
 
-	for (i = 0; i < length; ++i)
+	for (i = 0; i < length_; ++i)
 		hash = tolower(link_ref[i]) + (hash << 6) + (hash << 16) - hash;
 
 	return hash;
@@ -232,31 +232,31 @@ add_link_ref(
 	struct link_ref **references,
 	const uint8_t *name, size_t name_size)
 {
-	struct link_ref *ref = calloc(1, sizeof(struct link_ref));
+	struct link_ref *ref_ = calloc(1, sizeof(struct link_ref));
 
-	if (!ref)
+	if (!ref_)
 		return NULL;
 
-	ref->id = hash_link_ref(name, name_size);
-	ref->next = references[ref->id % REF_TABLE_SIZE];
+	ref_->id = hash_link_ref(name, name_size);
+	ref_->next = references[ref_->id % REF_TABLE_SIZE];
 
-	references[ref->id % REF_TABLE_SIZE] = ref;
-	return ref;
+	references[ref_->id % REF_TABLE_SIZE] = ref_;
+	return ref_;
 }
 
 static struct link_ref *
-find_link_ref(struct link_ref **references, uint8_t *name, size_t length)
+find_link_ref(struct link_ref **references, uint8_t *name, size_t length_)
 {
-	unsigned int hash = hash_link_ref(name, length);
-	struct link_ref *ref = NULL;
+	unsigned int hash = hash_link_ref(name, length_);
+	struct link_ref *ref_ = NULL;
 
-	ref = references[hash % REF_TABLE_SIZE];
+	ref_ = references[hash % REF_TABLE_SIZE];
 
-	while (ref != NULL) {
-		if (ref->id == hash)
-			return ref;
+	while (ref_ != NULL) {
+		if (ref_->id == hash)
+			return ref_;
 
-		ref = ref->next;
+		ref_ = ref_->next;
 	}
 
 	return NULL;
@@ -284,22 +284,22 @@ free_link_refs(struct link_ref **references)
 static struct footnote_ref *
 create_footnote_ref(struct footnote_list *list, const uint8_t *name, size_t name_size)
 {
-	struct footnote_ref *ref = calloc(1, sizeof(struct footnote_ref));
-	if (!ref)
+	struct footnote_ref *ref_ = calloc(1, sizeof(struct footnote_ref));
+	if (!ref_)
 		return NULL;
 
-	ref->id = hash_link_ref(name, name_size);
+	ref_->id = hash_link_ref(name, name_size);
 
-	return ref;
+	return ref_;
 }
 
 static int
-add_footnote_ref(struct footnote_list *list, struct footnote_ref *ref)
+add_footnote_ref(struct footnote_list *list, struct footnote_ref *ref_)
 {
 	struct footnote_item *item = calloc(1, sizeof(struct footnote_item));
 	if (!item)
 		return 0;
-	item->ref = ref;
+	item->ref_ = ref_;
 
 	if (list->head == NULL) {
 		list->tail = item;
@@ -314,16 +314,16 @@ add_footnote_ref(struct footnote_list *list, struct footnote_ref *ref)
 }
 
 static struct footnote_ref *
-find_footnote_ref(struct footnote_list *list, uint8_t *name, size_t length)
+find_footnote_ref(struct footnote_list *list, uint8_t *name, size_t length_)
 {
-	unsigned int hash = hash_link_ref(name, length);
+	unsigned int hash = hash_link_ref(name, length_);
 	struct footnote_item *item = NULL;
 
 	item = list->head;
 
 	while (item != NULL) {
-		if (item->ref->id == hash)
-			return item->ref;
+		if (item->ref_->id == hash)
+			return item->ref_;
 		item = item->next;
 	}
 
@@ -331,10 +331,10 @@ find_footnote_ref(struct footnote_list *list, uint8_t *name, size_t length)
 }
 
 static void
-free_footnote_ref(struct footnote_ref *ref)
+free_footnote_ref(struct footnote_ref *ref_)
 {
-	bufrelease(ref->contents);
-	free(ref);
+	bufrelease(ref_->contents);
+	free(ref_);
 }
 
 static void
@@ -346,7 +346,7 @@ free_footnote_list(struct footnote_list *list, int free_refs)
 	while (item) {
 		next = item->next;
 		if (free_refs)
-			free_footnote_ref(item->ref);
+			free_footnote_ref(item->ref_);
 		free(item);
 		item = next;
 	}
@@ -1720,11 +1720,11 @@ parse_blockquote(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t
 	size_t pre;
 	size_t work_size = 0;
 	uint8_t *work_data = NULL;
-	struct buf *out = NULL;
+	struct buf *out_ = NULL;
 
-	out = rndr_newbuf(rndr, BUFFER_BLOCK);
+	out_ = rndr_newbuf(rndr, BUFFER_BLOCK);
 
-	if (out == NULL) {
+	if (out_ == NULL) {
 		return 0;
 	}
 
@@ -1755,9 +1755,9 @@ parse_blockquote(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t
 		beg = end;
 	}
 
-	parse_block(out, rndr, work_data, work_size);
+	parse_block(out_, rndr, work_data, work_size);
 	if (rndr->cb.blockquote)
-		rndr->cb.blockquote(ob, out, rndr->opaque);
+		rndr->cb.blockquote(ob, out_, rndr->opaque);
 	rndr_popbuf(rndr, BUFFER_BLOCK);
 	return end;
 }
@@ -2267,7 +2267,7 @@ parse_footnote_list(struct buf *ob, struct sd_markdown *rndr, struct footnote_li
 {
 	struct buf *work = NULL;
 	struct footnote_item *item;
-	struct footnote_ref *ref;
+	struct footnote_ref *ref_;
 
 	if (footnotes->count == 0)
 		return;
@@ -2280,8 +2280,8 @@ parse_footnote_list(struct buf *ob, struct sd_markdown *rndr, struct footnote_li
 
 	item = footnotes->head;
 	while (item) {
-		ref = item->ref;
-		parse_footnote_def(work, rndr, ref->num, ref->contents->data, ref->contents->size);
+		ref_ = item->ref_;
+		parse_footnote_def(work, rndr, ref_->num, ref_->contents->data, ref_->contents->size);
 		item = item->next;
 	}
 
@@ -2868,15 +2868,15 @@ is_footnote(const uint8_t *data, size_t beg, size_t end, size_t *last, struct fo
 		*last = start;
 
 	if (list) {
-		struct footnote_ref *ref;
-		ref = create_footnote_ref(list, data + id_offset, id_end - id_offset);
-		if (!ref)
+		struct footnote_ref *ref_;
+		ref_ = create_footnote_ref(list, data + id_offset, id_end - id_offset);
+		if (!ref_)
 			return 0;
-		if (!add_footnote_ref(list, ref)) {
-			free_footnote_ref(ref);
+		if (!add_footnote_ref(list, ref_)) {
+			free_footnote_ref(ref_);
 			return 0;
 		}
-		ref->contents = contents;
+		ref_->contents = contents;
 	}
 
 	return 1;
@@ -2988,28 +2988,28 @@ is_ref(const uint8_t *data, size_t beg, size_t end, size_t *last, struct link_re
 		*last = line_end;
 
 	if (refs) {
-		struct link_ref *ref;
+		struct link_ref *ref_;
 
-		ref = add_link_ref(refs, data + id_offset, id_end - id_offset);
-		if (!ref)
+		ref_ = add_link_ref(refs, data + id_offset, id_end - id_offset);
+		if (!ref_)
 			return 0;
 
-		ref->link = bufnew(link_end - link_offset);
+		ref_->link = bufnew(link_end - link_offset);
 
-		if (ref->link == NULL) {
+		if (ref_->link == NULL) {
 			return 0;
 		}
 
-		bufput(ref->link, data + link_offset, link_end - link_offset);
+		bufput(ref_->link, data + link_offset, link_end - link_offset);
 
 		if (title_end > title_offset) {
-			ref->title = bufnew(title_end - title_offset);
+			ref_->title = bufnew(title_end - title_offset);
 
-			if (ref->title == NULL) {
+			if (ref_->title == NULL) {
 				return 0;
 			}
 
-			bufput(ref->title, data + title_offset, title_end - title_offset);
+			bufput(ref_->title, data + title_offset, title_end - title_offset);
 		}
 	}
 

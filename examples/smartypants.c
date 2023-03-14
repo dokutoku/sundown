@@ -33,12 +33,12 @@ main(int argc, char **argv)
 	struct buf *ib;
 	struct buf *ob;
 	size_t ret;
-	FILE *in = stdin;
+	FILE *in_ = stdin;
 
 	/* opening the file if given from the command line */
 	if (argc > 1) {
-		in = fopen(argv[1], "r");
-		if (!in) {
+		in_ = fopen(argv[1], "r");
+		if (!in_) {
 			fprintf(stderr, "Unable to open input file \"%s\": %s\n", argv[0], strerror(errno));
 			return 1;
 		}
@@ -50,22 +50,22 @@ main(int argc, char **argv)
 	if (bufgrow(ib, READ_UNIT) != BUF_OK) {
 		fprintf(stderr, "Error: bufgrow()\n");
 
-		if (in != stdin)
-			fclose(in);
+		if (in_ != stdin)
+			fclose(in_);
 
 		bufrelease(ib);
 
 		return -1;
 	}
 
-	while ((ret = fread(ib->data + ib->size, 1, ib->asize - ib->size, in)) > 0) {
+	while ((ret = fread(ib->data + ib->size, 1, ib->asize - ib->size, in_)) > 0) {
 		ib->size += ret;
 
 		if (bufgrow(ib, ib->size + READ_UNIT) != BUF_OK) {
 			fprintf(stderr, "Error: bufgrow()\n");
 
-			if (in != stdin)
-				fclose(in);
+			if (in_ != stdin)
+				fclose(in_);
 
 			bufrelease(ib);
 
@@ -73,8 +73,8 @@ main(int argc, char **argv)
 		}
 	}
 
-	if (in != stdin)
-		fclose(in);
+	if (in_ != stdin)
+		fclose(in_);
 
 	/* performing markdown parsing */
 	ob = bufnew(OUTPUT_UNIT);

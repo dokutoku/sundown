@@ -61,14 +61,14 @@ sdhtml_is_tag(const uint8_t *tag_data, size_t tag_size, const char *tagname)
 	return HTML_TAG_NONE;
 }
 
-static inline void escape_html(struct buf *ob, const uint8_t *source, size_t length)
+static inline void escape_html(struct buf *ob, const uint8_t *source, size_t length_)
 {
-	houdini_escape_html0(ob, source, length, 0);
+	houdini_escape_html0(ob, source, length_, 0);
 }
 
-static inline void escape_href(struct buf *ob, const uint8_t *source, size_t length)
+static inline void escape_href(struct buf *ob, const uint8_t *source, size_t length_)
 {
-	houdini_escape_href(ob, source, length);
+	houdini_escape_href(ob, source, length_);
 }
 
 /* *******************
@@ -441,15 +441,15 @@ rndr_raw_html(struct buf *ob, const struct buf *text, void *opaque)
 }
 
 static void
-rndr_table(struct buf *ob, const struct buf *header, const struct buf *body, void *opaque)
+rndr_table(struct buf *ob, const struct buf *header, const struct buf *body_, void *opaque)
 {
 	if (ob->size) bufputc(ob, '\n');
 	BUFPUTSL(ob, "<table><thead>\n");
 	if (header)
 		bufput(ob, header->data, header->size);
 	BUFPUTSL(ob, "</thead><tbody>\n");
-	if (body)
-		bufput(ob, body->data, body->size);
+	if (body_)
+		bufput(ob, body_->data, body_->size);
 	BUFPUTSL(ob, "</tbody></table>\n");
 }
 
