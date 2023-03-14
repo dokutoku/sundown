@@ -290,7 +290,7 @@ static size_t
 smartypants_cb__ltag(struct buf *ob, struct smartypants_data *smrt, uint8_t previous_char, const uint8_t *text, size_t size)
 {
 	static const char *skip_tags[] = {
-		"pre", "code", "var", "samp", "kbd", "math", "script", "style"
+		"pre", "code", "var", "samp", "kbd", "math", "script", "style",
 	};
 	static const size_t skip_tags_count = 8;
 

@@ -52,7 +52,7 @@ static unsigned char gperf_downcase[256] =
 	210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224,
 	225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239,
 	240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254,
-	255
+	255,
 };
 #endif
 
@@ -113,7 +113,7 @@ hash_block_tag (register const char *str, register unsigned int len)
 		38, 38, 38, 38, 38, 38, 38, 38, 38, 38,
 		38, 38, 38, 38, 38, 38, 38, 38, 38, 38,
 		38, 38, 38, 38, 38, 38, 38, 38, 38, 38,
-		38, 38, 38, 38, 38, 38, 38
+		38, 38, 38, 38, 38, 38, 38,
 	};
 	register int hval = len;
 
@@ -146,7 +146,7 @@ find_block_tag (register const char *str, register unsigned int len)
 		MIN_WORD_LENGTH = 1,
 		MAX_WORD_LENGTH = 10,
 		MIN_HASH_VALUE = 1,
-		MAX_HASH_VALUE = 37
+		MAX_HASH_VALUE = 37,
 	};
 
 	static const char * const wordlist[] =
@@ -182,7 +182,7 @@ find_block_tag (register const char *str, register unsigned int len)
 		"", "", "",
 		"h3",
 		"", "", "", "",
-		"h2"
+		"h2",
 	};
 
 	if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
