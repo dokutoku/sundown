@@ -1204,13 +1204,12 @@ char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset
 		if (link_b == link_e) {
 			if (text_has_nl) {
 				struct buf *b = rndr_newbuf(rndr, BUFFER_SPAN);
-				size_t j;
 
 				if (b == NULL) {
 					goto cleanup;
 				}
 
-				for (j = 1; j < txt_e; j++) {
+				for (size_t j = 1; j < txt_e; j++) {
 					if (data[j] != '\n')
 						bufputc(b, data[j]);
 					else if (data[j - 1] != ' ')
