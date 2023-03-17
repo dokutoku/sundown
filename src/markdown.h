@@ -139,21 +139,13 @@ struct sd_markdown;
  * EXPORTED FUNCTIONS *
  **********************/
 
-extern struct sd_markdown *
-sd_markdown_new(
-	unsigned int extensions,
-	size_t max_nesting,
-	const struct sd_callbacks *callbacks,
-	void *opaque);
+extern struct sd_markdown *sd_markdown_new(unsigned int extensions, size_t max_nesting, const struct sd_callbacks *callbacks, void *opaque);
 
-extern void
-sd_markdown_render(struct buf *ob, const uint8_t *document, size_t doc_size, struct sd_markdown *md);
+extern void sd_markdown_render(struct buf *ob, const uint8_t *document, size_t doc_size, struct sd_markdown *md);
 
-extern void
-sd_markdown_free(struct sd_markdown *md);
+extern void sd_markdown_free(struct sd_markdown *md);
 
-extern void
-sd_version(int *major, int *minor, int *revision);
+extern void sd_version(int *major, int *minor, int *revision);
 
 #ifdef __cplusplus
 }

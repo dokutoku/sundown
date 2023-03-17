@@ -26,8 +26,7 @@
 #define strncasecmp	_strnicmp
 #endif
 
-int
-sd_autolink_issafe(const uint8_t *link, size_t link_len)
+int sd_autolink_issafe(const uint8_t *link, size_t link_len)
 {
 	static const size_t valid_uris_count = 5;
 	static const char *valid_uris[] = {
@@ -37,17 +36,14 @@ sd_autolink_issafe(const uint8_t *link, size_t link_len)
 	for (size_t i = 0; i < valid_uris_count; ++i) {
 		size_t len = strlen(valid_uris[i]);
 
-		if (link_len > len &&
-			strncasecmp((char *)link, valid_uris[i], len) == 0 &&
-			isalnum(link[len]))
+		if (link_len > len && strncasecmp((char *)link, valid_uris[i], len) == 0 && isalnum(link[len]))
 			return 1;
 	}
 
 	return 0;
 }
 
-static size_t
-autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, size_t size)
+static size_t autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, size_t size)
 {
 	for (size_t i = 0; i < link_end; ++i)
 		if (data[i] == '<') {
@@ -146,8 +142,7 @@ autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, size_t size)
 	return link_end;
 }
 
-static size_t
-check_domain(uint8_t *data, size_t size, int allow_short)
+static size_t check_domain(uint8_t *data, size_t size, int allow_short)
 {
 	if (!isalnum(data[0]))
 		return 0;
@@ -177,14 +172,7 @@ check_domain(uint8_t *data, size_t size, int allow_short)
 	}
 }
 
-size_t
-sd_autolink__www(
-	size_t *rewind_p,
-	struct buf *link,
-	uint8_t *data,
-	size_t max_rewind,
-	size_t size,
-	unsigned int flags)
+size_t sd_autolink__www(size_t *rewind_p, struct buf *link, uint8_t *data, size_t max_rewind, size_t size, unsigned int flags)
 {
 	if (max_rewind > 0 && !ispunct(data[-1]) && !isspace(data[-1]))
 		return 0;
@@ -211,14 +199,7 @@ sd_autolink__www(
 	return (int)link_end;
 }
 
-size_t
-sd_autolink__email(
-	size_t *rewind_p,
-	struct buf *link,
-	uint8_t *data,
-	size_t max_rewind,
-	size_t size,
-	unsigned int flags)
+size_t sd_autolink__email(size_t *rewind_p, struct buf *link, uint8_t *data, size_t max_rewind, size_t size, unsigned int flags)
 {
 	size_t rewind;
 
@@ -255,8 +236,7 @@ sd_autolink__email(
 			break;
 	}
 
-	if (link_end < 2 || nb != 1 || np == 0 ||
-		!isalpha(data[link_end - 1]))
+	if (link_end < 2 || nb != 1 || np == 0 || !isalpha(data[link_end - 1]))
 		return 0;
 
 	link_end = autolink_delim(data, link_end, max_rewind, size);
@@ -270,14 +250,7 @@ sd_autolink__email(
 	return link_end;
 }
 
-size_t
-sd_autolink__url(
-	size_t *rewind_p,
-	struct buf *link,
-	uint8_t *data,
-	size_t max_rewind,
-	size_t size,
-	unsigned int flags)
+size_t sd_autolink__url(size_t *rewind_p, struct buf *link, uint8_t *data, size_t max_rewind, size_t size, unsigned int flags)
 {
 	if (size < 4 || data[1] != '/' || data[2] != '/')
 		return 0;
@@ -292,10 +265,7 @@ sd_autolink__url(
 
 	size_t link_end = strlen("://");
 
-	size_t domain_len = check_domain(
-		data + link_end,
-		size - link_end,
-		flags & SD_AUTOLINK_SHORT_DOMAINS);
+	size_t domain_len = check_domain(data + link_end, size - link_end, flags & SD_AUTOLINK_SHORT_DOMAINS);
 
 	if (domain_len == 0)
 		return 0;

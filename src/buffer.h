@@ -64,20 +64,17 @@ struct buf {
 /*
  * global buffer from a string litteral
  */
-#define BUF_STATIC(string_) \
-	{ (uint8_t *)string_, sizeof string_ -1, sizeof string_, 0, 0 }
+#define BUF_STATIC(string_) { (uint8_t *)string_, sizeof string_ -1, sizeof string_, 0, 0 }
 
 /*
  * macro for creating a volatile buffer on the stack
  */
-#define BUF_VOLATILE(strname) \
-	{ (uint8_t *)strname, strlen(strname), 0, 0, 0 }
+#define BUF_VOLATILE(strname) { (uint8_t *)strname, strlen(strname), 0, 0, 0 }
 
 /*
  * optimized bufputs of a string litteral
  */
-#define BUFPUTSL(output, literal) \
-	bufput(output, literal, sizeof literal - 1)
+#define BUFPUTSL(output, literal) bufput(output, literal, sizeof literal - 1)
 
 /**
  * increasing the allocated size to the given value

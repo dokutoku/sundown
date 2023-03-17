@@ -27,8 +27,7 @@
 #define READ_UNIT 1024
 #define OUTPUT_UNIT 64
 
-int
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	FILE *in_ = stdin;
 

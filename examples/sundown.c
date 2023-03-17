@@ -29,8 +29,7 @@
 /**
  * main function, interfacing STDIO with the parser
  */
-int
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	FILE *in_ = stdin;
 

@@ -32,8 +32,7 @@
 #	define _buf_vsnprintf vsnprintf
 #endif
 
-int
-bufprefix(const struct buf *buf, const char *prefix)
+int bufprefix(const struct buf *buf, const char *prefix)
 {
 	assert(buf && buf->unit);
 
@@ -51,8 +50,7 @@ bufprefix(const struct buf *buf, const char *prefix)
 /**
  * increasing the allocated size to the given value
  */
-int
-bufgrow(struct buf *buf, size_t neosz)
+int bufgrow(struct buf *buf, size_t neosz)
 {
 	assert(buf && buf->unit);
 
@@ -79,8 +77,7 @@ bufgrow(struct buf *buf, size_t neosz)
 /**
  * allocation of a new buffer
  */
-struct buf *
-bufnew(size_t unit)
+struct buf *bufnew(size_t unit)
 {
 	struct buf *ret = malloc(sizeof (struct buf));
 
@@ -96,8 +93,7 @@ bufnew(size_t unit)
 /**
  * NULL-termination of the string array
  */
-const char *
-bufcstr(struct buf *buf)
+const char *bufcstr(struct buf *buf)
 {
 	assert(buf && buf->unit);
 
@@ -115,8 +111,7 @@ bufcstr(struct buf *buf)
 /**
  * formatted printing to a buffer
  */
-void
-bufprintf(struct buf *buf, const char *fmt, ...)
+void bufprintf(struct buf *buf, const char *fmt, ...)
 {
 	assert(buf && buf->unit);
 
@@ -156,8 +151,7 @@ bufprintf(struct buf *buf, const char *fmt, ...)
 /**
  * appends raw data to a buffer
  */
-void
-bufput(struct buf *buf, const void *data, size_t len)
+void bufput(struct buf *buf, const void *data, size_t len)
 {
 	assert(buf && buf->unit);
 
@@ -171,8 +165,7 @@ bufput(struct buf *buf, const void *data, size_t len)
 /**
  * appends a NUL-terminated string to a buffer
  */
-void
-bufputs(struct buf *buf, const char *str)
+void bufputs(struct buf *buf, const char *str)
 {
 	bufput(buf, str, strlen(str));
 }
@@ -181,8 +174,7 @@ bufputs(struct buf *buf, const char *str)
 /**
  * appends a single uint8_t to a buffer
  */
-void
-bufputc(struct buf *buf, uint8_t c)
+void bufputc(struct buf *buf, uint8_t c)
 {
 	assert(buf && buf->unit);
 
@@ -196,8 +188,7 @@ bufputc(struct buf *buf, uint8_t c)
 /**
  * decrease the reference count and free the buffer if needed
  */
-void
-bufrelease(struct buf *buf)
+void bufrelease(struct buf *buf)
 {
 	if (!buf)
 		return;
@@ -210,8 +201,7 @@ bufrelease(struct buf *buf)
 /**
  * frees internal data of the buffer
  */
-void
-bufreset(struct buf *buf)
+void bufreset(struct buf *buf)
 {
 	if (!buf)
 		return;
@@ -225,8 +215,7 @@ bufreset(struct buf *buf)
 /**
  * removes a given number of bytes from the head of the array
  */
-void
-bufslurp(struct buf *buf, size_t len)
+void bufslurp(struct buf *buf, size_t len)
 {
 	assert(buf && buf->unit);
 
