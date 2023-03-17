@@ -37,11 +37,13 @@ int bufprefix(const struct buf *buf, const char *prefix)
 	assert(buf && buf->unit);
 
 	for (size_t i = 0; i < buf->size; ++i) {
-		if (prefix[i] == '\0')
+		if (prefix[i] == '\0') {
 			return 0;
+		}
 
-		if (buf->data[i] != prefix[i])
+		if (buf->data[i] != prefix[i]) {
 			return buf->data[i] - prefix[i];
+		}
 	}
 
 	return 0;
@@ -54,19 +56,23 @@ int bufgrow(struct buf *buf, size_t neosz)
 {
 	assert(buf && buf->unit);
 
-	if (neosz > BUFFER_MAX_ALLOC_SIZE)
+	if (neosz > BUFFER_MAX_ALLOC_SIZE) {
 		return BUF_ENOMEM;
+	}
 
-	if (buf->asize >= neosz)
+	if (buf->asize >= neosz) {
 		return BUF_OK;
+	}
 
 	size_t neoasz = buf->asize + buf->unit;
-	while (neoasz < neosz)
+	while (neoasz < neosz) {
 		neoasz += buf->unit;
+	}
 
 	void *neodata = realloc(buf->data, neoasz);
-	if (!neodata)
+	if (!neodata) {
 		return BUF_ENOMEM;
+	}
 
 	buf->data = neodata;
 	buf->asize = neoasz;
@@ -97,8 +103,9 @@ const char *bufcstr(struct buf *buf)
 {
 	assert(buf && buf->unit);
 
-	if (buf->size < buf->asize && buf->data[buf->size] == '\0')
+	if (buf->size < buf->asize && buf->data[buf->size] == '\0') {
 		return (char *)buf->data;
+	}
 
 	if (buf->size + 1 <= buf->asize || bufgrow(buf, buf->size + 1) == BUF_OK) {
 		buf->data[buf->size] = '\0';
@@ -115,8 +122,9 @@ void bufprintf(struct buf *buf, const char *fmt, ...)
 {
 	assert(buf && buf->unit);
 
-	if (buf->size >= buf->asize && bufgrow(buf, buf->size + 1) != BUF_OK)
+	if (buf->size >= buf->asize && bufgrow(buf, buf->size + 1) != BUF_OK) {
 		return;
+	}
 
 	va_list ap;
 	va_start(ap, fmt);
@@ -134,16 +142,18 @@ void bufprintf(struct buf *buf, const char *fmt, ...)
 	}
 
 	if ((size_t)n >= buf->asize - buf->size) {
-		if (bufgrow(buf, buf->size + n + 1) != BUF_OK)
+		if (bufgrow(buf, buf->size + n + 1) != BUF_OK) {
 			return;
+		}
 
 		va_start(ap, fmt);
 		n = _buf_vsnprintf((char *)buf->data + buf->size, buf->asize - buf->size, fmt, ap);
 		va_end(ap);
 	}
 
-	if (n < 0)
+	if (n < 0) {
 		return;
+	}
 
 	buf->size += n;
 }
@@ -155,8 +165,9 @@ void bufput(struct buf *buf, const void *data, size_t len)
 {
 	assert(buf && buf->unit);
 
-	if (buf->size + len > buf->asize && bufgrow(buf, buf->size + len) != BUF_OK)
+	if (buf->size + len > buf->asize && bufgrow(buf, buf->size + len) != BUF_OK) {
 		return;
+	}
 
 	memcpy(buf->data + buf->size, data, len);
 	buf->size += len;
@@ -178,8 +189,9 @@ void bufputc(struct buf *buf, uint8_t c)
 {
 	assert(buf && buf->unit);
 
-	if (buf->size + 1 > buf->asize && bufgrow(buf, buf->size + 1) != BUF_OK)
+	if (buf->size + 1 > buf->asize && bufgrow(buf, buf->size + 1) != BUF_OK) {
 		return;
+	}
 
 	buf->data[buf->size] = c;
 	buf->size += 1;
@@ -190,8 +202,9 @@ void bufputc(struct buf *buf, uint8_t c)
  */
 void bufrelease(struct buf *buf)
 {
-	if (!buf)
+	if (!buf) {
 		return;
+	}
 
 	free(buf->data);
 	free(buf);
@@ -203,8 +216,9 @@ void bufrelease(struct buf *buf)
  */
 void bufreset(struct buf *buf)
 {
-	if (!buf)
+	if (!buf) {
 		return;
+	}
 
 	free(buf->data);
 	buf->data = NULL;

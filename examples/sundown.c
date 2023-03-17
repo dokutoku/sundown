@@ -48,8 +48,9 @@ int main(int argc, char **argv)
 	if (bufgrow(ib, READ_UNIT) != BUF_OK) {
 		fprintf(stderr, "Error: bufgrow()\n");
 
-		if (in_ != stdin)
+		if (in_ != stdin) {
 			fclose(in_);
+		}
 
 		bufrelease(ib);
 
@@ -64,8 +65,9 @@ int main(int argc, char **argv)
 		if (bufgrow(ib, ib->size + READ_UNIT) != BUF_OK) {
 			fprintf(stderr, "Error: bufgrow()\n");
 
-			if (in_ != stdin)
+			if (in_ != stdin) {
 				fclose(in_);
+			}
 
 			bufrelease(ib);
 
@@ -73,8 +75,9 @@ int main(int argc, char **argv)
 		}
 	}
 
-	if (in_ != stdin)
+	if (in_ != stdin) {
 		fclose(in_);
+	}
 
 	/* performing markdown parsing */
 	struct buf *ob = bufnew(OUTPUT_UNIT);

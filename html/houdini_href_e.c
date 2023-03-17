@@ -63,15 +63,18 @@ void houdini_escape_href(struct buf *ob, const uint8_t *src, size_t size)
 
 	while (i < size) {
 		size_t org = i;
-		while (i < size && HREF_SAFE[src[i]] != 0)
+		while (i < size && HREF_SAFE[src[i]] != 0) {
 			i++;
+		}
 
-		if (i > org)
+		if (i > org) {
 			bufput(ob, src + org, i - org);
+		}
 
 		/* escaping */
-		if (i >= size)
+		if (i >= size) {
 			break;
+		}
 
 		switch (src[i]) {
 		/*

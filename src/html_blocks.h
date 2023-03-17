@@ -168,8 +168,9 @@ const char *find_block_tag (register const char *str, register unsigned int len)
 		{
 			register const char *s = wordlist[key];
 
-			if ((((unsigned char)*str ^ (unsigned char)*s) & ~32) == '\0' && !gperf_case_strncmp (str, s, len) && s[len] == '\0')
+			if ((((unsigned char)*str ^ (unsigned char)*s) & ~32) == '\0' && !gperf_case_strncmp (str, s, len) && s[len] == '\0') {
 				return s;
+			}
 		}
 	}
 	return 0;
