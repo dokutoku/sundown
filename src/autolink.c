@@ -187,7 +187,7 @@ static size_t check_domain(uint8_t *data, size_t size, int allow_short)
 		 * a valid domain needs to have at least a dot.
 		 * that's as far as we get
 		 */
-		return np ? i : 0;
+		return (np) ? (i) : (0);
 	}
 }
 

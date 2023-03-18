@@ -397,7 +397,7 @@ static size_t is_mail_autolink(uint8_t *data, size_t size)
 				break;
 
 			case '>':
-				return (nb == 1) ? i + 1 : 0;
+				return (nb == 1) ? (i + 1) : (0);
 
 			default:
 				return 0;
@@ -422,7 +422,7 @@ static size_t tag_length(uint8_t *data, size_t size, enum mkd_autolink *autolink
 		return 0;
 	}
 
-	size_t i = (data[1] == '/') ? 2 : 1;
+	size_t i = (data[1] == '/') ? (2) : (1);
 
 	if (!isalnum(data[i])) {
 		return 0;
@@ -711,7 +711,7 @@ static size_t parse_emph1(struct buf *ob, struct sd_markdown *rndr, uint8_t *dat
 			int r = rndr->cb.emphasis(ob, work, rndr->opaque);
 			rndr_popbuf(rndr, BUFFER_SPAN);
 
-			return r ? i + 1 : 0;
+			return (r) ? (i + 1) : (0);
 		}
 	}
 
@@ -725,8 +725,8 @@ static size_t parse_emph2(struct buf *ob, struct sd_markdown *rndr, uint8_t *dat
 {
 	int (*render_method)(struct buf * ob, const struct buf * text, void *opaque);
 
-	render_method = (c == '~') ? rndr->cb.strikethrough : rndr->cb.double_emphasis;
-	render_method = (c == '+') ? rndr->cb.ins : render_method;
+	render_method = (c == '~') ? (rndr->cb.strikethrough) : (rndr->cb.double_emphasis);
+	render_method = (c == '+') ? (rndr->cb.ins) : (render_method);
 
 	if (!render_method) {
 		return 0;
@@ -754,7 +754,7 @@ static size_t parse_emph2(struct buf *ob, struct sd_markdown *rndr, uint8_t *dat
 			int r = render_method(ob, work, rndr->opaque);
 			rndr_popbuf(rndr, BUFFER_SPAN);
 
-			return r ? i + 2 : 0;
+			return (r) ? (i + 2) : (0);
 		}
 
 		i++;
@@ -797,7 +797,7 @@ static size_t parse_emph3(struct buf *ob, struct sd_markdown *rndr, uint8_t *dat
 			int r = rndr->cb.triple_emphasis(ob, work, rndr->opaque);
 			rndr_popbuf(rndr, BUFFER_SPAN);
 
-			return r ? i + 3 : 0;
+			return (r) ? (i + 3) : (0);
 		} else if (i + 1 < size && data[i + 1] == c) {
 			/* double symbol found, handing over to emph1 */
 			len = parse_emph1(ob, rndr, data - 2, size + 2, c);
@@ -883,7 +883,7 @@ static size_t char_linebreak(struct buf *ob, struct sd_markdown *rndr, uint8_t *
 		ob->size--;
 	}
 
-	return rndr->cb.linebreak(ob, rndr->opaque) ? 1 : 0;
+	return (rndr->cb.linebreak(ob, rndr->opaque)) ? (1) : (0);
 }
 
 /**
@@ -1480,7 +1480,7 @@ static size_t char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data,
 cleanup:
 	rndr->work_bufs[BUFFER_SPAN].size = (int)org_work_size;
 
-	return ret ? i : 0;
+	return (ret) ? (i) : (0);
 }
 
 static size_t char_superscript(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset, size_t size)
@@ -1517,7 +1517,7 @@ static size_t char_superscript(struct buf *ob, struct sd_markdown *rndr, uint8_t
 	}
 
 	if (sup_len - sup_start == 0) {
-		return (sup_start == 2) ? 3 : 0;
+		return (sup_start == 2) ? (3) : (0);
 	}
 
 	struct buf *sup = rndr_newbuf(rndr, BUFFER_SPAN);
@@ -1530,7 +1530,7 @@ static size_t char_superscript(struct buf *ob, struct sd_markdown *rndr, uint8_t
 	rndr->cb.superscript(ob, sup, rndr->opaque);
 	rndr_popbuf(rndr, BUFFER_SPAN);
 
-	return (sup_start == 2) ? sup_len + 1 : sup_len;
+	return (sup_start == 2) ? (sup_len + 1) : (sup_len);
 }
 
 /* ********************************
@@ -1757,7 +1757,7 @@ static int is_headerline(uint8_t *data, size_t size)
 			i++;
 		}
 
-		return (i >= size || data[i] == '\n') ? 1 : 0;
+		return (i >= size || data[i] == '\n') ? (1) : (0);
 	}
 
 	/* test of level 2 header */
@@ -1770,7 +1770,7 @@ static int is_headerline(uint8_t *data, size_t size)
 			i++;
 		}
 
-		return (i >= size || data[i] == '\n') ? 2 : 0;
+		return (i >= size || data[i] == '\n') ? (2) : (0);
 	}
 
 	return 0;
@@ -2158,7 +2158,7 @@ static size_t parse_fencedcode(struct buf *ob, struct sd_markdown *rndr, uint8_t
 	}
 
 	if (rndr->cb.blockcode) {
-		rndr->cb.blockcode(ob, work, lang.size ? &lang : NULL, rndr->opaque);
+		rndr->cb.blockcode(ob, work, (lang.size) ? (&lang) : (NULL), rndr->opaque);
 	}
 
 	rndr_popbuf(rndr, BUFFER_BLOCK);

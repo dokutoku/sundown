@@ -106,5 +106,5 @@ int main(int argc, char **argv)
 	bufrelease(ib);
 	bufrelease(ob);
 
-	return (ret < 0) ? -1 : 0;
+	return (ret < 0) ? (-1) : (0);
 }

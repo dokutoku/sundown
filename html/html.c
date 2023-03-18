@@ -56,7 +56,7 @@ int sdhtml_is_tag(const uint8_t *tag_data, size_t tag_size, const char *tagname)
 	}
 
 	if (isspace(tag_data[i]) || tag_data[i] == '>') {
-		return closed ? HTML_TAG_CLOSE : HTML_TAG_OPEN;
+		return (closed) ? (HTML_TAG_CLOSE) : (HTML_TAG_OPEN);
 	}
 
 	return HTML_TAG_NONE;
@@ -251,7 +251,7 @@ static int rndr_emphasis(struct buf *ob, const struct buf *text, void *opaque)
 static int rndr_linebreak(struct buf *ob, void *opaque)
 {
 	struct html_renderopt *options = opaque;
-	bufputs(ob, USE_XHTML(options) ? "<br/>\n" : "<br>\n");
+	bufputs(ob, (USE_XHTML(options)) ? ("<br/>\n") : ("<br>\n"));
 
 	return 1;
 }
@@ -330,13 +330,13 @@ static void rndr_list(struct buf *ob, const struct buf *text, int flags, void *o
 		bufputc(ob, '\n');
 	}
 
-	bufput(ob, flags & MKD_LIST_ORDERED ? "<ol>\n" : "<ul>\n", 5);
+	bufput(ob, (flags & MKD_LIST_ORDERED) ? ("<ol>\n") : ("<ul>\n"), 5);
 
 	if (text) {
 		bufput(ob, text->data, text->size);
 	}
 
-	bufput(ob, flags & MKD_LIST_ORDERED ? "</ol>\n" : "</ul>\n", 6);
+	bufput(ob, (flags & MKD_LIST_ORDERED) ? ("</ol>\n") : ("</ul>\n"), 6);
 }
 
 static void rndr_listitem(struct buf *ob, const struct buf *text, int flags, void *opaque)
@@ -461,7 +461,7 @@ static void rndr_hrule(struct buf *ob, void *opaque)
 		bufputc(ob, '\n');
 	}
 
-	bufputs(ob, USE_XHTML(options) ? "<hr/>\n" : "<hr>\n");
+	bufputs(ob, (USE_XHTML(options)) ? ("<hr/>\n") : ("<hr>\n"));
 }
 
 static int rndr_image(struct buf *ob, const struct buf *link, const struct buf *title, const struct buf *alt, void *opaque)
@@ -485,7 +485,7 @@ static int rndr_image(struct buf *ob, const struct buf *link, const struct buf *
 		escape_html(ob, title->data, title->size);
 	}
 
-	bufputs(ob, USE_XHTML(options) ? "\"/>" : "\">");
+	bufputs(ob, USE_XHTML(options) ? ("\"/>") : ("\">"));
 
 	return 1;
 }
