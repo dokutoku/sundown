@@ -84,4 +84,3 @@ include $(wildcard $(DEPDIR)/*.d)
 	@mkdir -p $(DEPDIR)
 	@$(CC) -MM $< > $(DEPDIR)/$*.d
 	$(CC) $(CFLAGS) -o $@ $<
-

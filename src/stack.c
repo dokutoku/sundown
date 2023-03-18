@@ -8,11 +8,12 @@ int stack_grow(struct stack *st, size_t new_size)
 	}
 
 	void **new_st = realloc(st->item, new_size * sizeof(void *));
+
 	if (new_st == NULL) {
 		return -1;
 	}
 
-	memset(new_st + st->asize, 0x0, (new_size - st->asize) * sizeof(void *));
+	memset(new_st + st->asize, 0x00, (new_size - st->asize) * sizeof(void *));
 
 	st->item = new_st;
 	st->asize = new_size;
@@ -66,6 +67,7 @@ int stack_push(struct stack *st, void *item)
 	}
 
 	st->item[st->size++] = item;
+
 	return 0;
 }
 
@@ -77,4 +79,3 @@ void *stack_top(struct stack *st)
 
 	return st->item[st->size - 1];
 }
-

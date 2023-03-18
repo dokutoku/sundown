@@ -31,7 +31,8 @@ extern "C" {
 #define inline
 #endif
 
-typedef enum {
+typedef enum
+{
 	BUF_OK = 0,
 	BUF_ENOMEM = -1,
 } buferror_t;
@@ -39,7 +40,8 @@ typedef enum {
 /**
  * character array buffer
  */
-struct buf {
+struct buf
+{
 	/**
 	 * actual character data
 	 */
@@ -84,7 +86,7 @@ int bufgrow(struct buf *, size_t);
 /**
  * allocation of a new buffer
  */
-struct buf *bufnew(size_t) __attribute__ ((malloc));
+struct buf *bufnew(size_t) __attribute__((malloc));
 
 /**
  * NUL-termination of the string array (making a C-string)
@@ -129,7 +131,7 @@ void bufslurp(struct buf *, size_t);
 /**
  * formatted printing to a buffer
  */
-void bufprintf(struct buf *, const char *, ...) __attribute__ ((format (printf, 2, 3)));
+void bufprintf(struct buf *, const char *, ...) __attribute__((format(printf, 2, 3)));
 
 #ifdef __cplusplus
 }

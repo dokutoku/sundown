@@ -7,7 +7,8 @@
 extern "C" {
 #endif
 
-struct stack {
+struct stack
+{
 	void **item;
 	size_t size;
 	size_t asize;

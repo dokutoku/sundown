@@ -36,8 +36,10 @@ int main(int argc, char **argv)
 	/* opening the file if given from the command line */
 	if (argc > 1) {
 		in_ = fopen(argv[1], "r");
+
 		if (!in_) {
-			fprintf(stderr,"Unable to open input file \"%s\": %s\n", argv[1], strerror(errno));
+			fprintf(stderr, "Unable to open input file \"%s\": %s\n", argv[1], strerror(errno));
+
 			return 1;
 		}
 	}
@@ -106,4 +108,3 @@ int main(int argc, char **argv)
 
 	return (ret < 0) ? -1 : 0;
 }
-

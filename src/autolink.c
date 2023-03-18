@@ -23,13 +23,15 @@
 #include <ctype.h>
 
 #if defined(_WIN32)
-#define strncasecmp	_strnicmp
+#define strncasecmp _strnicmp
 #endif
 
 int sd_autolink_issafe(const uint8_t *link, size_t link_len)
 {
 	static const size_t valid_uris_count = 5;
-	static const char *valid_uris[] = {
+
+	static const char *valid_uris[] =
+	{
 		"/", "http://", "https://", "ftp://", "mailto:",
 	};
 
@@ -49,6 +51,7 @@ static size_t autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, 
 	for (size_t i = 0; i < link_end; ++i) {
 		if (data[i] == '<') {
 			link_end = i;
+
 			break;
 		}
 	}
@@ -56,9 +59,7 @@ static size_t autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, 
 	while (link_end > 0) {
 		if (strchr("?!.,", data[link_end - 1]) != NULL) {
 			link_end--;
-		}
-
-		else if (data[link_end - 1] == ';') {
+		} else if (data[link_end - 1] == ';') {
 			size_t new_end = link_end - 2;
 
 			while (new_end > 0 && isalpha(data[new_end])) {
@@ -70,8 +71,7 @@ static size_t autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, 
 			} else {
 				link_end--;
 			}
-		}
-		else {
+		} else {
 			break;
 		}
 	}
@@ -84,28 +84,33 @@ static size_t autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, 
 	uint8_t copen = 0;
 
 	switch (cclose) {
-	case '"':
-		copen = '"';
-		break;
+		case '"':
+			copen = '"';
 
-	case '\'':
-		copen = '\'';
-		break;
+			break;
 
-	case ')':
-		copen = '(';
-		break;
+		case '\'':
+			copen = '\'';
 
-	case ']':
-		copen = '[';
-		break;
+			break;
 
-	case '}':
-		copen = '{';
-		break;
+		case ')':
+			copen = '(';
 
-	default:
-		break;
+			break;
+
+		case ']':
+			copen = '[';
+
+			break;
+
+		case '}':
+			copen = '{';
+
+			break;
+
+		default:
+			break;
 	}
 
 	if (copen != '\0') {
@@ -301,6 +306,7 @@ size_t sd_autolink__url(size_t *rewind_p, struct buf *link, uint8_t *data, size_
 	}
 
 	link_end += domain_len;
+
 	while (link_end < size && !isspace(data[link_end])) {
 		link_end++;
 	}
@@ -316,4 +322,3 @@ size_t sd_autolink__url(size_t *rewind_p, struct buf *link, uint8_t *data, size_
 
 	return link_end;
 }
-

@@ -27,9 +27,9 @@
 
 /* MSVC compat */
 #if defined(_MSC_VER)
-#	define _buf_vsnprintf _vsnprintf
+#define _buf_vsnprintf _vsnprintf
 #else
-#	define _buf_vsnprintf vsnprintf
+#define _buf_vsnprintf vsnprintf
 #endif
 
 int bufprefix(const struct buf *buf, const char *prefix)
@@ -65,27 +65,29 @@ int bufgrow(struct buf *buf, size_t neosz)
 	}
 
 	size_t neoasz = buf->asize + buf->unit;
+
 	while (neoasz < neosz) {
 		neoasz += buf->unit;
 	}
 
 	void *neodata = realloc(buf->data, neoasz);
+
 	if (!neodata) {
 		return BUF_ENOMEM;
 	}
 
 	buf->data = neodata;
 	buf->asize = neoasz;
+
 	return BUF_OK;
 }
-
 
 /**
  * allocation of a new buffer
  */
 struct buf *bufnew(size_t unit)
 {
-	struct buf *ret = malloc(sizeof (struct buf));
+	struct buf *ret = malloc(sizeof(struct buf));
 
 	if (ret) {
 		ret->data = NULL;
@@ -93,6 +95,7 @@ struct buf *bufnew(size_t unit)
 		ret->size = 0;
 		ret->unit = unit;
 	}
+
 	return ret;
 }
 
@@ -109,6 +112,7 @@ const char *bufcstr(struct buf *buf)
 
 	if (buf->size + 1 <= buf->asize || bufgrow(buf, buf->size + 1) == BUF_OK) {
 		buf->data[buf->size] = '\0';
+
 		return (char *)buf->data;
 	}
 
@@ -181,7 +185,6 @@ void bufputs(struct buf *buf, const char *str)
 	bufput(buf, str, strlen(str));
 }
 
-
 /**
  * appends a single uint8_t to a buffer
  */
@@ -210,7 +213,6 @@ void bufrelease(struct buf *buf)
 	free(buf);
 }
 
-
 /**
  * frees internal data of the buffer
  */
@@ -235,10 +237,10 @@ void bufslurp(struct buf *buf, size_t len)
 
 	if (len >= buf->size) {
 		buf->size = 0;
+
 		return;
 	}
 
 	buf->size -= len;
 	memmove(buf->data, buf->data + len, buf->size);
 }
-

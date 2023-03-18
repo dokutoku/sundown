@@ -38,7 +38,8 @@ extern "C" {
 /**
  * type of autolink
  */
-enum mkd_autolink {
+enum mkd_autolink
+{
 	/**
 	 * used internally when it is not an autolink
 	 */
@@ -55,7 +56,8 @@ enum mkd_autolink {
 	MKDA_EMAIL,
 };
 
-enum mkd_tableflags {
+enum mkd_tableflags
+{
 	MKD_TABLE_NONE = 0,
 	MKD_TABLE_ALIGN_L = 1,
 	MKD_TABLE_ALIGN_R = 2,
@@ -64,7 +66,8 @@ enum mkd_tableflags {
 	MKD_TABLE_HEADER = 4,
 };
 
-enum mkd_extensions {
+enum mkd_extensions
+{
 	MKDEXT_NO_INTRA_EMPHASIS = (1 << 0),
 	MKDEXT_TABLES = (1 << 1),
 	MKDEXT_FENCED_CODE = (1 << 2),
@@ -80,11 +83,12 @@ enum mkd_extensions {
 /**
  * functions for rendering parsed data
  */
-struct sd_callbacks {
+struct sd_callbacks
+{
 	/* block level callbacks - NULL skips the block */
 	void (*blockcode)(struct buf *ob, const struct buf *text, const struct buf *lang, void *opaque);
 	void (*blockquote)(struct buf *ob, const struct buf *text, void *opaque);
-	void (*blockhtml)(struct buf *ob,const  struct buf *text, void *opaque);
+	void (*blockhtml)(struct buf *ob, const struct buf *text, void *opaque);
 	void (*header)(struct buf *ob, const struct buf *text, int level, void *opaque);
 	void (*hrule)(struct buf *ob, void *opaque);
 	void (*list)(struct buf *ob, const struct buf *text, int flags, void *opaque);
@@ -130,10 +134,10 @@ struct sd_markdown;
  *********/
 /* list/listitem flags */
 
-#define MKD_LIST_ORDERED	1
+#define MKD_LIST_ORDERED 1
 
 /* <li> containing block data */
-#define MKD_LI_BLOCK		2
+#define MKD_LI_BLOCK 2
 
 /* *********************
  * EXPORTED FUNCTIONS *
@@ -152,4 +156,3 @@ extern void sd_version(int *major, int *minor, int *revision);
 #endif
 
 #endif
-

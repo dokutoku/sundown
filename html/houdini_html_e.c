@@ -17,7 +17,8 @@
  * ' --> &#x27;     &apos; is not recommended
  * / --> &#x2F;     forward slash is included as it helps end an HTML entity
  */
-static const char HTML_ESCAPE_TABLE[] = {
+static const char HTML_ESCAPE_TABLE[] =
+{
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 1, 0, 0, 0, 2, 3, 0, 0, 0, 0, 0, 0, 0, 4,
@@ -36,7 +37,8 @@ static const char HTML_ESCAPE_TABLE[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-static const char *HTML_ESCAPES[] = {
+static const char *HTML_ESCAPES[] =
+{
 	"\0",
 	"&quot;",
 	"&amp;",
@@ -57,6 +59,7 @@ void houdini_escape_html0(struct buf *ob, const uint8_t *src, size_t size, int s
 
 	while (i < size) {
 		size_t org = i;
+
 		while (i < size && (esc = HTML_ESCAPE_TABLE[src[i]]) == 0) {
 			i++;
 		}
@@ -85,4 +88,3 @@ void houdini_escape_html(struct buf *ob, const uint8_t *src, size_t size)
 {
 	houdini_escape_html0(ob, src, size, 1);
 }
-

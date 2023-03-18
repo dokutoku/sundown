@@ -23,7 +23,8 @@
 extern "C" {
 #endif
 
-enum {
+enum
+{
 	SD_AUTOLINK_SHORT_DOMAINS = (1 << 0),
 };
 
@@ -40,4 +41,3 @@ size_t sd_autolink__url(size_t *rewind_p, struct buf *link, uint8_t *data, size_
 #endif
 
 #endif
-

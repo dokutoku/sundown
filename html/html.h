@@ -25,8 +25,10 @@
 extern "C" {
 #endif
 
-struct html_renderopt {
-	struct {
+struct html_renderopt
+{
+	struct
+	{
 		int header_count;
 		int current_level;
 		int level_offset;
@@ -34,7 +36,8 @@ struct html_renderopt {
 
 	unsigned int flags;
 
-	struct {
+	struct
+	{
 		int current_level;
 		int open_section_count;
 	} outline_data;
@@ -43,7 +46,8 @@ struct html_renderopt {
 	void (*link_attributes)(struct buf *ob, const struct buf *url, void *self);
 };
 
-typedef enum {
+typedef enum
+{
 	HTML_SKIP_HTML = (1 << 0),
 	HTML_SKIP_STYLE = (1 << 1),
 	HTML_SKIP_IMAGES = (1 << 2),
@@ -57,7 +61,8 @@ typedef enum {
 	HTML_OUTLINE = (1 << 10),
 } html_render_mode;
 
-typedef enum {
+typedef enum
+{
 	HTML_TAG_NONE = 0,
 	HTML_TAG_OPEN,
 	HTML_TAG_CLOSE,
@@ -76,4 +81,3 @@ extern void sdhtml_smartypants(struct buf *ob, const uint8_t *text, size_t size)
 #endif
 
 #endif
-
