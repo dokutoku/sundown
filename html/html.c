@@ -29,7 +29,7 @@
 
 int sdhtml_is_tag(const uint8_t *tag_data, size_t tag_size, const char *tagname)
 {
-	if (tag_size < 3 || tag_data[0] != '<') {
+	if ((tag_size < 3) || (tag_data[0] != '<')) {
 		return HTML_TAG_NONE;
 	}
 
@@ -55,7 +55,7 @@ int sdhtml_is_tag(const uint8_t *tag_data, size_t tag_size, const char *tagname)
 		return HTML_TAG_NONE;
 	}
 
-	if (isspace(tag_data[i]) || tag_data[i] == '>') {
+	if ((isspace(tag_data[i])) || (tag_data[i] == '>')) {
 		return (closed) ? (HTML_TAG_CLOSE) : (HTML_TAG_OPEN);
 	}
 
@@ -79,11 +79,11 @@ static int rndr_autolink(struct buf *ob, const struct buf *link, enum mkd_autoli
 {
 	struct html_renderopt *options = opaque;
 
-	if (!link || !link->size) {
+	if ((!link) || (!link->size)) {
 		return 0;
 	}
 
-	if ((options->flags & HTML_SAFELINK) != 0 && !sd_autolink_issafe(link->data, link->size) && type != MKDA_EMAIL) {
+	if (((options->flags & HTML_SAFELINK) != 0) && (!sd_autolink_issafe(link->data, link->size)) && (type != MKDA_EMAIL)) {
 		return 0;
 	}
 
@@ -125,18 +125,18 @@ static void rndr_blockcode(struct buf *ob, const struct buf *text, const struct 
 		bufputc(ob, '\n');
 	}
 
-	if (lang && lang->size) {
+	if ((lang) && (lang->size)) {
 		BUFPUTSL(ob, "<pre><code class=\"");
 
 		for (size_t i = 0, cls = 0; i < lang->size; ++i, ++cls) {
-			while (i < lang->size && isspace(lang->data[i])) {
+			while ((i < lang->size) && (isspace(lang->data[i]))) {
 				i++;
 			}
 
 			if (i < lang->size) {
 				size_t org = i;
 
-				while (i < lang->size && !isspace(lang->data[i])) {
+				while ((i < lang->size) && (!isspace(lang->data[i]))) {
 					i++;
 				}
 
@@ -194,7 +194,7 @@ static int rndr_codespan(struct buf *ob, const struct buf *text, void *opaque)
 
 static int rndr_ins(struct buf *ob, const struct buf *text, void *opaque)
 {
-	if (!text || !text->size) {
+	if ((!text) || (!text->size)) {
 		return 0;
 	}
 
@@ -207,7 +207,7 @@ static int rndr_ins(struct buf *ob, const struct buf *text, void *opaque)
 
 static int rndr_strikethrough(struct buf *ob, const struct buf *text, void *opaque)
 {
-	if (!text || !text->size) {
+	if ((!text) || (!text->size)) {
 		return 0;
 	}
 
@@ -220,7 +220,7 @@ static int rndr_strikethrough(struct buf *ob, const struct buf *text, void *opaq
 
 static int rndr_double_emphasis(struct buf *ob, const struct buf *text, void *opaque)
 {
-	if (!text || !text->size) {
+	if ((!text) || (!text->size)) {
 		return 0;
 	}
 
@@ -233,7 +233,7 @@ static int rndr_double_emphasis(struct buf *ob, const struct buf *text, void *op
 
 static int rndr_emphasis(struct buf *ob, const struct buf *text, void *opaque)
 {
-	if (!text || !text->size) {
+	if ((!text) || (!text->size)) {
 		return 0;
 	}
 
@@ -292,17 +292,17 @@ static int rndr_link(struct buf *ob, const struct buf *link, const struct buf *t
 {
 	struct html_renderopt *options = opaque;
 
-	if (link != NULL && (options->flags & HTML_SAFELINK) != 0 && !sd_autolink_issafe(link->data, link->size)) {
+	if ((link != NULL) && ((options->flags & HTML_SAFELINK) != 0) && (!sd_autolink_issafe(link->data, link->size))) {
 		return 0;
 	}
 
 	BUFPUTSL(ob, "<a href=\"");
 
-	if (link && link->size) {
+	if ((link) && (link->size)) {
 		escape_href(ob, link->data, link->size);
 	}
 
-	if (title && title->size) {
+	if ((title) && (title->size)) {
 		BUFPUTSL(ob, "\" title=\"");
 		escape_html(ob, title->data, title->size);
 	}
@@ -315,7 +315,7 @@ static int rndr_link(struct buf *ob, const struct buf *link, const struct buf *t
 		BUFPUTSL(ob, "\">");
 	}
 
-	if (content && content->size) {
+	if ((content) && (content->size)) {
 		bufput(ob, content->data, content->size);
 	}
 
@@ -346,7 +346,7 @@ static void rndr_listitem(struct buf *ob, const struct buf *text, int flags, voi
 	if (text) {
 		size_t size = text->size;
 
-		while (size && text->data[size - 1] == '\n') {
+		while ((size) && (text->data[size - 1] == '\n')) {
 			size--;
 		}
 
@@ -364,13 +364,13 @@ static void rndr_paragraph(struct buf *ob, const struct buf *text, void *opaque)
 		bufputc(ob, '\n');
 	}
 
-	if (!text || !text->size) {
+	if ((!text) || (!text->size)) {
 		return;
 	}
 
 	size_t i = 0;
 
-	while (i < text->size && isspace(text->data[i])) {
+	while ((i < text->size) && (isspace(text->data[i]))) {
 		i++;
 	}
 
@@ -384,7 +384,7 @@ static void rndr_paragraph(struct buf *ob, const struct buf *text, void *opaque)
 		while (i < text->size) {
 			size_t org = i;
 
-			while (i < text->size && text->data[i] != '\n') {
+			while ((i < text->size) && (text->data[i] != '\n')) {
 				i++;
 			}
 
@@ -418,13 +418,13 @@ static void rndr_raw_block(struct buf *ob, const struct buf *text, void *opaque)
 
 	size_t sz = text->size;
 
-	while (sz > 0 && text->data[sz - 1] == '\n') {
+	while ((sz > 0) && (text->data[sz - 1] == '\n')) {
 		sz--;
 	}
 
 	size_t org = 0;
 
-	while (org < sz && text->data[org] == '\n') {
+	while ((org < sz) && (text->data[org] == '\n')) {
 		org++;
 	}
 
@@ -442,7 +442,7 @@ static void rndr_raw_block(struct buf *ob, const struct buf *text, void *opaque)
 
 static int rndr_triple_emphasis(struct buf *ob, const struct buf *text, void *opaque)
 {
-	if (!text || !text->size) {
+	if ((!text) || (!text->size)) {
 		return 0;
 	}
 
@@ -468,7 +468,7 @@ static int rndr_image(struct buf *ob, const struct buf *link, const struct buf *
 {
 	struct html_renderopt *options = opaque;
 
-	if (!link || !link->size) {
+	if ((!link) || (!link->size)) {
 		return 0;
 	}
 
@@ -476,11 +476,11 @@ static int rndr_image(struct buf *ob, const struct buf *link, const struct buf *
 	escape_href(ob, link->data, link->size);
 	BUFPUTSL(ob, "\" alt=\"");
 
-	if (alt && alt->size) {
+	if ((alt) && (alt->size)) {
 		escape_html(ob, alt->data, alt->size);
 	}
 
-	if (title && title->size) {
+	if ((title) && (title->size)) {
 		BUFPUTSL(ob, "\" title=\"");
 		escape_html(ob, title->data, title->size);
 	}
@@ -508,15 +508,15 @@ static int rndr_raw_html(struct buf *ob, const struct buf *text, void *opaque)
 		return 1;
 	}
 
-	if ((options->flags & HTML_SKIP_STYLE) != 0 && sdhtml_is_tag(text->data, text->size, "style") != HTML_TAG_NONE) {
+	if (((options->flags & HTML_SKIP_STYLE) != 0) && (sdhtml_is_tag(text->data, text->size, "style") != HTML_TAG_NONE)) {
 		return 1;
 	}
 
-	if ((options->flags & HTML_SKIP_LINKS) != 0 && sdhtml_is_tag(text->data, text->size, "a") != HTML_TAG_NONE) {
+	if (((options->flags & HTML_SKIP_LINKS) != 0) && (sdhtml_is_tag(text->data, text->size, "a") != HTML_TAG_NONE)) {
 		return 1;
 	}
 
-	if ((options->flags & HTML_SKIP_IMAGES) != 0 && sdhtml_is_tag(text->data, text->size, "img") != HTML_TAG_NONE) {
+	if (((options->flags & HTML_SKIP_IMAGES) != 0) && (sdhtml_is_tag(text->data, text->size, "img") != HTML_TAG_NONE)) {
 		return 1;
 	}
 
@@ -600,7 +600,7 @@ static void rndr_tablecell(struct buf *ob, const struct buf *text, int flags, vo
 
 static int rndr_superscript(struct buf *ob, const struct buf *text, void *opaque)
 {
-	if (!text || !text->size) {
+	if ((!text) || (!text->size)) {
 		return 0;
 	}
 
@@ -656,7 +656,7 @@ static void rndr_footnote_def(struct buf *ob, const struct buf *text, unsigned i
 				continue;
 			}
 
-			if (text->data[i++] != 'p' && text->data[i] != 'P') {
+			if ((text->data[i++] != 'p') && (text->data[i] != 'P')) {
 				continue;
 			}
 
@@ -734,7 +734,7 @@ static void toc_header(struct buf *ob, const struct buf *text, int level, void *
 
 static int toc_link(struct buf *ob, const struct buf *link, const struct buf *title, const struct buf *content, void *opaque)
 {
-	if (content && content->size) {
+	if ((content) && (content->size)) {
 		bufput(ob, content->data, content->size);
 	}
 
@@ -863,7 +863,7 @@ void sdhtml_renderer(struct sd_callbacks *callbacks, struct html_renderopt *opti
 		callbacks->autolink = NULL;
 	}
 
-	if (render_flags & HTML_SKIP_HTML || render_flags & HTML_ESCAPE) {
+	if ((render_flags & HTML_SKIP_HTML) || (render_flags & HTML_ESCAPE)) {
 		callbacks->blockhtml = NULL;
 	}
 }

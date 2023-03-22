@@ -15,7 +15,7 @@ extern "C" {
  * Helper _isdigit methods -- do not trust the current locale
  */
 #define _isxdigit(c) (strchr("0123456789ABCDEFabcdef", (c)) != NULL)
-#define _isdigit(c) ((c) >= '0' && (c) <= '9')
+#define _isdigit(c) (((c) >= '0') && ((c) <= '9'))
 #endif
 
 extern void houdini_escape_html(struct buf *ob, const uint8_t *src, size_t size);

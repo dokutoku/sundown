@@ -172,7 +172,7 @@ static inline struct buf *rndr_newbuf(struct sd_markdown *rndr, int type)
 	struct buf *work = NULL;
 	struct stack *pool = &rndr->work_bufs[type];
 
-	if (pool->size < pool->asize && pool->item[pool->size] != NULL) {
+	if ((pool->size < pool->asize) && (pool->item[pool->size] != NULL)) {
 		work = pool->item[pool->size++];
 		work->size = 0;
 	} else {
@@ -204,7 +204,7 @@ static void unscape_text(struct buf *ob, struct buf *src)
 	while (i < src->size) {
 		size_t org = i;
 
-		while (i < src->size && src->data[i] != '\\') {
+		while ((i < src->size) && (src->data[i] != '\\')) {
 			i++;
 		}
 
@@ -366,7 +366,7 @@ static void free_footnote_list(struct footnote_list *list, int free_refs)
  */
 static inline int _isspace(int c)
 {
-	return c == ' ' || c == '\n';
+	return (c == ' ') || (c == '\n');
 }
 
 /* ***************************
@@ -432,13 +432,13 @@ static size_t tag_length(uint8_t *data, size_t size, enum mkd_autolink *autolink
 	*autolink = MKDA_NOT_AUTOLINK;
 
 	/* try to find the beginning of an URI */
-	while (i < size && (isalnum(data[i]) || data[i] == '.' || data[i] == '+' || data[i] == '-')) {
+	while ((i < size) && (isalnum(data[i]) || (data[i] == '.') || (data[i] == '+') || (data[i] == '-'))) {
 		i++;
 	}
 
 	size_t j;
 
-	if (i > 1 && data[i] == '@') {
+	if ((i > 1) && (data[i] == '@')) {
 		if ((j = is_mail_autolink(data + i, size - i)) != 0) {
 			*autolink = MKDA_EMAIL;
 
@@ -446,7 +446,7 @@ static size_t tag_length(uint8_t *data, size_t size, enum mkd_autolink *autolink
 		}
 	}
 
-	if (i > 2 && data[i] == ':') {
+	if ((i > 2) && (data[i] == ':')) {
 		*autolink = MKDA_NORMAL;
 		i++;
 	}
@@ -460,7 +460,7 @@ static size_t tag_length(uint8_t *data, size_t size, enum mkd_autolink *autolink
 		while (i < size) {
 			if (data[i] == '\\') {
 				i += 2;
-			} else if (data[i] == '>' || data[i] == '\'' || data[i] == '"' || data[i] == ' ' || data[i] == '\n') {
+			} else if ((data[i] == '>') || (data[i] == '\'') || (data[i] == '"') || (data[i] == ' ') || (data[i] == '\n')) {
 				break;
 			} else {
 				i++;
@@ -471,7 +471,7 @@ static size_t tag_length(uint8_t *data, size_t size, enum mkd_autolink *autolink
 			return 0;
 		}
 
-		if (i > j && data[i] == '>') {
+		if ((i > j) && (data[i] == '>')) {
 			return i + 1;
 		}
 
@@ -480,7 +480,7 @@ static size_t tag_length(uint8_t *data, size_t size, enum mkd_autolink *autolink
 	}
 
 	/* looking for sometinhg looking like a tag end */
-	while (i < size && data[i] != '>') {
+	while ((i < size) && (data[i] != '>')) {
 		i++;
 	}
 
@@ -507,7 +507,7 @@ static void parse_inline(struct buf *ob, struct sd_markdown *rndr, uint8_t *data
 
 	while (i < size) {
 		/* copying inactive chars into the output */
-		while (end < size && (action = rndr->active_char[data[end]]) == 0) {
+		while ((end < size) && ((action = rndr->active_char[data[end]]) == 0)) {
 			end++;
 		}
 
@@ -544,7 +544,7 @@ static size_t find_emph_char(uint8_t *data, size_t size, uint8_t c)
 	size_t i = 1;
 
 	while (i < size) {
-		while (i < size && data[i] != c && data[i] != '`' && data[i] != '[') {
+		while ((i < size) && (data[i] != c) && (data[i] != '`') && (data[i] != '[')) {
 			i++;
 		}
 
@@ -557,7 +557,7 @@ static size_t find_emph_char(uint8_t *data, size_t size, uint8_t c)
 		}
 
 		/* not counting escaped chars */
-		if (i && data[i - 1] == '\\') {
+		if ((i) && (data[i - 1] == '\\')) {
 			i++;
 
 			continue;
@@ -567,7 +567,7 @@ static size_t find_emph_char(uint8_t *data, size_t size, uint8_t c)
 			size_t span_nb = 0;
 
 			/* counting the number of opening backticks */
-			while (i < size && data[i] == '`') {
+			while ((i < size) && (data[i] == '`')) {
 				i++;
 				span_nb++;
 			}
@@ -580,8 +580,8 @@ static size_t find_emph_char(uint8_t *data, size_t size, uint8_t c)
 			size_t bt = 0;
 			size_t tmp_i = 0;
 
-			while (i < size && bt < span_nb) {
-				if (!tmp_i && data[i] == c) {
+			while ((i < size) && (bt < span_nb)) {
+				if ((!tmp_i) && (data[i] == c)) {
 					tmp_i = i;
 				}
 
@@ -604,8 +604,8 @@ static size_t find_emph_char(uint8_t *data, size_t size, uint8_t c)
 
 			i++;
 
-			while (i < size && data[i] != ']') {
-				if (!tmp_i && data[i] == c) {
+			while ((i < size) && (data[i] != ']')) {
+				if ((!tmp_i) && (data[i] == c)) {
 					tmp_i = i;
 				}
 
@@ -614,7 +614,7 @@ static size_t find_emph_char(uint8_t *data, size_t size, uint8_t c)
 
 			i++;
 
-			while (i < size && (data[i] == ' ' || data[i] == '\n')) {
+			while ((i < size) && ((data[i] == ' ') || (data[i] == '\n'))) {
 				i++;
 			}
 
@@ -645,8 +645,8 @@ static size_t find_emph_char(uint8_t *data, size_t size, uint8_t c)
 
 			i++;
 
-			while (i < size && data[i] != cc) {
-				if (!tmp_i && data[i] == c) {
+			while ((i < size) && (data[i] != cc)) {
+				if ((!tmp_i) && (data[i] == c)) {
 					tmp_i = i;
 				}
 
@@ -677,7 +677,7 @@ static size_t parse_emph1(struct buf *ob, struct sd_markdown *rndr, uint8_t *dat
 	size_t i = 0;
 
 	/* skipping one symbol if coming from emph3 */
-	if (size > 1 && data[0] == c && data[1] == c) {
+	if ((size > 1) && (data[0] == c) && (data[1] == c)) {
 		i = 1;
 	}
 
@@ -694,9 +694,9 @@ static size_t parse_emph1(struct buf *ob, struct sd_markdown *rndr, uint8_t *dat
 			return 0;
 		}
 
-		if (data[i] == c && !_isspace(data[i - 1])) {
+		if ((data[i] == c) && (!_isspace(data[i - 1]))) {
 			if (rndr->ext_flags & MKDEXT_NO_INTRA_EMPHASIS) {
-				if (i + 1 < size && isalnum(data[i + 1])) {
+				if ((i + 1 < size) && (isalnum(data[i + 1]))) {
 					continue;
 				}
 			}
@@ -743,7 +743,7 @@ static size_t parse_emph2(struct buf *ob, struct sd_markdown *rndr, uint8_t *dat
 
 		i += len;
 
-		if (i + 1 < size && data[i] == c && data[i + 1] == c && i && !_isspace(data[i - 1])) {
+		if ((i + 1 < size) && (data[i] == c) && (data[i + 1] == c) && (i) && (!_isspace(data[i - 1]))) {
 			struct buf *work = rndr_newbuf(rndr, BUFFER_SPAN);
 
 			if (work == NULL) {
@@ -781,11 +781,11 @@ static size_t parse_emph3(struct buf *ob, struct sd_markdown *rndr, uint8_t *dat
 		i += len;
 
 		/* skip whitespace preceded symbols */
-		if (data[i] != c || _isspace(data[i - 1])) {
+		if ((data[i] != c) || (_isspace(data[i - 1]))) {
 			continue;
 		}
 
-		if (i + 2 < size && data[i + 1] == c && data[i + 2] == c && rndr->cb.triple_emphasis) {
+		if ((i + 2 < size) && (data[i + 1] == c) && (data[i + 2] == c) && (rndr->cb.triple_emphasis)) {
 			/* triple symbol found */
 			struct buf *work = rndr_newbuf(rndr, BUFFER_SPAN);
 
@@ -798,7 +798,7 @@ static size_t parse_emph3(struct buf *ob, struct sd_markdown *rndr, uint8_t *dat
 			rndr_popbuf(rndr, BUFFER_SPAN);
 
 			return (r) ? (i + 3) : (0);
-		} else if (i + 1 < size && data[i + 1] == c) {
+		} else if ((i + 1 < size) && (data[i + 1] == c)) {
 			/* double symbol found, handing over to emph1 */
 			len = parse_emph1(ob, rndr, data - 2, size + 2, c);
 
@@ -829,7 +829,7 @@ static size_t parse_emph3(struct buf *ob, struct sd_markdown *rndr, uint8_t *dat
 static size_t char_emphasis(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset, size_t size)
 {
 	if (rndr->ext_flags & MKDEXT_NO_INTRA_EMPHASIS) {
-		if (offset > 0 && !_isspace(data[-1]) && data[-1] != '>') {
+		if ((offset > 0) && (!_isspace(data[-1])) && (data[-1] != '>')) {
 			return 0;
 		}
 	}
@@ -837,29 +837,29 @@ static size_t char_emphasis(struct buf *ob, struct sd_markdown *rndr, uint8_t *d
 	uint8_t c = data[0];
 	size_t ret;
 
-	if (size > 2 && data[1] != c) {
+	if ((size > 2) && (data[1] != c)) {
 		/*
 		 * whitespace cannot follow an opening emphasis;
 		 * ins only takes two characters '++'
 		 * strikethrough only takes two characters '~~'
 		 */
-		if (c == '+' || c == '~' || _isspace(data[1]) || (ret = parse_emph1(ob, rndr, data + 1, size - 1, c)) == 0) {
+		if ((c == '+') || (c == '~') || (_isspace(data[1])) || ((ret = parse_emph1(ob, rndr, data + 1, size - 1, c)) == 0)) {
 			return 0;
 		}
 
 		return ret + 1;
 	}
 
-	if (size > 3 && data[1] == c && data[2] != c) {
-		if (_isspace(data[2]) || (ret = parse_emph2(ob, rndr, data + 2, size - 2, c)) == 0) {
+	if ((size > 3) && (data[1] == c) && (data[2] != c)) {
+		if ((_isspace(data[2])) || ((ret = parse_emph2(ob, rndr, data + 2, size - 2, c)) == 0)) {
 			return 0;
 		}
 
 		return ret + 2;
 	}
 
-	if (size > 4 && data[1] == c && data[2] == c && data[3] != c) {
-		if (c == '+' || c == '~' || _isspace(data[3]) || (ret = parse_emph3(ob, rndr, data + 3, size - 3, c)) == 0) {
+	if ((size > 4) && (data[1] == c) && (data[2] == c) && (data[3] != c)) {
+		if ((c == '+') || (c == '~') || (_isspace(data[3])) || ((ret = parse_emph3(ob, rndr, data + 3, size - 3, c)) == 0)) {
 			return 0;
 		}
 
@@ -874,12 +874,12 @@ static size_t char_emphasis(struct buf *ob, struct sd_markdown *rndr, uint8_t *d
  */
 static size_t char_linebreak(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset, size_t size)
 {
-	if (offset < 2 || data[-1] != ' ' || data[-2] != ' ') {
+	if ((offset < 2) || (data[-1] != ' ') || (data[-2] != ' ')) {
 		return 0;
 	}
 
 	/* removing the last space from ob and rendering */
-	while (ob->size && ob->data[ob->size - 1] == ' ') {
+	while ((ob->size) && (ob->data[ob->size - 1] == ' ')) {
 		ob->size--;
 	}
 
@@ -894,7 +894,7 @@ static size_t char_codespan(struct buf *ob, struct sd_markdown *rndr, uint8_t *d
 	size_t nb = 0;
 
 	/* counting the number of backticks in the delimiter */
-	while (nb < size && data[nb] == '`') {
+	while ((nb < size) && (data[nb] == '`')) {
 		nb++;
 	}
 
@@ -902,7 +902,7 @@ static size_t char_codespan(struct buf *ob, struct sd_markdown *rndr, uint8_t *d
 	size_t i = 0;
 	size_t end;
 
-	for (end = nb; end < size && i < nb; end++) {
+	for (end = nb; (end < size) && (i < nb); end++) {
 		if (data[end] == '`') {
 			i++;
 		} else {
@@ -910,7 +910,7 @@ static size_t char_codespan(struct buf *ob, struct sd_markdown *rndr, uint8_t *d
 		}
 	}
 
-	if (i < nb && end >= size) {
+	if ((i < nb) && (end >= size)) {
 		/* no matching delimiter */
 		return 0;
 	}
@@ -918,13 +918,13 @@ static size_t char_codespan(struct buf *ob, struct sd_markdown *rndr, uint8_t *d
 	/* trimming outside whitespaces */
 	size_t f_begin = nb;
 
-	while (f_begin < end && data[f_begin] == ' ') {
+	while ((f_begin < end) && (data[f_begin] == ' ')) {
 		f_begin++;
 	}
 
 	size_t f_end = end - nb;
 
-	while (f_end > nb && data[f_end - 1] == ' ') {
+	while ((f_end > nb) && (data[f_end - 1] == ' ')) {
 		f_end--;
 	}
 
@@ -980,15 +980,15 @@ static size_t char_entity(struct buf *ob, struct sd_markdown *rndr, uint8_t *dat
 	size_t end = 1;
 	struct buf work = {NULL, 0, 0, 0};
 
-	if (end < size && data[end] == '#') {
+	if ((end < size) && (data[end] == '#')) {
 		end++;
 	}
 
-	while (end < size && isalnum(data[end])) {
+	while ((end < size) && (isalnum(data[end]))) {
 		end++;
 	}
 
-	if (end < size && data[end] == ';') {
+	if ((end < size) && (data[end] == ';')) {
 		/* real entity */
 		end++;
 	} else {
@@ -1018,7 +1018,7 @@ static size_t char_langle_tag(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 	int ret = 0;
 
 	if (end > 2) {
-		if (rndr->cb.autolink && altype != MKDA_NOT_AUTOLINK) {
+		if ((rndr->cb.autolink) && (altype != MKDA_NOT_AUTOLINK)) {
 			struct buf *u_link = rndr_newbuf(rndr, BUFFER_SPAN);
 
 			if (u_link == NULL) {
@@ -1044,7 +1044,7 @@ static size_t char_langle_tag(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 
 static size_t char_autolink_www(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset, size_t size)
 {
-	if (!rndr->cb.link || rndr->in_link_body) {
+	if ((!rndr->cb.link) || (rndr->in_link_body)) {
 		return 0;
 	}
 
@@ -1093,7 +1093,7 @@ static size_t char_autolink_www(struct buf *ob, struct sd_markdown *rndr, uint8_
 
 static size_t char_autolink_email(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset, size_t size)
 {
-	if (!rndr->cb.autolink || rndr->in_link_body) {
+	if ((!rndr->cb.autolink) || (rndr->in_link_body)) {
 		return 0;
 	}
 
@@ -1118,7 +1118,7 @@ static size_t char_autolink_email(struct buf *ob, struct sd_markdown *rndr, uint
 
 static size_t char_autolink_url(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset, size_t size)
 {
-	if (!rndr->cb.autolink || rndr->in_link_body) {
+	if ((!rndr->cb.autolink) || (rndr->in_link_body)) {
 		return 0;
 	}
 
@@ -1146,13 +1146,13 @@ static size_t char_autolink_url(struct buf *ob, struct sd_markdown *rndr, uint8_
  */
 static size_t char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t offset, size_t size)
 {
-	int is_img = (offset && data[-1] == '!');
+	int is_img = (offset) && (data[-1] == '!');
 	size_t i = 1;
 	size_t org_work_size = rndr->work_bufs[BUFFER_SPAN].size;
 	int ret = 0;
 
 	/* checking whether the correct renderer exists */
-	if ((is_img && !rndr->cb.image) || (!is_img && !rndr->cb.link)) {
+	if (((is_img) && (!rndr->cb.image)) || ((!is_img) && (!rndr->cb.link))) {
 		goto cleanup;
 	}
 
@@ -1183,7 +1183,7 @@ static size_t char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data,
 	i++;
 
 	/* footnote link */
-	if (rndr->ext_flags & MKDEXT_FOOTNOTES && data[1] == '^') {
+	if ((rndr->ext_flags & MKDEXT_FOOTNOTES) && (data[1] == '^')) {
 		if (txt_e < 3) {
 			goto cleanup;
 		}
@@ -1197,7 +1197,7 @@ static size_t char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data,
 		struct footnote_ref *fr = find_footnote_ref(&rndr->footnotes_found, id.data, id.size);
 
 		/* mark footnote used */
-		if (fr && !fr->is_used) {
+		if ((fr) && (!fr->is_used)) {
 			if (!add_footnote_ref(&rndr->footnotes_used, fr)) {
 				goto cleanup;
 			}
@@ -1207,7 +1207,7 @@ static size_t char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data,
 		}
 
 		/* render */
-		if (fr && rndr->cb.footnote_ref) {
+		if ((fr) && (rndr->cb.footnote_ref)) {
 			ret = rndr->cb.footnote_ref(ob, fr->num, rndr->opaque);
 		}
 
@@ -1216,7 +1216,7 @@ static size_t char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data,
 
 	/* skip any amount of whitespace or newline */
 	/* (this is much more laxist than original markdown syntax) */
-	while (i < size && _isspace(data[i])) {
+	while ((i < size) && (_isspace(data[i]))) {
 		i++;
 	}
 
@@ -1226,11 +1226,11 @@ static size_t char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data,
 	struct buf *title = NULL;
 
 	/* inline style link */
-	if (i < size && data[i] == '(') {
+	if ((i < size) && (data[i] == '(')) {
 		/* skipping initial whitespace */
 		i++;
 
-		while (i < size && _isspace(data[i])) {
+		while ((i < size) && (_isspace(data[i]))) {
 			i++;
 		}
 
@@ -1242,7 +1242,7 @@ static size_t char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data,
 				i += 2;
 			} else if (data[i] == ')') {
 				break;
-			} else if (i >= 1 && _isspace(data[i - 1]) && (data[i] == '\'' || data[i] == '"')) {
+			} else if ((i >= 1) && (_isspace(data[i - 1])) && ((data[i] == '\'') || (data[i] == '"'))) {
 				break;
 			} else {
 				i++;
@@ -1256,7 +1256,7 @@ static size_t char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data,
 		size_t link_e = i;
 
 		/* looking for title end if present */
-		if (data[i] == '\'' || data[i] == '"') {
+		if ((data[i] == '\'') || (data[i] == '"')) {
 			int qtype = data[i];
 			int in_title = 1;
 			i++;
@@ -1268,7 +1268,7 @@ static size_t char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data,
 				} else if (data[i] == qtype) {
 					in_title = 0;
 					i++;
-				} else if ((data[i] == ')') && !in_title) {
+				} else if ((data[i] == ')') && (!in_title)) {
 					break;
 				} else {
 					i++;
@@ -1282,12 +1282,12 @@ static size_t char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data,
 			/* skipping whitespaces after title */
 			title_e = i - 1;
 
-			while (title_e > title_b && _isspace(data[title_e])) {
+			while ((title_e > title_b) && (_isspace(data[title_e]))) {
 				title_e--;
 			}
 
 			/* checking for closing quote presence */
-			if (data[title_e] != '\'' && data[title_e] != '"') {
+			if ((data[title_e] != '\'') && (data[title_e] != '"')) {
 				title_e = 0;
 				title_b = 0;
 				link_e = i;
@@ -1295,7 +1295,7 @@ static size_t char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data,
 		}
 
 		/* remove whitespace at the end of the link */
-		while (link_e > link_b && _isspace(data[link_e - 1])) {
+		while ((link_e > link_b) && (_isspace(data[link_e - 1]))) {
 			link_e--;
 		}
 
@@ -1330,14 +1330,14 @@ static size_t char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data,
 		}
 
 		i++;
-	} else if (i < size && data[i] == '[') {
+	} else if ((i < size) && (data[i] == '[')) {
 		/* reference style link */
 
 		/* looking for the id */
 		i++;
 		size_t link_b = i;
 
-		while (i < size && data[i] != ']') {
+		while ((i < size) && (data[i] != ']')) {
 			i++;
 		}
 
@@ -1467,7 +1467,7 @@ static size_t char_link(struct buf *ob, struct sd_markdown *rndr, uint8_t *data,
 
 	/* calling the relevant rendering function */
 	if (is_img) {
-		if (ob->size && ob->data[ob->size - 1] == '!') {
+		if ((ob->size) && (ob->data[ob->size - 1] == '!')) {
 			ob->size -= 1;
 		}
 
@@ -1500,7 +1500,7 @@ static size_t char_superscript(struct buf *ob, struct sd_markdown *rndr, uint8_t
 		sup_len = 2;
 		sup_start = 2;
 
-		while (sup_len < size && data[sup_len] != ')' && data[sup_len - 1] != '\\') {
+		while ((sup_len < size) && (data[sup_len] != ')') && (data[sup_len - 1] != '\\')) {
 			sup_len++;
 		}
 
@@ -1511,7 +1511,7 @@ static size_t char_superscript(struct buf *ob, struct sd_markdown *rndr, uint8_t
 		sup_len = 1;
 		sup_start = 1;
 
-		while (sup_len < size && !_isspace(data[sup_len])) {
+		while ((sup_len < size) && (!_isspace(data[sup_len]))) {
 			sup_len++;
 		}
 	}
@@ -1544,7 +1544,7 @@ static size_t is_empty(const uint8_t *data, size_t size)
 {
 	size_t i;
 
-	for (i = 0; i < size && data[i] != '\n'; i++) {
+	for (i = 0; (i < size) && (data[i] != '\n'); i++) {
 		if (data[i] != ' ') {
 			return 0;
 		}
@@ -1578,7 +1578,7 @@ static int is_hrule(uint8_t *data, size_t size)
 	}
 
 	/* looking at the hrule uint8_t */
-	if (i + 2 >= size || (data[i] != '*' && data[i] != '-' && data[i] != '_')) {
+	if ((i + 2 >= size) || ((data[i] != '*') && (data[i] != '-') && (data[i] != '_'))) {
 		return 0;
 	}
 
@@ -1587,7 +1587,7 @@ static int is_hrule(uint8_t *data, size_t size)
 	size_t n = 0;
 
 	/* the whole line must be the char or whitespace */
-	while (i < size && data[i] != '\n') {
+	while ((i < size) && (data[i] != '\n')) {
 		if (data[i] == c) {
 			n++;
 		} else if (data[i] != ' ') {
@@ -1626,7 +1626,7 @@ static size_t prefix_codefence(uint8_t *data, size_t size)
 	}
 
 	/* looking at the hrule uint8_t */
-	if (i + 2 >= size || !(data[i] == '~' || data[i] == '`')) {
+	if ((i + 2 >= size) || (!((data[i] == '~') || (data[i] == '`')))) {
 		return 0;
 	}
 
@@ -1635,7 +1635,7 @@ static size_t prefix_codefence(uint8_t *data, size_t size)
 	size_t n = 0;
 
 	/* the whole line must be the uint8_t or whitespace */
-	while (i < size && data[i] == c) {
+	while ((i < size) && (data[i] == c)) {
 		n++;
 		i++;
 	}
@@ -1658,7 +1658,7 @@ static size_t is_codefence(uint8_t *data, size_t size, struct buf *syntax)
 		return 0;
 	}
 
-	while (i < size && data[i] == ' ') {
+	while ((i < size) && (data[i] == ' ')) {
 		i++;
 	}
 
@@ -1666,16 +1666,16 @@ static size_t is_codefence(uint8_t *data, size_t size, struct buf *syntax)
 
 	size_t syn_len = 0;
 
-	if (i < size && data[i] == '{') {
+	if ((i < size) && (data[i] == '{')) {
 		i++;
 		syn_start++;
 
-		while (i < size && data[i] != '}' && data[i] != '\n') {
+		while ((i < size) && (data[i] != '}') && (data[i] != '\n')) {
 			syn_len++;
 			i++;
 		}
 
-		if (i == size || data[i] != '}') {
+		if ((i == size) || (data[i] != '}')) {
 			return 0;
 		}
 
@@ -1683,18 +1683,18 @@ static size_t is_codefence(uint8_t *data, size_t size, struct buf *syntax)
 		 * strip all whitespace at the beginning and the end
 		 * of the {} block
 		 */
-		while (syn_len > 0 && _isspace(syn_start[0])) {
+		while ((syn_len > 0) && (_isspace(syn_start[0]))) {
 			syn_start++;
 			syn_len--;
 		}
 
-		while (syn_len > 0 && _isspace(syn_start[syn_len - 1])) {
+		while ((syn_len > 0) && (_isspace(syn_start[syn_len - 1]))) {
 			syn_len--;
 		}
 
 		i++;
 	} else {
-		while (i < size && !_isspace(data[i])) {
+		while ((i < size) && (!_isspace(data[i]))) {
 			syn_len++;
 			i++;
 		}
@@ -1705,7 +1705,7 @@ static size_t is_codefence(uint8_t *data, size_t size, struct buf *syntax)
 		syntax->size = syn_len;
 	}
 
-	while (i < size && data[i] != '\n') {
+	while ((i < size) && (data[i] != '\n')) {
 		if (!_isspace(data[i])) {
 			return 0;
 		}
@@ -1728,11 +1728,11 @@ static int is_atxheader(struct sd_markdown *rndr, uint8_t *data, size_t size)
 	if (rndr->ext_flags & MKDEXT_SPACE_HEADERS) {
 		size_t level = 0;
 
-		while (level < size && level < 6 && data[level] == '#') {
+		while ((level < size) && (level < 6) && (data[level] == '#')) {
 			level++;
 		}
 
-		if (level < size && data[level] != ' ') {
+		if ((level < size) && (data[level] != ' ')) {
 			return 0;
 		}
 	}
@@ -1749,28 +1749,28 @@ static int is_headerline(uint8_t *data, size_t size)
 
 	/* test of level 1 header */
 	if (data[i] == '=') {
-		for (i = 1; i < size && data[i] == '='; i++) {
+		for (i = 1; (i < size) && (data[i] == '='); i++) {
 			;
 		}
 
-		while (i < size && data[i] == ' ') {
+		while ((i < size) && (data[i] == ' ')) {
 			i++;
 		}
 
-		return (i >= size || data[i] == '\n') ? (1) : (0);
+		return ((i >= size) || (data[i] == '\n')) ? (1) : (0);
 	}
 
 	/* test of level 2 header */
 	if (data[i] == '-') {
-		for (i = 1; i < size && data[i] == '-'; i++) {
+		for (i = 1; (i < size) && (data[i] == '-'); i++) {
 			;
 		}
 
-		while (i < size && data[i] == ' ') {
+		while ((i < size) && (data[i] == ' ')) {
 			i++;
 		}
 
-		return (i >= size || data[i] == '\n') ? (2) : (0);
+		return ((i >= size) || (data[i] == '\n')) ? (2) : (0);
 	}
 
 	return 0;
@@ -1780,7 +1780,7 @@ static int is_next_headerline(uint8_t *data, size_t size)
 {
 	size_t i = 0;
 
-	while (i < size && data[i] != '\n') {
+	while ((i < size) && (data[i] != '\n')) {
 		i++;
 	}
 
@@ -1798,20 +1798,20 @@ static size_t prefix_quote(uint8_t *data, size_t size)
 {
 	size_t i = 0;
 
-	if (i < size && data[i] == ' ') {
+	if ((i < size) && (data[i] == ' ')) {
 		i++;
 	}
 
-	if (i < size && data[i] == ' ') {
+	if ((i < size) && (data[i] == ' ')) {
 		i++;
 	}
 
-	if (i < size && data[i] == ' ') {
+	if ((i < size) && (data[i] == ' ')) {
 		i++;
 	}
 
-	if (i < size && data[i] == '>') {
-		if (i + 1 < size && data[i + 1] == ' ') {
+	if ((i < size) && (data[i] == '>')) {
+		if ((i + 1 < size) && (data[i + 1] == ' ')) {
 			return i + 2;
 		}
 
@@ -1826,7 +1826,7 @@ static size_t prefix_quote(uint8_t *data, size_t size)
  */
 static size_t prefix_code(uint8_t *data, size_t size)
 {
-	if (size > 3 && data[0] == ' ' && data[1] == ' ' && data[2] == ' ' && data[3] == ' ') {
+	if ((size > 3) && (data[0] == ' ') && (data[1] == ' ') && (data[2] == ' ') && (data[3] == ' ')) {
 		return 4;
 	}
 
@@ -1840,27 +1840,27 @@ static size_t prefix_oli(uint8_t *data, size_t size)
 {
 	size_t i = 0;
 
-	if (i < size && data[i] == ' ') {
+	if ((i < size) && (data[i] == ' ')) {
 		i++;
 	}
 
-	if (i < size && data[i] == ' ') {
+	if ((i < size) && (data[i] == ' ')) {
 		i++;
 	}
 
-	if (i < size && data[i] == ' ') {
+	if ((i < size) && (data[i] == ' ')) {
 		i++;
 	}
 
-	if (i >= size || data[i] < '0' || data[i] > '9') {
+	if ((i >= size) || (data[i] < '0') || (data[i] > '9')) {
 		return 0;
 	}
 
-	while (i < size && data[i] >= '0' && data[i] <= '9') {
+	while ((i < size) && (data[i] >= '0') && (data[i] <= '9')) {
 		i++;
 	}
 
-	if (i + 1 >= size || data[i] != '.' || data[i + 1] != ' ') {
+	if ((i + 1 >= size) || (data[i] != '.') || (data[i + 1] != ' ')) {
 		return 0;
 	}
 
@@ -1878,19 +1878,19 @@ static size_t prefix_uli(uint8_t *data, size_t size)
 {
 	size_t i = 0;
 
-	if (i < size && data[i] == ' ') {
+	if ((i < size) && (data[i] == ' ')) {
 		i++;
 	}
 
-	if (i < size && data[i] == ' ') {
+	if ((i < size) && (data[i] == ' ')) {
 		i++;
 	}
 
-	if (i < size && data[i] == ' ') {
+	if ((i < size) && (data[i] == ' ')) {
 		i++;
 	}
 
-	if (i + 1 >= size || (data[i] != '*' && data[i] != '+' && data[i] != '-') || data[i + 1] != ' ') {
+	if ((i + 1 >= size) || ((data[i] != '*') && (data[i] != '+') && (data[i] != '-')) || (data[i + 1] != ' ')) {
 		return 0;
 	}
 
@@ -1923,7 +1923,7 @@ static size_t parse_blockquote(struct buf *ob, struct sd_markdown *rndr, uint8_t
 	uint8_t *work_data = NULL;
 
 	while (beg < size) {
-		for (end = beg + 1; end < size && data[end - 1] != '\n'; end++) {
+		for (end = beg + 1; (end < size) && (data[end - 1] != '\n'); end++) {
 			;
 		}
 
@@ -1932,7 +1932,7 @@ static size_t parse_blockquote(struct buf *ob, struct sd_markdown *rndr, uint8_t
 		if (pre) {
 			/* skipping prefix */
 			beg += pre;
-		} else if (is_empty(data + beg, end - beg) && (end >= size || (prefix_quote(data + end, size - end) == 0 && !is_empty(data + end, size - end)))) {
+		} else if ((is_empty(data + beg, end - beg)) && ((end >= size) || ((prefix_quote(data + end, size - end) == 0) && (!is_empty(data + end, size - end))))) {
 			/* empty line followed by non-quote line */
 			break;
 		}
@@ -1974,7 +1974,7 @@ static size_t parse_paragraph(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 	int level = 0;
 
 	while (i < size) {
-		for (end = i + 1; end < size && data[end - 1] != '\n'; end++) {
+		for (end = i + 1; (end < size) && (data[end - 1] != '\n'); end++) {
 			/* empty */
 			;
 		}
@@ -1987,7 +1987,7 @@ static size_t parse_paragraph(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 			break;
 		}
 
-		if (is_atxheader(rndr, data + i, size - i) || is_hrule(data + i, size - i) || prefix_quote(data + i, size - i)) {
+		if ((is_atxheader(rndr, data + i, size - i)) || (is_hrule(data + i, size - i)) || (prefix_quote(data + i, size - i))) {
 			end = i;
 
 			break;
@@ -2002,22 +2002,22 @@ static size_t parse_paragraph(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 		 * let's check to see if there's some kind of block starting
 		 * here
 		 */
-		if ((rndr->ext_flags & MKDEXT_LAX_SPACING) && !isalnum(data[i])) {
-			if (prefix_oli(data + i, size - i) || prefix_uli(data + i, size - i)) {
+		if ((rndr->ext_flags & MKDEXT_LAX_SPACING) && (!isalnum(data[i]))) {
+			if ((prefix_oli(data + i, size - i)) || (prefix_uli(data + i, size - i))) {
 				end = i;
 
 				break;
 			}
 
 			/* see if an html block starts here */
-			if (data[i] == '<' && rndr->cb.blockhtml && parse_htmlblock(ob, rndr, data + i, size - i, 0)) {
+			if ((data[i] == '<') && (rndr->cb.blockhtml) && (parse_htmlblock(ob, rndr, data + i, size - i, 0))) {
 				end = i;
 
 				break;
 			}
 
 			/* see if a code fence starts here */
-			if ((rndr->ext_flags & MKDEXT_FENCED_CODE) != 0 && is_codefence(data + i, size - i, NULL) != 0) {
+			if (((rndr->ext_flags & MKDEXT_FENCED_CODE) != 0) && (is_codefence(data + i, size - i, NULL) != 0)) {
 				end = i;
 
 				break;
@@ -2031,7 +2031,7 @@ static size_t parse_paragraph(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 
 	work.size = i;
 
-	while (work.size && data[work.size - 1] == '\n') {
+	while ((work.size) && (data[work.size - 1] == '\n')) {
 		work.size--;
 	}
 
@@ -2054,13 +2054,13 @@ static size_t parse_paragraph(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 			i = work.size;
 			work.size -= 1;
 
-			while (work.size && data[work.size] != '\n') {
+			while ((work.size) && (data[work.size] != '\n')) {
 				work.size -= 1;
 			}
 
 			size_t beg = work.size + 1;
 
-			while (work.size && data[work.size - 1] == '\n') {
+			while ((work.size) && (data[work.size - 1] == '\n')) {
 				work.size -= 1;
 			}
 
@@ -2128,13 +2128,13 @@ static size_t parse_fencedcode(struct buf *ob, struct sd_markdown *rndr, uint8_t
 
 		size_t fence_end = is_codefence(data + beg, size - beg, &fence_trail);
 
-		if (fence_end != 0 && fence_trail.size == 0) {
+		if ((fence_end != 0) && (fence_trail.size == 0)) {
 			beg += fence_end;
 
 			break;
 		}
 
-		for (end = beg + 1; end < size && data[end - 1] != '\n'; end++) {
+		for (end = beg + 1; (end < size) && (data[end - 1] != '\n'); end++) {
 			;
 		}
 
@@ -2153,7 +2153,7 @@ static size_t parse_fencedcode(struct buf *ob, struct sd_markdown *rndr, uint8_t
 		beg = end;
 	}
 
-	if (work->size && work->data[work->size - 1] != '\n') {
+	if ((work->size) && (work->data[work->size - 1] != '\n')) {
 		bufputc(work, '\n');
 	}
 
@@ -2178,7 +2178,7 @@ static size_t parse_blockcode(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 	size_t end;
 
 	while (beg < size) {
-		for (end = beg + 1; end < size && data[end - 1] != '\n'; end++) {
+		for (end = beg + 1; (end < size) && (data[end - 1] != '\n'); end++) {
 		}
 
 		size_t pre = prefix_code(data + beg, end - beg);
@@ -2206,7 +2206,7 @@ static size_t parse_blockcode(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 		beg = end;
 	}
 
-	while (work->size && work->data[work->size - 1] == '\n') {
+	while ((work->size) && (work->data[work->size - 1] == '\n')) {
 		work->size -= 1;
 	}
 
@@ -2230,7 +2230,7 @@ static size_t parse_listitem(struct buf *ob, struct sd_markdown *rndr, uint8_t *
 	size_t orgpre = 0;
 
 	/* keeping track of the first indentation prefix */
-	while (orgpre < 3 && orgpre < size && data[orgpre] == ' ') {
+	while ((orgpre < 3) && (orgpre < size) && (data[orgpre] == ' ')) {
 		orgpre++;
 	}
 
@@ -2247,7 +2247,7 @@ static size_t parse_listitem(struct buf *ob, struct sd_markdown *rndr, uint8_t *
 	/* skipping to the beginning of the following line */
 	size_t end = beg;
 
-	while (end < size && data[end - 1] != '\n') {
+	while ((end < size) && (data[end - 1] != '\n')) {
 		end++;
 	}
 
@@ -2277,7 +2277,7 @@ static size_t parse_listitem(struct buf *ob, struct sd_markdown *rndr, uint8_t *
 	while (beg < size) {
 		end++;
 
-		while (end < size && data[end - 1] != '\n') {
+		while ((end < size) && (data[end - 1] != '\n')) {
 			end++;
 		}
 
@@ -2292,7 +2292,7 @@ static size_t parse_listitem(struct buf *ob, struct sd_markdown *rndr, uint8_t *
 		/* calculating the indentation */
 		size_t i = 0;
 
-		while (i < 4 && beg + i < end && data[beg + i] == ' ') {
+		while ((i < 4) && (beg + i < end) && (data[beg + i] == ' ')) {
 			i++;
 		}
 
@@ -2317,7 +2317,7 @@ static size_t parse_listitem(struct buf *ob, struct sd_markdown *rndr, uint8_t *
 		}
 
 		/* checking for ul/ol switch */
-		if (in_empty && (((*flags & MKD_LIST_ORDERED) && has_next_uli) || (!(*flags & MKD_LIST_ORDERED) && has_next_oli))) {
+		if ((in_empty) && (((*flags & MKD_LIST_ORDERED) && (has_next_uli)) || ((!(*flags & MKD_LIST_ORDERED)) && (has_next_oli)))) {
 			*flags |= MKD_LI_END;
 
 			/* the following item must have same list type */
@@ -2325,7 +2325,7 @@ static size_t parse_listitem(struct buf *ob, struct sd_markdown *rndr, uint8_t *
 		}
 
 		/* checking for a new item */
-		if ((has_next_uli && !is_hrule(data + beg + i, end - beg - i)) || has_next_oli) {
+		if (((has_next_uli) && (!is_hrule(data + beg + i, end - beg - i))) || (has_next_oli)) {
 			if (in_empty) {
 				has_inside_empty = 1;
 			}
@@ -2338,7 +2338,7 @@ static size_t parse_listitem(struct buf *ob, struct sd_markdown *rndr, uint8_t *
 			if (!sublist) {
 				sublist = work->size;
 			}
-		} else if (in_empty && pre == 0) {
+		} else if ((in_empty) && (pre == 0)) {
 			/*
 			 * joining only indented stuff after empty lines;
 			 * note that now we only require 1 space of indentation
@@ -2366,7 +2366,7 @@ static size_t parse_listitem(struct buf *ob, struct sd_markdown *rndr, uint8_t *
 
 	if (*flags & MKD_LI_BLOCK) {
 		/* intermediate render of block li */
-		if (sublist && sublist < work->size) {
+		if ((sublist) && (sublist < work->size)) {
 			parse_block(inter, rndr, work->data, sublist);
 			parse_block(inter, rndr, work->data + sublist, work->size - sublist);
 		} else {
@@ -2374,7 +2374,7 @@ static size_t parse_listitem(struct buf *ob, struct sd_markdown *rndr, uint8_t *
 		}
 	} else {
 		/* intermediate render of inline li */
-		if (sublist && sublist < work->size) {
+		if ((sublist) && (sublist < work->size)) {
 			parse_inline(inter, rndr, work->data, sublist);
 			parse_block(inter, rndr, work->data + sublist, work->size - sublist);
 		} else {
@@ -2410,7 +2410,7 @@ static size_t parse_list(struct buf *ob, struct sd_markdown *rndr, uint8_t *data
 		size_t j = parse_listitem(work, rndr, data + i, size - i, &flags);
 		i += j;
 
-		if (!j || (flags & MKD_LI_END)) {
+		if ((!j) || (flags & MKD_LI_END)) {
 			break;
 		}
 	}
@@ -2431,29 +2431,29 @@ static size_t parse_atxheader(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 {
 	size_t level = 0;
 
-	while (level < size && level < 6 && data[level] == '#') {
+	while ((level < size) && (level < 6) && (data[level] == '#')) {
 		level++;
 	}
 
 	size_t i;
 
-	for (i = level; i < size && data[i] == ' '; i++) {
+	for (i = level; (i < size) && (data[i] == ' '); i++) {
 		;
 	}
 
 	size_t end;
 
-	for (end = i; end < size && data[end] != '\n'; end++) {
+	for (end = i; (end < size) && (data[end] != '\n'); end++) {
 		;
 	}
 
 	size_t skip = end;
 
-	while (end && data[end - 1] == '#') {
+	while ((end) && (data[end - 1] == '#')) {
 		end--;
 	}
 
-	while (end && data[end - 1] == ' ') {
+	while ((end) && (data[end - 1] == ' ')) {
 		end--;
 	}
 
@@ -2533,7 +2533,7 @@ static void parse_footnote_list(struct buf *ob, struct sd_markdown *rndr, struct
 static size_t htmlblock_end_tag(const char *tag, size_t tag_len, struct sd_markdown *rndr, uint8_t *data, size_t size)
 {
 	/* checking if tag is a match */
-	if (tag_len + 3 >= size || strncasecmp((char *)data + 2, tag, tag_len) != 0 || data[tag_len + 2] != '>') {
+	if ((tag_len + 3 >= size) || (strncasecmp((char *)data + 2, tag, tag_len) != 0) || (data[tag_len + 2] != '>')) {
 		return 0;
 	}
 
@@ -2541,7 +2541,7 @@ static size_t htmlblock_end_tag(const char *tag, size_t tag_len, struct sd_markd
 	size_t i = tag_len + 3;
 	size_t w = 0;
 
-	if (i < size && (w = is_empty(data + i, size - i)) == 0) {
+	if ((i < size) && ((w = is_empty(data + i, size - i)) == 0)) {
 		/* non-blank after tag */
 		return 0;
 	}
@@ -2565,7 +2565,7 @@ static size_t htmlblock_end(const char *curtag, struct sd_markdown *rndr, uint8_
 	while (i < size) {
 		i++;
 
-		while (i < size && !(data[i - 1] == '<' && data[i] == '/')) {
+		while ((i < size) && (!((data[i - 1] == '<') && (data[i] == '/')))) {
 			if (data[i] == '\n') {
 				block_lines++;
 			}
@@ -2581,7 +2581,7 @@ static size_t htmlblock_end(const char *curtag, struct sd_markdown *rndr, uint8_
 		 * initial line; in that case it still counts as a closing
 		 * tag
 		 */
-		if (start_of_line && block_lines > 0 && data[i - 2] != '\n') {
+		if ((start_of_line) && (block_lines > 0) && (data[i - 2] != '\n')) {
 			continue;
 		}
 
@@ -2605,13 +2605,13 @@ static size_t htmlblock_end(const char *curtag, struct sd_markdown *rndr, uint8_
 static size_t parse_htmlblock(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size, int do_render)
 {
 	/* identification of the opening tag */
-	if (size < 2 || data[0] != '<') {
+	if ((size < 2) || (data[0] != '<')) {
 		return 0;
 	}
 
 	size_t i = 1;
 
-	while (i < size && data[i] != '>' && data[i] != ' ') {
+	while ((i < size) && (data[i] != '>') && (data[i] != ' ')) {
 		i++;
 	}
 
@@ -2628,10 +2628,10 @@ static size_t parse_htmlblock(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 		size_t j = 0;
 
 		/* HTML comment, laxist form */
-		if (size > 5 && data[1] == '!' && data[2] == '-' && data[3] == '-') {
+		if ((size > 5) && (data[1] == '!') && (data[2] == '-') && (data[3] == '-')) {
 			i = 5;
 
-			while (i < size && !(data[i - 2] == '-' && data[i - 1] == '-' && data[i] == '>')) {
+			while ((i < size) && (!((data[i - 2] == '-') && (data[i - 1] == '-') && (data[i] == '>')))) {
 				i++;
 			}
 
@@ -2644,7 +2644,7 @@ static size_t parse_htmlblock(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 			if (j) {
 				work.size = i + j;
 
-				if (do_render && rndr->cb.blockhtml) {
+				if ((do_render) && (rndr->cb.blockhtml)) {
 					rndr->cb.blockhtml(ob, &work, rndr->opaque);
 				}
 
@@ -2653,10 +2653,10 @@ static size_t parse_htmlblock(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 		}
 
 		/* HR, which is the only self-closing block tag considered */
-		if (size > 4 && (data[1] == 'h' || data[1] == 'H') && (data[2] == 'r' || data[2] == 'R')) {
+		if ((size > 4) && ((data[1] == 'h') || (data[1] == 'H')) && ((data[2] == 'r') || (data[2] == 'R'))) {
 			i = 3;
 
-			while (i < size && data[i] != '>') {
+			while ((i < size) && (data[i] != '>')) {
 				i++;
 			}
 
@@ -2667,7 +2667,7 @@ static size_t parse_htmlblock(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 				if (j) {
 					work.size = i + j;
 
-					if (do_render && rndr->cb.blockhtml) {
+					if ((do_render) && (rndr->cb.blockhtml)) {
 						rndr->cb.blockhtml(ob, &work, rndr->opaque);
 					}
 
@@ -2686,7 +2686,7 @@ static size_t parse_htmlblock(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 
 	/* if not found, trying a second pass looking for indented match */
 	/* but not if tag is "ins" or "del" (following original Markdown.pl) */
-	if (!tag_end && strcmp(curtag, "ins") != 0 && strcmp(curtag, "del") != 0) {
+	if ((!tag_end) && (strcmp(curtag, "ins") != 0) && (strcmp(curtag, "del") != 0)) {
 		tag_end = htmlblock_end(curtag, rndr, data, size, 0);
 	}
 
@@ -2697,7 +2697,7 @@ static size_t parse_htmlblock(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 	/* the end of the block has been found */
 	work.size = tag_end;
 
-	if (do_render && rndr->cb.blockhtml) {
+	if ((do_render) && (rndr->cb.blockhtml)) {
 		rndr->cb.blockhtml(ob, &work, rndr->opaque);
 	}
 
@@ -2706,7 +2706,7 @@ static size_t parse_htmlblock(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 
 static void parse_table_row(struct buf *ob, struct sd_markdown *rndr, uint8_t *data, size_t size, size_t columns, int *col_data, int header_flag)
 {
-	if (!rndr->cb.table_cell || !rndr->cb.table_row) {
+	if ((!rndr->cb.table_cell) || (!rndr->cb.table_row)) {
 		return;
 	}
 
@@ -2718,32 +2718,32 @@ static void parse_table_row(struct buf *ob, struct sd_markdown *rndr, uint8_t *d
 
 	size_t i = 0;
 
-	if (i < size && data[i] == '|') {
+	if ((i < size) && (data[i] == '|')) {
 		i++;
 	}
 
 	size_t col;
 
-	for (col = 0; col < columns && i < size; ++col) {
+	for (col = 0; (col < columns) && (i < size); ++col) {
 		struct buf *cell_work = rndr_newbuf(rndr, BUFFER_SPAN);
 
 		if (cell_work == NULL) {
 			return;
 		}
 
-		while (i < size && _isspace(data[i])) {
+		while ((i < size) && (_isspace(data[i]))) {
 			i++;
 		}
 
 		size_t cell_start = i;
 
-		while (i < size && ((data[i] != '|') || ((i > 0) && (data[i - 1] == '\\')))) {
+		while ((i < size) && ((data[i] != '|') || ((i > 0) && (data[i - 1] == '\\')))) {
 			i++;
 		}
 
 		size_t cell_end = i - 1;
 
-		while (cell_end > cell_start && _isspace(data[cell_end])) {
+		while ((cell_end > cell_start) && (_isspace(data[cell_end]))) {
 			cell_end--;
 		}
 
@@ -2769,19 +2769,19 @@ static size_t parse_table_header(struct buf *ob, struct sd_markdown *rndr, uint8
 	int pipes = 0;
 	size_t i = 0;
 
-	while (i < size && data[i] != '\n') {
+	while ((i < size) && (data[i] != '\n')) {
 		if (data[i++] == '|') {
 			pipes++;
 		}
 	}
 
-	if (i == size || pipes == 0) {
+	if ((i == size) || (pipes == 0)) {
 		return 0;
 	}
 
 	size_t header_end = i;
 
-	while (header_end > 0 && _isspace(data[header_end - 1])) {
+	while ((header_end > 0) && (_isspace(data[header_end - 1]))) {
 		header_end--;
 	}
 
@@ -2789,7 +2789,7 @@ static size_t parse_table_header(struct buf *ob, struct sd_markdown *rndr, uint8
 		pipes--;
 	}
 
-	if (header_end && data[header_end - 1] == '|') {
+	if ((header_end) && (data[header_end - 1] == '|')) {
 		pipes--;
 	}
 
@@ -2799,20 +2799,20 @@ static size_t parse_table_header(struct buf *ob, struct sd_markdown *rndr, uint8
 	/* Parse the header underline */
 	i++;
 
-	if (i < size && data[i] == '|') {
+	if ((i < size) && (data[i] == '|')) {
 		i++;
 	}
 
 	size_t under_end = i;
 
-	while (under_end < size && data[under_end] != '\n') {
+	while ((under_end < size) && (data[under_end] != '\n')) {
 		under_end++;
 	}
 
 	size_t col;
 
-	for (col = 0; col < *columns && i < under_end; ++col) {
-		while (i < under_end && data[i] == ' ') {
+	for (col = 0; (col < *columns) && (i < under_end); ++col) {
+		while ((i < under_end) && (data[i] == ' ')) {
 			i++;
 		}
 
@@ -2824,22 +2824,22 @@ static size_t parse_table_header(struct buf *ob, struct sd_markdown *rndr, uint8
 			dashes++;
 		}
 
-		while (i < under_end && data[i] == '-') {
+		while ((i < under_end) && (data[i] == '-')) {
 			i++;
 			dashes++;
 		}
 
-		if (i < under_end && data[i] == ':') {
+		if ((i < under_end) && (data[i] == ':')) {
 			i++;
 			(*column_data)[col] |= MKD_TABLE_ALIGN_R;
 			dashes++;
 		}
 
-		while (i < under_end && data[i] == ' ') {
+		while ((i < under_end) && (data[i] == ' ')) {
 			i++;
 		}
 
-		if (i < under_end && data[i] != '|') {
+		if ((i < under_end) && (data[i] != '|')) {
 			break;
 		}
 
@@ -2882,13 +2882,13 @@ static size_t parse_table(struct buf *ob, struct sd_markdown *rndr, uint8_t *dat
 			int pipes = 0;
 			size_t row_start = i;
 
-			while (i < size && data[i] != '\n') {
+			while ((i < size) && (data[i] != '\n')) {
 				if (data[i++] == '|') {
 					pipes++;
 				}
 			}
 
-			if (pipes == 0 || i == size) {
+			if ((pipes == 0) || (i == size)) {
 				i = row_start;
 
 				break;
@@ -2929,7 +2929,7 @@ static void parse_block(struct buf *ob, struct sd_markdown *rndr, uint8_t *data,
 
 		if (is_atxheader(rndr, txt_data, end)) {
 			beg += parse_atxheader(ob, rndr, txt_data, end);
-		} else if (data[beg] == '<' && rndr->cb.blockhtml && (i = parse_htmlblock(ob, rndr, txt_data, end, 1)) != 0) {
+		} else if ((data[beg] == '<') && (rndr->cb.blockhtml) && ((i = parse_htmlblock(ob, rndr, txt_data, end, 1)) != 0)) {
 			beg += i;
 		} else if ((i = is_empty(txt_data, end)) != 0) {
 			beg += i;
@@ -2938,14 +2938,14 @@ static void parse_block(struct buf *ob, struct sd_markdown *rndr, uint8_t *data,
 				rndr->cb.hrule(ob, rndr->opaque);
 			}
 
-			while (beg < size && data[beg] != '\n') {
+			while ((beg < size) && (data[beg] != '\n')) {
 				beg++;
 			}
 
 			beg++;
-		} else if ((rndr->ext_flags & MKDEXT_FENCED_CODE) != 0 && (i = parse_fencedcode(ob, rndr, txt_data, end)) != 0) {
+		} else if (((rndr->ext_flags & MKDEXT_FENCED_CODE) != 0) && ((i = parse_fencedcode(ob, rndr, txt_data, end)) != 0)) {
 			beg += i;
-		} else if ((rndr->ext_flags & MKDEXT_TABLES) != 0 && (i = parse_table(ob, rndr, txt_data, end)) != 0) {
+		} else if (((rndr->ext_flags & MKDEXT_TABLES) != 0) && ((i = parse_table(ob, rndr, txt_data, end)) != 0)) {
 			beg += i;
 		} else if (prefix_quote(txt_data, end)) {
 			beg += parse_blockquote(ob, rndr, txt_data, end);
@@ -3002,18 +3002,18 @@ static int is_footnote(const uint8_t *data, size_t beg, size_t end, size_t *last
 
 	i++;
 
-	if (i >= end || data[i] != '^') {
+	if ((i >= end) || (data[i] != '^')) {
 		return 0;
 	}
 
 	i++;
 	size_t id_offset = i;
 
-	while (i < end && data[i] != '\n' && data[i] != '\r' && data[i] != ']') {
+	while ((i < end) && (data[i] != '\n') && (data[i] != '\r') && (data[i] != ']')) {
 		i++;
 	}
 
-	if (i >= end || data[i] != ']') {
+	if ((i >= end) || (data[i] != ']')) {
 		return 0;
 	}
 
@@ -3022,29 +3022,29 @@ static int is_footnote(const uint8_t *data, size_t beg, size_t end, size_t *last
 	/* spacer: colon (space | tab)* newline? (space | tab)* */
 	i++;
 
-	if (i >= end || data[i] != ':') {
+	if ((i >= end) || (data[i] != ':')) {
 		return 0;
 	}
 
 	i++;
 
-	while (i < end && data[i] == ' ') {
+	while ((i < end) && (data[i] == ' ')) {
 		i++;
 	}
 
-	if (i < end && (data[i] == '\n' || data[i] == '\r')) {
+	if ((i < end) && ((data[i] == '\n') || (data[i] == '\r'))) {
 		i++;
 
-		if (i < end && data[i] == '\n' && data[i - 1] == '\r') {
+		if ((i < end) && (data[i] == '\n') && (data[i - 1] == '\r')) {
 			i++;
 		}
 	}
 
-	while (i < end && data[i] == ' ') {
+	while ((i < end) && (data[i] == ' ')) {
 		i++;
 	}
 
-	if (i >= end || data[i] == '\n' || data[i] == '\r') {
+	if ((i >= end) || (data[i] == '\n') || (data[i] == '\r')) {
 		return 0;
 	}
 
@@ -3061,7 +3061,7 @@ static int is_footnote(const uint8_t *data, size_t beg, size_t end, size_t *last
 
 	/* process lines similiar to a list item */
 	while (i < end) {
-		while (i < end && data[i] != '\n' && data[i] != '\r') {
+		while ((i < end) && (data[i] != '\n') && (data[i] != '\r')) {
 			i++;
 		}
 
@@ -3069,10 +3069,10 @@ static int is_footnote(const uint8_t *data, size_t beg, size_t end, size_t *last
 		if (is_empty(data + start, i - start)) {
 			in_empty = 1;
 
-			if (i < end && (data[i] == '\n' || data[i] == '\r')) {
+			if ((i < end) && ((data[i] == '\n') || (data[i] == '\r'))) {
 				i++;
 
-				if (i < end && data[i] == '\n' && data[i - 1] == '\r') {
+				if ((i < end) && (data[i] == '\n') && (data[i - 1] == '\r')) {
 					i++;
 				}
 			}
@@ -3085,7 +3085,7 @@ static int is_footnote(const uint8_t *data, size_t beg, size_t end, size_t *last
 		/* calculating the indentation */
 		size_t ind = 0;
 
-		while (ind < 4 && start + ind < end && data[start + ind] == ' ') {
+		while ((ind < 4) && (start + ind < end) && (data[start + ind] == ' ')) {
 			ind++;
 		}
 
@@ -3094,7 +3094,7 @@ static int is_footnote(const uint8_t *data, size_t beg, size_t end, size_t *last
 		 * note that now we only require 1 space of indentation
 		 * to continue, just like lists
 		 */
-		if (in_empty && ind == 0) {
+		if ((in_empty) && (ind == 0)) {
 			break;
 		} else if (in_empty) {
 			bufputc(contents, '\n');
@@ -3109,10 +3109,10 @@ static int is_footnote(const uint8_t *data, size_t beg, size_t end, size_t *last
 		if (i < end) {
 			bufput(contents, "\n", 1);
 
-			if (i < end && (data[i] == '\n' || data[i] == '\r')) {
+			if ((i < end) && ((data[i] == '\n') || (data[i] == '\r'))) {
 				i++;
 
-				if (i < end && data[i] == '\n' && data[i - 1] == '\r') {
+				if ((i < end) && (data[i] == '\n') && (data[i - 1] == '\r')) {
 					i++;
 				}
 			}
@@ -3184,11 +3184,11 @@ static int is_ref(const uint8_t *data, size_t beg, size_t end, size_t *last, str
 	i++;
 	size_t id_offset = i;
 
-	while (i < end && data[i] != '\n' && data[i] != '\r' && data[i] != ']') {
+	while ((i < end) && (data[i] != '\n') && (data[i] != '\r') && (data[i] != ']')) {
 		i++;
 	}
 
-	if (i >= end || data[i] != ']') {
+	if ((i >= end) || (data[i] != ']')) {
 		return 0;
 	}
 
@@ -3197,25 +3197,25 @@ static int is_ref(const uint8_t *data, size_t beg, size_t end, size_t *last, str
 	/* spacer: colon (space | tab)* newline? (space | tab)* */
 	i++;
 
-	if (i >= end || data[i] != ':') {
+	if ((i >= end) || (data[i] != ':')) {
 		return 0;
 	}
 
 	i++;
 
-	while (i < end && data[i] == ' ') {
+	while ((i < end) && (data[i] == ' ')) {
 		i++;
 	}
 
-	if (i < end && (data[i] == '\n' || data[i] == '\r')) {
+	if ((i < end) && ((data[i] == '\n') || (data[i] == '\r'))) {
 		i++;
 
-		if (i < end && data[i] == '\r' && data[i - 1] == '\n') {
+		if ((i < end) && (data[i] == '\r') && (data[i - 1] == '\n')) {
 			i++;
 		}
 	}
 
-	while (i < end && data[i] == ' ') {
+	while ((i < end) && (data[i] == ' ')) {
 		i++;
 	}
 
@@ -3230,7 +3230,7 @@ static int is_ref(const uint8_t *data, size_t beg, size_t end, size_t *last, str
 
 	size_t link_offset = i;
 
-	while (i < end && data[i] != ' ' && data[i] != '\n' && data[i] != '\r') {
+	while ((i < end) && (data[i] != ' ') && (data[i] != '\n') && (data[i] != '\r')) {
 		i++;
 	}
 
@@ -3243,22 +3243,22 @@ static int is_ref(const uint8_t *data, size_t beg, size_t end, size_t *last, str
 	}
 
 	/* optional spacer: (space | tab)* (newline | '\'' | '"' | '(' ) */
-	while (i < end && data[i] == ' ') {
+	while ((i < end) && (data[i] == ' ')) {
 		i++;
 	}
 
-	if (i < end && data[i] != '\n' && data[i] != '\r' && data[i] != '\'' && data[i] != '"' && data[i] != '(') {
+	if ((i < end) && (data[i] != '\n') && (data[i] != '\r') && (data[i] != '\'') && (data[i] != '"') && (data[i] != '(')) {
 		return 0;
 	}
 
 	size_t line_end = 0;
 
 	/* computing end-of-line */
-	if (i >= end || data[i] == '\r' || data[i] == '\n') {
+	if ((i >= end) || (data[i] == '\r') || (data[i] == '\n')) {
 		line_end = i;
 	}
 
-	if (i + 1 < end && data[i] == '\n' && data[i + 1] == '\r') {
+	if ((i + 1 < end) && (data[i] == '\n') && (data[i + 1] == '\r')) {
 		line_end = i + 1;
 	}
 
@@ -3266,7 +3266,7 @@ static int is_ref(const uint8_t *data, size_t beg, size_t end, size_t *last, str
 	if (line_end) {
 		i = line_end + 1;
 
-		while (i < end && data[i] == ' ') {
+		while ((i < end) && (data[i] == ' ')) {
 			i++;
 		}
 	}
@@ -3278,16 +3278,16 @@ static int is_ref(const uint8_t *data, size_t beg, size_t end, size_t *last, str
 	size_t title_end = 0;
 	size_t title_offset = 0;
 
-	if (i + 1 < end && (data[i] == '\'' || data[i] == '"' || data[i] == '(')) {
+	if ((i + 1 < end) && ((data[i] == '\'') || (data[i] == '"') || (data[i] == '('))) {
 		i++;
 		title_offset = i;
 
 		/* looking for EOL */
-		while (i < end && data[i] != '\n' && data[i] != '\r') {
+		while ((i < end) && (data[i] != '\n') && (data[i] != '\r')) {
 			i++;
 		}
 
-		if (i + 1 < end && data[i] == '\n' && data[i + 1] == '\r') {
+		if ((i + 1 < end) && (data[i] == '\n') && (data[i + 1] == '\r')) {
 			title_end = i + 1;
 		} else {
 			title_end = i;
@@ -3296,17 +3296,17 @@ static int is_ref(const uint8_t *data, size_t beg, size_t end, size_t *last, str
 		/* stepping back */
 		i -= 1;
 
-		while (i > title_offset && data[i] == ' ') {
+		while ((i > title_offset) && (data[i] == ' ')) {
 			i -= 1;
 		}
 
-		if (i > title_offset && (data[i] == '\'' || data[i] == '"' || data[i] == ')')) {
+		if ((i > title_offset) && ((data[i] == '\'') || (data[i] == '"') || (data[i] == ')'))) {
 			line_end = title_end;
 			title_end = i;
 		}
 	}
 
-	if (!line_end || link_end == link_offset) {
+	if ((!line_end) || (link_end == link_offset)) {
 		/* garbage after the link empty link */
 		return 0;
 	}
@@ -3353,7 +3353,7 @@ static void expand_tabs(struct buf *ob, const uint8_t *line, size_t size)
 	while (i < size) {
 		size_t org = i;
 
-		while (i < size && line[i] != '\t') {
+		while ((i < size) && (line[i] != '\t')) {
 			i++;
 			tab++;
 		}
@@ -3381,7 +3381,7 @@ static void expand_tabs(struct buf *ob, const uint8_t *line, size_t size)
 
 struct sd_markdown *sd_markdown_new(unsigned int extensions, size_t max_nesting, const struct sd_callbacks *callbacks, void *opaque)
 {
-	assert(max_nesting > 0 && callbacks);
+	assert((max_nesting > 0) && (callbacks));
 
 	struct sd_markdown *md = malloc(sizeof(struct sd_markdown));
 
@@ -3408,7 +3408,7 @@ struct sd_markdown *sd_markdown_new(unsigned int extensions, size_t max_nesting,
 
 	memset(md->active_char, 0x00, 256);
 
-	if (md->cb.emphasis || md->cb.double_emphasis || md->cb.triple_emphasis) {
+	if ((md->cb.emphasis) || (md->cb.double_emphasis) || (md->cb.triple_emphasis)) {
 		md->active_char['*'] = MD_CHAR_EMPHASIS;
 		md->active_char['_'] = MD_CHAR_EMPHASIS;
 
@@ -3429,7 +3429,7 @@ struct sd_markdown *sd_markdown_new(unsigned int extensions, size_t max_nesting,
 		md->active_char['\n'] = MD_CHAR_LINEBREAK;
 	}
 
-	if (md->cb.image || md->cb.link) {
+	if ((md->cb.image) || (md->cb.link)) {
 		md->active_char['['] = MD_CHAR_LINK;
 	}
 
@@ -3492,21 +3492,21 @@ void sd_markdown_render(struct buf *ob, const uint8_t *document, size_t doc_size
 	 * Skip a possible UTF-8 BOM, even though the Unicode standard
 	 * discourages having these in UTF-8 documents
 	 */
-	if (doc_size >= 3 && memcmp(document, UTF8_BOM, 3) == 0) {
+	if ((doc_size >= 3) && (memcmp(document, UTF8_BOM, 3) == 0)) {
 		beg += 3;
 	}
 
 	size_t end;
 
 	while (beg < doc_size) { /* iterating over lines */
-		if (footnotes_enabled && is_footnote(document, beg, doc_size, &end, &md->footnotes_found)) {
+		if ((footnotes_enabled) && (is_footnote(document, beg, doc_size, &end, &md->footnotes_found))) {
 			beg = end;
 		} else if (is_ref(document, beg, doc_size, &end, md->refs)) {
 			beg = end;
 		} else { /* skipping to the next line */
 			end = beg;
 
-			while (end < doc_size && document[end] != '\n' && document[end] != '\r') {
+			while ((end < doc_size) && (document[end] != '\n') && (document[end] != '\r')) {
 				end++;
 			}
 
@@ -3515,9 +3515,9 @@ void sd_markdown_render(struct buf *ob, const uint8_t *document, size_t doc_size
 				expand_tabs(text, document + beg, end - beg);
 			}
 
-			while (end < doc_size && (document[end] == '\n' || document[end] == '\r')) {
+			while ((end < doc_size) && ((document[end] == '\n') || (document[end] == '\r'))) {
 				/* add one \n per newline */
-				if (document[end] == '\n' || (end + 1 < doc_size && document[end + 1] != '\n')) {
+				if ((document[end] == '\n') || ((end + 1 < doc_size) && (document[end + 1] != '\n'))) {
 					bufputc(text, '\n');
 				}
 
@@ -3540,7 +3540,7 @@ void sd_markdown_render(struct buf *ob, const uint8_t *document, size_t doc_size
 
 	if (text->size) {
 		/* adding a final newline if not already present */
-		if (text->data[text->size - 1] != '\n' && text->data[text->size - 1] != '\r') {
+		if ((text->data[text->size - 1] != '\n') && (text->data[text->size - 1] != '\r')) {
 			bufputc(text, '\n');
 		}
 

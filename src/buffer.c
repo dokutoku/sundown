@@ -34,7 +34,7 @@
 
 int bufprefix(const struct buf *buf, const char *prefix)
 {
-	assert(buf && buf->unit);
+	assert((buf) && (buf->unit));
 
 	for (size_t i = 0; i < buf->size; ++i) {
 		if (prefix[i] == '\0') {
@@ -54,7 +54,7 @@ int bufprefix(const struct buf *buf, const char *prefix)
  */
 int bufgrow(struct buf *buf, size_t neosz)
 {
-	assert(buf && buf->unit);
+	assert((buf) && (buf->unit));
 
 	if (neosz > BUFFER_MAX_ALLOC_SIZE) {
 		return BUF_ENOMEM;
@@ -104,13 +104,13 @@ struct buf *bufnew(size_t unit)
  */
 const char *bufcstr(struct buf *buf)
 {
-	assert(buf && buf->unit);
+	assert((buf) && (buf->unit));
 
-	if (buf->size < buf->asize && buf->data[buf->size] == '\0') {
+	if ((buf->size < buf->asize) && (buf->data[buf->size] == '\0')) {
 		return (char *)buf->data;
 	}
 
-	if (buf->size + 1 <= buf->asize || bufgrow(buf, buf->size + 1) == BUF_OK) {
+	if ((buf->size + 1 <= buf->asize) || (bufgrow(buf, buf->size + 1) == BUF_OK)) {
 		buf->data[buf->size] = '\0';
 
 		return (char *)buf->data;
@@ -124,9 +124,9 @@ const char *bufcstr(struct buf *buf)
  */
 void bufprintf(struct buf *buf, const char *fmt, ...)
 {
-	assert(buf && buf->unit);
+	assert((buf) && (buf->unit));
 
-	if (buf->size >= buf->asize && bufgrow(buf, buf->size + 1) != BUF_OK) {
+	if ((buf->size >= buf->asize) && (bufgrow(buf, buf->size + 1) != BUF_OK)) {
 		return;
 	}
 
@@ -167,9 +167,9 @@ void bufprintf(struct buf *buf, const char *fmt, ...)
  */
 void bufput(struct buf *buf, const void *data, size_t len)
 {
-	assert(buf && buf->unit);
+	assert((buf) && (buf->unit));
 
-	if (buf->size + len > buf->asize && bufgrow(buf, buf->size + len) != BUF_OK) {
+	if ((buf->size + len > buf->asize) && (bufgrow(buf, buf->size + len) != BUF_OK)) {
 		return;
 	}
 
@@ -190,9 +190,9 @@ void bufputs(struct buf *buf, const char *str)
  */
 void bufputc(struct buf *buf, uint8_t c)
 {
-	assert(buf && buf->unit);
+	assert((buf) && (buf->unit));
 
-	if (buf->size + 1 > buf->asize && bufgrow(buf, buf->size + 1) != BUF_OK) {
+	if ((buf->size + 1 > buf->asize) && (bufgrow(buf, buf->size + 1) != BUF_OK)) {
 		return;
 	}
 
@@ -233,7 +233,7 @@ void bufreset(struct buf *buf)
  */
 void bufslurp(struct buf *buf, size_t len)
 {
-	assert(buf && buf->unit);
+	assert((buf) && (buf->unit));
 
 	if (len >= buf->size) {
 		buf->size = 0;

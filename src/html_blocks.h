@@ -42,7 +42,7 @@ static int gperf_case_strncmp(register const char *s1, register const char *s2, 
 		unsigned char c1 = gperf_downcase[(unsigned char) * s1++];
 		unsigned char c2 = gperf_downcase[(unsigned char) * s2++];
 
-		if (c1 != '\0' && c1 == c2) {
+		if ((c1 != '\0') && (c1 == c2)) {
 			n--;
 
 			continue;
@@ -164,13 +164,13 @@ const char *find_block_tag(register const char *str, register unsigned int len)
 		"h2",
 	};
 
-	if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH) {
+	if ((len <= MAX_WORD_LENGTH) && (len >= MIN_WORD_LENGTH)) {
 		register int key = hash_block_tag(str, len);
 
-		if (key <= MAX_HASH_VALUE && key >= 0) {
+		if ((key <= MAX_HASH_VALUE) && (key >= 0)) {
 			register const char *s = wordlist[key];
 
-			if ((((unsigned char)*str ^ (unsigned char)*s) & ~32) == '\0' && !gperf_case_strncmp(str, s, len) && s[len] == '\0') {
+			if (((((unsigned char)*str ^ (unsigned char)*s) & ~32) == '\0') && (!gperf_case_strncmp(str, s, len)) && (s[len] == '\0')) {
 				return s;
 			}
 		}

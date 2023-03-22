@@ -60,7 +60,7 @@ void houdini_escape_html0(struct buf *ob, const uint8_t *src, size_t size, int s
 	while (i < size) {
 		size_t org = i;
 
-		while (i < size && (esc = HTML_ESCAPE_TABLE[src[i]]) == 0) {
+		while ((i < size) && ((esc = HTML_ESCAPE_TABLE[src[i]]) == 0)) {
 			i++;
 		}
 
@@ -74,7 +74,7 @@ void houdini_escape_html0(struct buf *ob, const uint8_t *src, size_t size, int s
 		}
 
 		/* The forward slash is only escaped in secure mode */
-		if (src[i] == '/' && !secure) {
+		if ((src[i] == '/') && (!secure)) {
 			bufputc(ob, '/');
 		} else {
 			bufputs(ob, HTML_ESCAPES[esc]);
