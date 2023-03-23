@@ -27,7 +27,7 @@ int stack_grow(struct stack *st, size_t new_size)
 
 void stack_free(struct stack *st)
 {
-	if (!st) {
+	if (st == NULL) {
 		return;
 	}
 
@@ -44,7 +44,7 @@ int stack_init(struct stack *st, size_t initial_size)
 	st->size = 0;
 	st->asize = 0;
 
-	if (!initial_size) {
+	if (initial_size == 0) {
 		initial_size = 8;
 	}
 
@@ -53,7 +53,7 @@ int stack_init(struct stack *st, size_t initial_size)
 
 void *stack_pop(struct stack *st)
 {
-	if (!st->size) {
+	if (st->size == 0) {
 		return NULL;
 	}
 
@@ -73,7 +73,7 @@ int stack_push(struct stack *st, void *item)
 
 void *stack_top(struct stack *st)
 {
-	if (!st->size) {
+	if (st->size == 0) {
 		return NULL;
 	}
 

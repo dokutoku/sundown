@@ -38,7 +38,7 @@ int sd_autolink_issafe(const uint8_t *link, size_t link_len)
 	for (size_t i = 0; i < valid_uris_count; ++i) {
 		size_t len = strlen(valid_uris[i]);
 
-		if ((link_len > len) && (strncasecmp((char *)link, valid_uris[i], len) == 0) && (isalnum(link[len]))) {
+		if ((link_len > len) && (strncasecmp((char *)link, valid_uris[i], len) == 0) && (isalnum(link[len]) != 0)) {
 			return 1;
 		}
 	}
@@ -62,7 +62,7 @@ static size_t autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, 
 		} else if (data[link_end - 1] == ';') {
 			size_t new_end = link_end - 2;
 
-			while ((new_end > 0) && (isalpha(data[new_end]))) {
+			while ((new_end > 0) && (isalpha(data[new_end]) != 0)) {
 				new_end--;
 			}
 
@@ -159,7 +159,7 @@ static size_t autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, 
 
 static size_t check_domain(uint8_t *data, size_t size, int allow_short)
 {
-	if (!isalnum(data[0])) {
+	if (isalnum(data[0]) == 0) {
 		return 0;
 	}
 
@@ -169,12 +169,12 @@ static size_t check_domain(uint8_t *data, size_t size, int allow_short)
 	for (i = 1; i < (size - 1); ++i) {
 		if (data[i] == '.') {
 			np++;
-		} else if ((!isalnum(data[i])) && (data[i] != '-')) {
+		} else if ((isalnum(data[i]) == 0) && (data[i] != '-')) {
 			break;
 		}
 	}
 
-	if (allow_short) {
+	if (allow_short != 0) {
 		/*
 		 * We don't need a valid domain in the strict sense (with
 		 * least one dot; so just make sure it's composed of valid
@@ -187,13 +187,13 @@ static size_t check_domain(uint8_t *data, size_t size, int allow_short)
 		 * a valid domain needs to have at least a dot.
 		 * that's as far as we get
 		 */
-		return (np) ? (i) : (0);
+		return (np != 0) ? (i) : (0);
 	}
 }
 
 size_t sd_autolink__www(size_t *rewind_p, struct buf *link, uint8_t *data, size_t max_rewind, size_t size, unsigned int flags)
 {
-	if ((max_rewind > 0) && (!ispunct(data[-1])) && (!isspace(data[-1]))) {
+	if ((max_rewind > 0) && (ispunct(data[-1]) == 0) && (isspace(data[-1]) == 0)) {
 		return 0;
 	}
 
@@ -207,7 +207,7 @@ size_t sd_autolink__www(size_t *rewind_p, struct buf *link, uint8_t *data, size_
 		return 0;
 	}
 
-	while ((link_end < size) && (!isspace(data[link_end]))) {
+	while ((link_end < size) && (isspace(data[link_end]) == 0)) {
 		link_end++;
 	}
 
@@ -230,7 +230,7 @@ size_t sd_autolink__email(size_t *rewind_p, struct buf *link, uint8_t *data, siz
 	for (rewind = 0; rewind < max_rewind; ++rewind) {
 		uint8_t c = data[-rewind - 1];
 
-		if (isalnum(c)) {
+		if (isalnum(c) != 0) {
 			continue;
 		}
 
@@ -252,7 +252,7 @@ size_t sd_autolink__email(size_t *rewind_p, struct buf *link, uint8_t *data, siz
 	for (link_end = 0; link_end < size; ++link_end) {
 		uint8_t c = data[link_end];
 
-		if (isalnum(c)) {
+		if (isalnum(c) != 0) {
 			continue;
 		}
 
@@ -265,7 +265,7 @@ size_t sd_autolink__email(size_t *rewind_p, struct buf *link, uint8_t *data, siz
 		}
 	}
 
-	if ((link_end < 2) || (nb != 1) || (np == 0) || (!isalpha(data[link_end - 1]))) {
+	if ((link_end < 2) || (nb != 1) || (np == 0) || (isalpha(data[link_end - 1]) == 0)) {
 		return 0;
 	}
 
@@ -289,11 +289,11 @@ size_t sd_autolink__url(size_t *rewind_p, struct buf *link, uint8_t *data, size_
 
 	size_t rewind = 0;
 
-	while ((rewind < max_rewind) && (isalpha(data[-rewind - 1]))) {
+	while ((rewind < max_rewind) && (isalpha(data[-rewind - 1]) != 0)) {
 		rewind++;
 	}
 
-	if (!sd_autolink_issafe(data - rewind, size + rewind)) {
+	if (sd_autolink_issafe(data - rewind, size + rewind) == 0) {
 		return 0;
 	}
 
@@ -307,7 +307,7 @@ size_t sd_autolink__url(size_t *rewind_p, struct buf *link, uint8_t *data, size_
 
 	link_end += domain_len;
 
-	while ((link_end < size) && (!isspace(data[link_end]))) {
+	while ((link_end < size) && (isspace(data[link_end]) == 0)) {
 		link_end++;
 	}
 

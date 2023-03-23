@@ -55,8 +55,8 @@ int sdhtml_is_tag(const uint8_t *tag_data, size_t tag_size, const char *tagname)
 		return HTML_TAG_NONE;
 	}
 
-	if ((isspace(tag_data[i])) || (tag_data[i] == '>')) {
-		return (closed) ? (HTML_TAG_CLOSE) : (HTML_TAG_OPEN);
+	if ((isspace(tag_data[i]) != 0) || (tag_data[i] == '>')) {
+		return (closed != 0) ? (HTML_TAG_CLOSE) : (HTML_TAG_OPEN);
 	}
 
 	return HTML_TAG_NONE;
@@ -79,11 +79,11 @@ static int rndr_autolink(struct buf *ob, const struct buf *link, enum mkd_autoli
 {
 	struct html_renderopt *options = opaque;
 
-	if ((!link) || (!link->size)) {
+	if ((link == NULL) || (link->size == 0)) {
 		return 0;
 	}
 
-	if (((options->flags & HTML_SAFELINK) != 0) && (!sd_autolink_issafe(link->data, link->size)) && (type != MKDA_EMAIL)) {
+	if (((options->flags & HTML_SAFELINK) != 0) && (sd_autolink_issafe(link->data, link->size) == 0) && (type != MKDA_EMAIL)) {
 		return 0;
 	}
 
@@ -95,7 +95,7 @@ static int rndr_autolink(struct buf *ob, const struct buf *link, enum mkd_autoli
 
 	escape_href(ob, link->data, link->size);
 
-	if (options->link_attributes) {
+	if (options->link_attributes != NULL) {
 		bufputc(ob, '\"');
 		options->link_attributes(ob, link, opaque);
 		bufputc(ob, '>');
@@ -121,22 +121,22 @@ static int rndr_autolink(struct buf *ob, const struct buf *link, enum mkd_autoli
 
 static void rndr_blockcode(struct buf *ob, const struct buf *text, const struct buf *lang, void *opaque)
 {
-	if (ob->size) {
+	if (ob->size != 0) {
 		bufputc(ob, '\n');
 	}
 
-	if ((lang) && (lang->size)) {
+	if ((lang != NULL) && (lang->size != 0)) {
 		BUFPUTSL(ob, "<pre><code class=\"");
 
 		for (size_t i = 0, cls = 0; i < lang->size; ++i, ++cls) {
-			while ((i < lang->size) && (isspace(lang->data[i]))) {
+			while ((i < lang->size) && (isspace(lang->data[i]) != 0)) {
 				i++;
 			}
 
 			if (i < lang->size) {
 				size_t org = i;
 
-				while ((i < lang->size) && (!isspace(lang->data[i]))) {
+				while ((i < lang->size) && (isspace(lang->data[i]) == 0)) {
 					i++;
 				}
 
@@ -144,7 +144,7 @@ static void rndr_blockcode(struct buf *ob, const struct buf *text, const struct 
 					org++;
 				}
 
-				if (cls) {
+				if (cls != 0) {
 					bufputc(ob, ' ');
 				}
 
@@ -157,7 +157,7 @@ static void rndr_blockcode(struct buf *ob, const struct buf *text, const struct 
 		BUFPUTSL(ob, "<pre><code>");
 	}
 
-	if (text) {
+	if (text != NULL) {
 		escape_html(ob, text->data, text->size);
 	}
 
@@ -166,13 +166,13 @@ static void rndr_blockcode(struct buf *ob, const struct buf *text, const struct 
 
 static void rndr_blockquote(struct buf *ob, const struct buf *text, void *opaque)
 {
-	if (ob->size) {
+	if (ob->size != 0) {
 		bufputc(ob, '\n');
 	}
 
 	BUFPUTSL(ob, "<blockquote>\n");
 
-	if (text) {
+	if (text != NULL) {
 		bufput(ob, text->data, text->size);
 	}
 
@@ -183,7 +183,7 @@ static int rndr_codespan(struct buf *ob, const struct buf *text, void *opaque)
 {
 	BUFPUTSL(ob, "<code>");
 
-	if (text) {
+	if (text != NULL) {
 		escape_html(ob, text->data, text->size);
 	}
 
@@ -194,7 +194,7 @@ static int rndr_codespan(struct buf *ob, const struct buf *text, void *opaque)
 
 static int rndr_ins(struct buf *ob, const struct buf *text, void *opaque)
 {
-	if ((!text) || (!text->size)) {
+	if ((text == NULL) || (text->size == 0)) {
 		return 0;
 	}
 
@@ -207,7 +207,7 @@ static int rndr_ins(struct buf *ob, const struct buf *text, void *opaque)
 
 static int rndr_strikethrough(struct buf *ob, const struct buf *text, void *opaque)
 {
-	if ((!text) || (!text->size)) {
+	if ((text == NULL) || (text->size == 0)) {
 		return 0;
 	}
 
@@ -220,7 +220,7 @@ static int rndr_strikethrough(struct buf *ob, const struct buf *text, void *opaq
 
 static int rndr_double_emphasis(struct buf *ob, const struct buf *text, void *opaque)
 {
-	if ((!text) || (!text->size)) {
+	if ((text == NULL) || (text->size == 0)) {
 		return 0;
 	}
 
@@ -233,13 +233,13 @@ static int rndr_double_emphasis(struct buf *ob, const struct buf *text, void *op
 
 static int rndr_emphasis(struct buf *ob, const struct buf *text, void *opaque)
 {
-	if ((!text) || (!text->size)) {
+	if ((text == NULL) || (text->size == 0)) {
 		return 0;
 	}
 
 	BUFPUTSL(ob, "<em>");
 
-	if (text) {
+	if (text != NULL) {
 		bufput(ob, text->data, text->size);
 	}
 
@@ -260,7 +260,7 @@ static void rndr_header(struct buf *ob, const struct buf *text, int level, void 
 {
 	struct html_renderopt *options = opaque;
 
-	if (ob->size) {
+	if (ob->size != 0) {
 		bufputc(ob, '\n');
 	}
 
@@ -281,7 +281,7 @@ static void rndr_header(struct buf *ob, const struct buf *text, int level, void 
 		bufprintf(ob, "<h%d>", level);
 	}
 
-	if (text) {
+	if (text != NULL) {
 		bufput(ob, text->data, text->size);
 	}
 
@@ -292,22 +292,22 @@ static int rndr_link(struct buf *ob, const struct buf *link, const struct buf *t
 {
 	struct html_renderopt *options = opaque;
 
-	if ((link != NULL) && ((options->flags & HTML_SAFELINK) != 0) && (!sd_autolink_issafe(link->data, link->size))) {
+	if ((link != NULL) && ((options->flags & HTML_SAFELINK) != 0) && (sd_autolink_issafe(link->data, link->size) == 0)) {
 		return 0;
 	}
 
 	BUFPUTSL(ob, "<a href=\"");
 
-	if ((link) && (link->size)) {
+	if ((link != NULL) && (link->size != 0)) {
 		escape_href(ob, link->data, link->size);
 	}
 
-	if ((title) && (title->size)) {
+	if ((title != NULL) && (title->size != 0)) {
 		BUFPUTSL(ob, "\" title=\"");
 		escape_html(ob, title->data, title->size);
 	}
 
-	if (options->link_attributes) {
+	if (options->link_attributes != NULL) {
 		bufputc(ob, '\"');
 		options->link_attributes(ob, link, opaque);
 		bufputc(ob, '>');
@@ -315,7 +315,7 @@ static int rndr_link(struct buf *ob, const struct buf *link, const struct buf *t
 		BUFPUTSL(ob, "\">");
 	}
 
-	if ((content) && (content->size)) {
+	if ((content != NULL) && (content->size != 0)) {
 		bufput(ob, content->data, content->size);
 	}
 
@@ -326,13 +326,13 @@ static int rndr_link(struct buf *ob, const struct buf *link, const struct buf *t
 
 static void rndr_list(struct buf *ob, const struct buf *text, int flags, void *opaque)
 {
-	if (ob->size) {
+	if (ob->size != 0) {
 		bufputc(ob, '\n');
 	}
 
 	bufput(ob, (flags & MKD_LIST_ORDERED) ? ("<ol>\n") : ("<ul>\n"), 5);
 
-	if (text) {
+	if (text != NULL) {
 		bufput(ob, text->data, text->size);
 	}
 
@@ -343,10 +343,10 @@ static void rndr_listitem(struct buf *ob, const struct buf *text, int flags, voi
 {
 	BUFPUTSL(ob, "<li>");
 
-	if (text) {
+	if (text != NULL) {
 		size_t size = text->size;
 
-		while ((size) && (text->data[size - 1] == '\n')) {
+		while ((size != 0) && (text->data[size - 1] == '\n')) {
 			size--;
 		}
 
@@ -360,17 +360,17 @@ static void rndr_paragraph(struct buf *ob, const struct buf *text, void *opaque)
 {
 	struct html_renderopt *options = opaque;
 
-	if (ob->size) {
+	if (ob->size != 0) {
 		bufputc(ob, '\n');
 	}
 
-	if ((!text) || (!text->size)) {
+	if ((text == NULL) || (text->size == 0)) {
 		return;
 	}
 
 	size_t i = 0;
 
-	while ((i < text->size) && (isspace(text->data[i]))) {
+	while ((i < text->size) && (isspace(text->data[i]) != 0)) {
 		i++;
 	}
 
@@ -412,7 +412,7 @@ static void rndr_paragraph(struct buf *ob, const struct buf *text, void *opaque)
 
 static void rndr_raw_block(struct buf *ob, const struct buf *text, void *opaque)
 {
-	if (!text) {
+	if (text == NULL) {
 		return;
 	}
 
@@ -432,7 +432,7 @@ static void rndr_raw_block(struct buf *ob, const struct buf *text, void *opaque)
 		return;
 	}
 
-	if (ob->size) {
+	if (ob->size != 0) {
 		bufputc(ob, '\n');
 	}
 
@@ -442,7 +442,7 @@ static void rndr_raw_block(struct buf *ob, const struct buf *text, void *opaque)
 
 static int rndr_triple_emphasis(struct buf *ob, const struct buf *text, void *opaque)
 {
-	if ((!text) || (!text->size)) {
+	if ((text == NULL) || (text->size == 0)) {
 		return 0;
 	}
 
@@ -457,7 +457,7 @@ static void rndr_hrule(struct buf *ob, void *opaque)
 {
 	struct html_renderopt *options = opaque;
 
-	if (ob->size) {
+	if (ob->size != 0) {
 		bufputc(ob, '\n');
 	}
 
@@ -468,7 +468,7 @@ static int rndr_image(struct buf *ob, const struct buf *link, const struct buf *
 {
 	struct html_renderopt *options = opaque;
 
-	if ((!link) || (!link->size)) {
+	if ((link == NULL) || (link->size == 0)) {
 		return 0;
 	}
 
@@ -476,11 +476,11 @@ static int rndr_image(struct buf *ob, const struct buf *link, const struct buf *
 	escape_href(ob, link->data, link->size);
 	BUFPUTSL(ob, "\" alt=\"");
 
-	if ((alt) && (alt->size)) {
+	if ((alt != NULL) && (alt->size != 0)) {
 		escape_html(ob, alt->data, alt->size);
 	}
 
-	if ((title) && (title->size)) {
+	if ((title != NULL) && (title->size != 0)) {
 		BUFPUTSL(ob, "\" title=\"");
 		escape_html(ob, title->data, title->size);
 	}
@@ -527,19 +527,19 @@ static int rndr_raw_html(struct buf *ob, const struct buf *text, void *opaque)
 
 static void rndr_table(struct buf *ob, const struct buf *header, const struct buf *body_, void *opaque)
 {
-	if (ob->size) {
+	if (ob->size != 0) {
 		bufputc(ob, '\n');
 	}
 
 	BUFPUTSL(ob, "<table><thead>\n");
 
-	if (header) {
+	if (header != NULL) {
 		bufput(ob, header->data, header->size);
 	}
 
 	BUFPUTSL(ob, "</thead><tbody>\n");
 
-	if (body_) {
+	if (body_ != NULL) {
 		bufput(ob, body_->data, body_->size);
 	}
 
@@ -550,7 +550,7 @@ static void rndr_tablerow(struct buf *ob, const struct buf *text, void *opaque)
 {
 	BUFPUTSL(ob, "<tr>\n");
 
-	if (text) {
+	if (text != NULL) {
 		bufput(ob, text->data, text->size);
 	}
 
@@ -587,7 +587,7 @@ static void rndr_tablecell(struct buf *ob, const struct buf *text, int flags, vo
 			break;
 	}
 
-	if (text) {
+	if (text != NULL) {
 		bufput(ob, text->data, text->size);
 	}
 
@@ -600,7 +600,7 @@ static void rndr_tablecell(struct buf *ob, const struct buf *text, int flags, vo
 
 static int rndr_superscript(struct buf *ob, const struct buf *text, void *opaque)
 {
-	if ((!text) || (!text->size)) {
+	if ((text == NULL) || (text->size == 0)) {
 		return 0;
 	}
 
@@ -613,7 +613,7 @@ static int rndr_superscript(struct buf *ob, const struct buf *text, void *opaque
 
 static void rndr_normal_text(struct buf *ob, const struct buf *text, void *opaque)
 {
-	if (text) {
+	if (text != NULL) {
 		escape_html(ob, text->data, text->size);
 	}
 }
@@ -633,7 +633,7 @@ static void rndr_footnotes(struct buf *ob, const struct buf *text, void *opaque)
 {
 	BUFPUTSL(ob, "<div class=\"footnotes\">\n<hr />\n<ol>\n");
 
-	if (text) {
+	if (text != NULL) {
 		bufput(ob, text->data, text->size);
 	}
 
@@ -646,7 +646,7 @@ static void rndr_footnote_def(struct buf *ob, const struct buf *text, unsigned i
 	int pfound = 0;
 
 	/* insert anchor at the end of first paragraph block */
-	if (text) {
+	if (text != NULL) {
 		while ((i + 3) < text->size) {
 			if (text->data[i++] != '<') {
 				continue;
@@ -673,11 +673,11 @@ static void rndr_footnote_def(struct buf *ob, const struct buf *text, unsigned i
 
 	bufprintf(ob, "\n<li id=\"fn%d\">\n", num);
 
-	if (pfound) {
+	if (pfound != 0) {
 		bufput(ob, text->data, i);
 		bufprintf(ob, "&nbsp;<a href=\"#fnref%d\" rev=\"footnote\">&#8617;</a>", num);
 		bufput(ob, text->data + i, text->size - i);
-	} else if (text) {
+	} else if (text != NULL) {
 		bufput(ob, text->data, text->size);
 	}
 
@@ -725,7 +725,7 @@ static void toc_header(struct buf *ob, const struct buf *text, int level, void *
 
 	bufprintf(ob, "<a href=\"#toc_%d\">", options->toc_data.header_count++);
 
-	if (text) {
+	if (text != NULL) {
 		escape_html(ob, text->data, text->size);
 	}
 
@@ -734,7 +734,7 @@ static void toc_header(struct buf *ob, const struct buf *text, int level, void *
 
 static int toc_link(struct buf *ob, const struct buf *link, const struct buf *title, const struct buf *content, void *opaque)
 {
-	if ((content) && (content->size)) {
+	if ((content != NULL) && (content->size != 0)) {
 		bufput(ob, content->data, content->size);
 	}
 

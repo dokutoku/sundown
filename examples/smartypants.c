@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 	if (argc > 1) {
 		in_ = fopen(argv[1], "r");
 
-		if (!in_) {
+		if (in_ == NULL) {
 			fprintf(stderr, "Unable to open input file \"%s\": %s\n", argv[0], strerror(errno));
 
 			return 1;

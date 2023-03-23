@@ -34,7 +34,7 @@
 
 int bufprefix(const struct buf *buf, const char *prefix)
 {
-	assert((buf) && (buf->unit));
+	assert((buf != NULL) && (buf->unit != 0));
 
 	for (size_t i = 0; i < buf->size; ++i) {
 		if (prefix[i] == '\0') {
@@ -54,7 +54,7 @@ int bufprefix(const struct buf *buf, const char *prefix)
  */
 int bufgrow(struct buf *buf, size_t neosz)
 {
-	assert((buf) && (buf->unit));
+	assert((buf != NULL) && (buf->unit != 0));
 
 	if (neosz > BUFFER_MAX_ALLOC_SIZE) {
 		return BUF_ENOMEM;
@@ -72,7 +72,7 @@ int bufgrow(struct buf *buf, size_t neosz)
 
 	void *neodata = realloc(buf->data, neoasz);
 
-	if (!neodata) {
+	if (neodata == NULL) {
 		return BUF_ENOMEM;
 	}
 
@@ -89,7 +89,7 @@ struct buf *bufnew(size_t unit)
 {
 	struct buf *ret = malloc(sizeof(struct buf));
 
-	if (ret) {
+	if (ret != NULL) {
 		ret->data = NULL;
 		ret->asize = 0;
 		ret->size = 0;
@@ -104,7 +104,7 @@ struct buf *bufnew(size_t unit)
  */
 const char *bufcstr(struct buf *buf)
 {
-	assert((buf) && (buf->unit));
+	assert((buf != NULL) && (buf->unit != 0));
 
 	if ((buf->size < buf->asize) && (buf->data[buf->size] == '\0')) {
 		return (char *)buf->data;
@@ -124,7 +124,7 @@ const char *bufcstr(struct buf *buf)
  */
 void bufprintf(struct buf *buf, const char *fmt, ...)
 {
-	assert((buf) && (buf->unit));
+	assert((buf != NULL) && (buf->unit != 0));
 
 	if ((buf->size >= buf->asize) && (bufgrow(buf, buf->size + 1) != BUF_OK)) {
 		return;
@@ -167,7 +167,7 @@ void bufprintf(struct buf *buf, const char *fmt, ...)
  */
 void bufput(struct buf *buf, const void *data, size_t len)
 {
-	assert((buf) && (buf->unit));
+	assert((buf != NULL) && (buf->unit != 0));
 
 	if (((buf->size + len) > buf->asize) && (bufgrow(buf, buf->size + len) != BUF_OK)) {
 		return;
@@ -190,7 +190,7 @@ void bufputs(struct buf *buf, const char *str)
  */
 void bufputc(struct buf *buf, uint8_t c)
 {
-	assert((buf) && (buf->unit));
+	assert((buf != NULL) && (buf->unit != 0));
 
 	if (((buf->size + 1) > buf->asize) && (bufgrow(buf, buf->size + 1) != BUF_OK)) {
 		return;
@@ -205,7 +205,7 @@ void bufputc(struct buf *buf, uint8_t c)
  */
 void bufrelease(struct buf *buf)
 {
-	if (!buf) {
+	if (buf == NULL) {
 		return;
 	}
 
@@ -218,7 +218,7 @@ void bufrelease(struct buf *buf)
  */
 void bufreset(struct buf *buf)
 {
-	if (!buf) {
+	if (buf == NULL) {
 		return;
 	}
 
@@ -233,7 +233,7 @@ void bufreset(struct buf *buf)
  */
 void bufslurp(struct buf *buf, size_t len)
 {
-	assert((buf) && (buf->unit));
+	assert((buf != NULL) && (buf->unit != 0));
 
 	if (len >= buf->size) {
 		buf->size = 0;
