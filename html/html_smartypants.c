@@ -428,7 +428,7 @@ void sdhtml_smartypants(struct buf* ob, const uint8_t* text, size_t size)
 		}
 
 		if (i < size) {
-			i += smartypants_cb_ptrs[(int)action](ob, &smrt, (i != 0) ? (text[i - 1]) : ('\0'), text + i, size - i);
+			i += smartypants_cb_ptrs[(int) action](ob, &smrt, (i != 0) ? (text[i - 1]) : ('\0'), text + i, size - i);
 		}
 	}
 }

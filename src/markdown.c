@@ -525,7 +525,7 @@ static void parse_inline(struct buf* ob, struct sd_markdown* rndr, uint8_t* data
 
 		i = end;
 
-		end = markdown_char_ptrs[(int)action](ob, rndr, data + i, i, size - i);
+		end = markdown_char_ptrs[(int) action](ob, rndr, data + i, i, size - i);
 
 		if (end == 0) { /* no action from the callback */
 			end = i + 1;
@@ -1496,7 +1496,7 @@ static size_t char_link(struct buf* ob, struct sd_markdown* rndr, uint8_t* data,
 
 	/* cleanup */
 cleanup:
-	rndr->work_bufs[BUFFER_SPAN].size = (int)org_work_size;
+	rndr->work_bufs[BUFFER_SPAN].size = (int) org_work_size;
 
 	return (ret != 0) ? (i) : (0);
 }
@@ -2114,7 +2114,7 @@ static size_t parse_paragraph(struct buf* ob, struct sd_markdown* rndr, uint8_t*
 		parse_inline(header_work, rndr, work.data, work.size);
 
 		if (rndr->cb.header != NULL) {
-			rndr->cb.header(ob, header_work, (int)level, rndr->opaque);
+			rndr->cb.header(ob, header_work, (int) level, rndr->opaque);
 		}
 
 		rndr_popbuf(rndr, BUFFER_SPAN);
@@ -2487,7 +2487,7 @@ static size_t parse_atxheader(struct buf* ob, struct sd_markdown* rndr, uint8_t*
 		parse_inline(work, rndr, data + i, end - i);
 
 		if (rndr->cb.header != NULL) {
-			rndr->cb.header(ob, work, (int)level, rndr->opaque);
+			rndr->cb.header(ob, work, (int) level, rndr->opaque);
 		}
 
 		rndr_popbuf(rndr, BUFFER_SPAN);
@@ -2553,7 +2553,7 @@ static void parse_footnote_list(struct buf* ob, struct sd_markdown* rndr, struct
 static size_t htmlblock_end_tag(const char* tag, size_t tag_len, struct sd_markdown* rndr, uint8_t* data, size_t size)
 {
 	/* checking if tag is a match */
-	if (((tag_len + 3) >= size) || (strncasecmp((char*)data + 2, tag, tag_len) != 0) || (data[tag_len + 2] != '>')) {
+	if (((tag_len + 3) >= size) || (strncasecmp((char*) data + 2, tag, tag_len) != 0) || (data[tag_len + 2] != '>')) {
 		return 0;
 	}
 
@@ -2642,7 +2642,7 @@ static size_t parse_htmlblock(struct buf* ob, struct sd_markdown* rndr, uint8_t*
 	const char* curtag = NULL;
 
 	if (i < size) {
-		curtag = find_block_tag((char*)data + 1, (int)i - 1);
+		curtag = find_block_tag((char*) data + 1, (int) i - 1);
 	}
 
 	struct buf work = {data, 0, 0, 0};
@@ -3599,11 +3599,11 @@ void sd_markdown_render(struct buf* ob, const uint8_t* document, size_t doc_size
 
 void sd_markdown_free(struct sd_markdown* md)
 {
-	for (size_t i = 0; i < (size_t)md->work_bufs[BUFFER_SPAN].asize; ++i) {
+	for (size_t i = 0; i < (size_t) md->work_bufs[BUFFER_SPAN].asize; ++i) {
 		bufrelease(md->work_bufs[BUFFER_SPAN].item[i]);
 	}
 
-	for (size_t i = 0; i < (size_t)md->work_bufs[BUFFER_BLOCK].asize; ++i) {
+	for (size_t i = 0; i < (size_t) md->work_bufs[BUFFER_BLOCK].asize; ++i) {
 		bufrelease(md->work_bufs[BUFFER_BLOCK].item[i]);
 	}
 

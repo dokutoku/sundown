@@ -38,7 +38,7 @@ int sd_autolink_issafe(const uint8_t* link, size_t link_len)
 	for (size_t i = 0; i < valid_uris_count; ++i) {
 		size_t len = strlen(valid_uris[i]);
 
-		if ((link_len > len) && (strncasecmp((char*)link, valid_uris[i], len) == 0) && (isalnum(link[len]) != 0)) {
+		if ((link_len > len) && (strncasecmp((char*) link, valid_uris[i], len) == 0) && (isalnum(link[len]) != 0)) {
 			return 1;
 		}
 	}
@@ -220,7 +220,7 @@ size_t sd_autolink__www(size_t* rewind_p, struct buf* link, uint8_t* data, size_
 	bufput(link, data, link_end);
 	*rewind_p = 0;
 
-	return (int)link_end;
+	return (int) link_end;
 }
 
 size_t sd_autolink__email(size_t* rewind_p, struct buf* link, uint8_t* data, size_t max_rewind, size_t size, unsigned int flags)

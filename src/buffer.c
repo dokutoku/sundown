@@ -107,13 +107,13 @@ const char* bufcstr(struct buf* buf)
 	assert((buf != NULL) && (buf->unit != 0));
 
 	if ((buf->size < buf->asize) && (buf->data[buf->size] == '\0')) {
-		return (char*)buf->data;
+		return (char*) buf->data;
 	}
 
 	if (((buf->size + 1) <= buf->asize) || (bufgrow(buf, buf->size + 1) == BUF_OK)) {
 		buf->data[buf->size] = '\0';
 
-		return (char*)buf->data;
+		return (char*) buf->data;
 	}
 
 	return NULL;
@@ -132,7 +132,7 @@ void bufprintf(struct buf* buf, const char* fmt, ...)
 
 	va_list ap;
 	va_start(ap, fmt);
-	int n = _buf_vsnprintf((char*)buf->data + buf->size, buf->asize - buf->size, fmt, ap);
+	int n = _buf_vsnprintf((char*) buf->data + buf->size, buf->asize - buf->size, fmt, ap);
 	va_end(ap);
 
 	if (n < 0) {
@@ -145,13 +145,13 @@ void bufprintf(struct buf* buf, const char* fmt, ...)
 #endif
 	}
 
-	if ((size_t)n >= (buf->asize - buf->size)) {
+	if ((size_t) n >= (buf->asize - buf->size)) {
 		if (bufgrow(buf, buf->size + n + 1) != BUF_OK) {
 			return;
 		}
 
 		va_start(ap, fmt);
-		n = _buf_vsnprintf((char*)buf->data + buf->size, buf->asize - buf->size, fmt, ap);
+		n = _buf_vsnprintf((char*) buf->data + buf->size, buf->asize - buf->size, fmt, ap);
 		va_end(ap);
 	}
 

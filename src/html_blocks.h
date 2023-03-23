@@ -48,7 +48,7 @@ static int gperf_case_strncmp(register const char* s1, register const char* s2, 
 			continue;
 		}
 
-		return (int)c1 - (int)c2;
+		return (int) c1 - (int) c2;
 	}
 
 	return 0;
@@ -97,12 +97,12 @@ static unsigned int hash_block_tag(register const char* str, register unsigned i
 
 	switch (hval) {
 		default:
-			hval += asso_values[(unsigned char)str[1] + 1];
+			hval += asso_values[(unsigned char) str[1] + 1];
 
 			/* FALLTHROUGH */
 
 		case 1:
-			hval += asso_values[(unsigned char)str[0]];
+			hval += asso_values[(unsigned char) str[0]];
 
 			break;
 	}
@@ -170,7 +170,7 @@ const char* find_block_tag(register const char* str, register unsigned int len)
 		if ((key <= MAX_HASH_VALUE) && (key >= 0)) {
 			register const char* s = wordlist[key];
 
-			if (((((unsigned char)*str ^ (unsigned char)*s) & ~32) == '\0') && (gperf_case_strncmp(str, s, len) == 0) && (s[len] == '\0')) {
+			if (((((unsigned char) *str ^ (unsigned char) *s) & ~32) == '\0') && (gperf_case_strncmp(str, s, len) == 0) && (s[len] == '\0')) {
 				return s;
 			}
 		}
