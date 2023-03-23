@@ -436,10 +436,10 @@ static size_t tag_length(uint8_t *data, size_t size, enum mkd_autolink *autolink
 		i++;
 	}
 
-	size_t j;
-
 	if ((i > 1) && (data[i] == '@')) {
-		if ((j = is_mail_autolink(data + i, size - i)) != 0) {
+		size_t j = is_mail_autolink(data + i, size - i);
+
+		if (j != 0) {
 			*autolink = MKDA_EMAIL;
 
 			return i + j;
@@ -455,7 +455,7 @@ static size_t tag_length(uint8_t *data, size_t size, enum mkd_autolink *autolink
 	if (i >= size) {
 		*autolink = MKDA_NOT_AUTOLINK;
 	} else if (*autolink != MKDA_NOT_AUTOLINK) {
-		j = i;
+		size_t j = i;
 
 		while (i < size) {
 			if (data[i] == '\\') {
@@ -843,7 +843,13 @@ static size_t char_emphasis(struct buf *ob, struct sd_markdown *rndr, uint8_t *d
 		 * ins only takes two characters '++'
 		 * strikethrough only takes two characters '~~'
 		 */
-		if ((c == '+') || (c == '~') || (_isspace(data[1]) != 0) || ((ret = parse_emph1(ob, rndr, data + 1, size - 1, c)) == 0)) {
+		if ((c == '+') || (c == '~') || (_isspace(data[1]) != 0)) {
+			return 0;
+		}
+
+		ret = parse_emph1(ob, rndr, data + 1, size - 1, c);
+
+		if (ret == 0) {
 			return 0;
 		}
 
@@ -851,7 +857,13 @@ static size_t char_emphasis(struct buf *ob, struct sd_markdown *rndr, uint8_t *d
 	}
 
 	if ((size > 3) && (data[1] == c) && (data[2] != c)) {
-		if ((_isspace(data[2]) != 0) || ((ret = parse_emph2(ob, rndr, data + 2, size - 2, c)) == 0)) {
+		if (_isspace(data[2]) != 0) {
+			return 0;
+		}
+
+		ret = parse_emph2(ob, rndr, data + 2, size - 2, c);
+
+		if (ret == 0) {
 			return 0;
 		}
 
@@ -859,7 +871,13 @@ static size_t char_emphasis(struct buf *ob, struct sd_markdown *rndr, uint8_t *d
 	}
 
 	if ((size > 4) && (data[1] == c) && (data[2] == c) && (data[3] != c)) {
-		if ((c == '+') || (c == '~') || (_isspace(data[3]) != 0) || ((ret = parse_emph3(ob, rndr, data + 3, size - 3, c)) == 0)) {
+		if ((c == '+') || (c == '~') || (_isspace(data[3]) != 0)) {
+			return 0;
+		}
+
+		ret = parse_emph3(ob, rndr, data + 3, size - 3, c);
+
+		if (ret == 0) {
 			return 0;
 		}
 
@@ -1054,10 +1072,10 @@ static size_t char_autolink_www(struct buf *ob, struct sd_markdown *rndr, uint8_
 		return 0;
 	}
 
-	size_t link_len;
 	size_t rewind;
+	size_t link_len = sd_autolink__www(&rewind, link, data, offset, size, 0);
 
-	if ((link_len = sd_autolink__www(&rewind, link, data, offset, size, 0)) > 0) {
+	if (link_len > 0) {
 		struct buf *link_url = rndr_newbuf(rndr, BUFFER_SPAN);
 
 		if (link_url == NULL) {
@@ -1103,10 +1121,10 @@ static size_t char_autolink_email(struct buf *ob, struct sd_markdown *rndr, uint
 		return 0;
 	}
 
-	size_t link_len;
 	size_t rewind;
+	size_t link_len = sd_autolink__email(&rewind, link, data, offset, size, 0);
 
-	if ((link_len = sd_autolink__email(&rewind, link, data, offset, size, 0)) > 0) {
+	if (link_len > 0) {
 		ob->size -= rewind;
 		rndr->cb.autolink(ob, link, MKDA_EMAIL, rndr->opaque);
 	}
@@ -1128,10 +1146,10 @@ static size_t char_autolink_url(struct buf *ob, struct sd_markdown *rndr, uint8_
 		return 0;
 	}
 
-	size_t link_len;
 	size_t rewind;
+	size_t link_len = sd_autolink__url(&rewind, link, data, offset, size, 0);
 
-	if ((link_len = sd_autolink__url(&rewind, link, data, offset, size, 0)) > 0) {
+	if (link_len > 0) {
 		ob->size -= rewind;
 		rndr->cb.autolink(ob, link, MKDA_NORMAL, rndr->opaque);
 	}
@@ -1983,7 +2001,9 @@ static size_t parse_paragraph(struct buf *ob, struct sd_markdown *rndr, uint8_t 
 			break;
 		}
 
-		if ((level = is_headerline(data + i, size - i)) != 0) {
+		level = is_headerline(data + i, size - i);
+
+		if (level != 0) {
 			break;
 		}
 
@@ -2541,9 +2561,13 @@ static size_t htmlblock_end_tag(const char *tag, size_t tag_len, struct sd_markd
 	size_t i = tag_len + 3;
 	size_t w = 0;
 
-	if ((i < size) && ((w = is_empty(data + i, size - i)) == 0)) {
-		/* non-blank after tag */
-		return 0;
+	if (i < size) {
+		w = is_empty(data + i, size - i);
+
+		if (w == 0) {
+			/* non-blank after tag */
+			return 0;
+		}
 	}
 
 	i += w;
