@@ -32,7 +32,7 @@
 #define _buf_vsnprintf vsnprintf
 #endif
 
-int bufprefix(const struct buf *buf, const char *prefix)
+int bufprefix(const struct buf* buf, const char* prefix)
 {
 	assert((buf != NULL) && (buf->unit != 0));
 
@@ -52,7 +52,7 @@ int bufprefix(const struct buf *buf, const char *prefix)
 /**
  * increasing the allocated size to the given value
  */
-int bufgrow(struct buf *buf, size_t neosz)
+int bufgrow(struct buf* buf, size_t neosz)
 {
 	assert((buf != NULL) && (buf->unit != 0));
 
@@ -70,7 +70,7 @@ int bufgrow(struct buf *buf, size_t neosz)
 		neoasz += buf->unit;
 	}
 
-	void *neodata = realloc(buf->data, neoasz);
+	void* neodata = realloc(buf->data, neoasz);
 
 	if (neodata == NULL) {
 		return BUF_ENOMEM;
@@ -85,9 +85,9 @@ int bufgrow(struct buf *buf, size_t neosz)
 /**
  * allocation of a new buffer
  */
-struct buf *bufnew(size_t unit)
+struct buf* bufnew(size_t unit)
 {
-	struct buf *ret = malloc(sizeof(struct buf));
+	struct buf* ret = malloc(sizeof(struct buf));
 
 	if (ret != NULL) {
 		ret->data = NULL;
@@ -102,18 +102,18 @@ struct buf *bufnew(size_t unit)
 /**
  * NULL-termination of the string array
  */
-const char *bufcstr(struct buf *buf)
+const char* bufcstr(struct buf* buf)
 {
 	assert((buf != NULL) && (buf->unit != 0));
 
 	if ((buf->size < buf->asize) && (buf->data[buf->size] == '\0')) {
-		return (char *)buf->data;
+		return (char*)buf->data;
 	}
 
 	if (((buf->size + 1) <= buf->asize) || (bufgrow(buf, buf->size + 1) == BUF_OK)) {
 		buf->data[buf->size] = '\0';
 
-		return (char *)buf->data;
+		return (char*)buf->data;
 	}
 
 	return NULL;
@@ -122,7 +122,7 @@ const char *bufcstr(struct buf *buf)
 /**
  * formatted printing to a buffer
  */
-void bufprintf(struct buf *buf, const char *fmt, ...)
+void bufprintf(struct buf* buf, const char* fmt, ...)
 {
 	assert((buf != NULL) && (buf->unit != 0));
 
@@ -132,7 +132,7 @@ void bufprintf(struct buf *buf, const char *fmt, ...)
 
 	va_list ap;
 	va_start(ap, fmt);
-	int n = _buf_vsnprintf((char *)buf->data + buf->size, buf->asize - buf->size, fmt, ap);
+	int n = _buf_vsnprintf((char*)buf->data + buf->size, buf->asize - buf->size, fmt, ap);
 	va_end(ap);
 
 	if (n < 0) {
@@ -151,7 +151,7 @@ void bufprintf(struct buf *buf, const char *fmt, ...)
 		}
 
 		va_start(ap, fmt);
-		n = _buf_vsnprintf((char *)buf->data + buf->size, buf->asize - buf->size, fmt, ap);
+		n = _buf_vsnprintf((char*)buf->data + buf->size, buf->asize - buf->size, fmt, ap);
 		va_end(ap);
 	}
 
@@ -165,7 +165,7 @@ void bufprintf(struct buf *buf, const char *fmt, ...)
 /**
  * appends raw data to a buffer
  */
-void bufput(struct buf *buf, const void *data, size_t len)
+void bufput(struct buf* buf, const void* data, size_t len)
 {
 	assert((buf != NULL) && (buf->unit != 0));
 
@@ -180,7 +180,7 @@ void bufput(struct buf *buf, const void *data, size_t len)
 /**
  * appends a NUL-terminated string to a buffer
  */
-void bufputs(struct buf *buf, const char *str)
+void bufputs(struct buf* buf, const char* str)
 {
 	bufput(buf, str, strlen(str));
 }
@@ -188,7 +188,7 @@ void bufputs(struct buf *buf, const char *str)
 /**
  * appends a single uint8_t to a buffer
  */
-void bufputc(struct buf *buf, uint8_t c)
+void bufputc(struct buf* buf, uint8_t c)
 {
 	assert((buf != NULL) && (buf->unit != 0));
 
@@ -203,7 +203,7 @@ void bufputc(struct buf *buf, uint8_t c)
 /**
  * decrease the reference count and free the buffer if needed
  */
-void bufrelease(struct buf *buf)
+void bufrelease(struct buf* buf)
 {
 	if (buf == NULL) {
 		return;
@@ -216,7 +216,7 @@ void bufrelease(struct buf *buf)
 /**
  * frees internal data of the buffer
  */
-void bufreset(struct buf *buf)
+void bufreset(struct buf* buf)
 {
 	if (buf == NULL) {
 		return;
@@ -231,7 +231,7 @@ void bufreset(struct buf *buf)
 /**
  * removes a given number of bytes from the head of the array
  */
-void bufslurp(struct buf *buf, size_t len)
+void bufslurp(struct buf* buf, size_t len)
 {
 	assert((buf != NULL) && (buf->unit != 0));
 

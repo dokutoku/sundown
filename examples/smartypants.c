@@ -27,9 +27,9 @@
 #define READ_UNIT 1024
 #define OUTPUT_UNIT 64
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-	FILE *in_ = stdin;
+	FILE* in_ = stdin;
 
 	/* opening the file if given from the command line */
 	if (argc > 1) {
@@ -43,7 +43,7 @@ int main(int argc, char **argv)
 	}
 
 	/* reading everything */
-	struct buf *ib = bufnew(READ_UNIT);
+	struct buf* ib = bufnew(READ_UNIT);
 
 	if (bufgrow(ib, READ_UNIT) != BUF_OK) {
 		fprintf(stderr, "Error: bufgrow()\n");
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 	}
 
 	/* performing markdown parsing */
-	struct buf *ob = bufnew(OUTPUT_UNIT);
+	struct buf* ob = bufnew(OUTPUT_UNIT);
 
 	sdhtml_smartypants(ob, ib->data, ib->size);
 

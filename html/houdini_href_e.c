@@ -51,7 +51,7 @@ static const char HREF_SAFE[] =
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-void houdini_escape_href(struct buf *ob, const uint8_t *src, size_t size)
+void houdini_escape_href(struct buf* ob, const uint8_t* src, size_t size)
 {
 	if (bufgrow(ob, ESCAPE_GROW_FACTOR(size)) != BUF_OK) {
 		return;

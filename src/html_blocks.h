@@ -36,7 +36,7 @@ static unsigned char gperf_downcase[256] =
 
 #ifndef GPERF_CASE_STRNCMP
 #define GPERF_CASE_STRNCMP 1
-static int gperf_case_strncmp(register const char *s1, register const char *s2, register unsigned int n)
+static int gperf_case_strncmp(register const char* s1, register const char* s2, register unsigned int n)
 {
 	for (; n > 0;) {
 		unsigned char c1 = gperf_downcase[(unsigned char) * s1++];
@@ -62,7 +62,7 @@ static int gperf_case_strncmp(register const char *s1, register const char *s2, 
 	inline
 #endif
 #endif
-static unsigned int hash_block_tag(register const char *str, register unsigned int len)
+static unsigned int hash_block_tag(register const char* str, register unsigned int len)
 {
 	static const unsigned char asso_values[] =
 	{
@@ -117,7 +117,7 @@ static unsigned int hash_block_tag(register const char *str, register unsigned i
 	__attribute__((__gnu_inline__))
 #endif
 #endif
-const char *find_block_tag(register const char *str, register unsigned int len)
+const char* find_block_tag(register const char* str, register unsigned int len)
 {
 	enum
 	{
@@ -168,7 +168,7 @@ const char *find_block_tag(register const char *str, register unsigned int len)
 		register int key = hash_block_tag(str, len);
 
 		if ((key <= MAX_HASH_VALUE) && (key >= 0)) {
-			register const char *s = wordlist[key];
+			register const char* s = wordlist[key];
 
 			if (((((unsigned char)*str ^ (unsigned char)*s) & ~32) == '\0') && (gperf_case_strncmp(str, s, len) == 0) && (s[len] == '\0')) {
 				return s;

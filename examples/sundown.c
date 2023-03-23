@@ -29,9 +29,9 @@
 /**
  * main function, interfacing STDIO with the parser
  */
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-	FILE *in_ = stdin;
+	FILE* in_ = stdin;
 
 	/* opening the file if given from the command line */
 	if (argc > 1) {
@@ -45,7 +45,7 @@ int main(int argc, char **argv)
 	}
 
 	/* reading everything */
-	struct buf *ib = bufnew(READ_UNIT);
+	struct buf* ib = bufnew(READ_UNIT);
 
 	if (bufgrow(ib, READ_UNIT) != BUF_OK) {
 		fprintf(stderr, "Error: bufgrow()\n");
@@ -82,12 +82,12 @@ int main(int argc, char **argv)
 	}
 
 	/* performing markdown parsing */
-	struct buf *ob = bufnew(OUTPUT_UNIT);
+	struct buf* ob = bufnew(OUTPUT_UNIT);
 
 	struct sd_callbacks callbacks;
 	struct html_renderopt options;
 	sdhtml_renderer(&callbacks, &options, 0);
-	struct sd_markdown *markdown = sd_markdown_new(0, 16, &callbacks, &options);
+	struct sd_markdown* markdown = sd_markdown_new(0, 16, &callbacks, &options);
 
 	if (markdown != NULL) {
 		bufrelease(ib);

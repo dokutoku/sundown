@@ -1,19 +1,19 @@
 #include "stack.h"
 #include <string.h>
 
-int stack_grow(struct stack *st, size_t new_size)
+int stack_grow(struct stack* st, size_t new_size)
 {
 	if (st->asize >= new_size) {
 		return 0;
 	}
 
-	void **new_st = realloc(st->item, new_size * sizeof(void *));
+	void** new_st = realloc(st->item, new_size * sizeof(void*));
 
 	if (new_st == NULL) {
 		return -1;
 	}
 
-	memset(new_st + st->asize, 0x00, (new_size - st->asize) * sizeof(void *));
+	memset(new_st + st->asize, 0x00, (new_size - st->asize) * sizeof(void*));
 
 	st->item = new_st;
 	st->asize = new_size;
@@ -25,7 +25,7 @@ int stack_grow(struct stack *st, size_t new_size)
 	return 0;
 }
 
-void stack_free(struct stack *st)
+void stack_free(struct stack* st)
 {
 	if (st == NULL) {
 		return;
@@ -38,7 +38,7 @@ void stack_free(struct stack *st)
 	st->asize = 0;
 }
 
-int stack_init(struct stack *st, size_t initial_size)
+int stack_init(struct stack* st, size_t initial_size)
 {
 	st->item = NULL;
 	st->size = 0;
@@ -51,7 +51,7 @@ int stack_init(struct stack *st, size_t initial_size)
 	return stack_grow(st, initial_size);
 }
 
-void *stack_pop(struct stack *st)
+void* stack_pop(struct stack* st)
 {
 	if (st->size == 0) {
 		return NULL;
@@ -60,7 +60,7 @@ void *stack_pop(struct stack *st)
 	return st->item[--st->size];
 }
 
-int stack_push(struct stack *st, void *item)
+int stack_push(struct stack* st, void* item)
 {
 	if (stack_grow(st, st->size * 2) < 0) {
 		return -1;
@@ -71,7 +71,7 @@ int stack_push(struct stack *st, void *item)
 	return 0;
 }
 
-void *stack_top(struct stack *st)
+void* stack_top(struct stack* st)
 {
 	if (st->size == 0) {
 		return NULL;

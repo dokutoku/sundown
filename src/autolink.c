@@ -26,11 +26,11 @@
 #define strncasecmp _strnicmp
 #endif
 
-int sd_autolink_issafe(const uint8_t *link, size_t link_len)
+int sd_autolink_issafe(const uint8_t* link, size_t link_len)
 {
 	static const size_t valid_uris_count = 5;
 
-	static const char *valid_uris[] =
+	static const char* valid_uris[] =
 	{
 		"/", "http://", "https://", "ftp://", "mailto:",
 	};
@@ -38,7 +38,7 @@ int sd_autolink_issafe(const uint8_t *link, size_t link_len)
 	for (size_t i = 0; i < valid_uris_count; ++i) {
 		size_t len = strlen(valid_uris[i]);
 
-		if ((link_len > len) && (strncasecmp((char *)link, valid_uris[i], len) == 0) && (isalnum(link[len]) != 0)) {
+		if ((link_len > len) && (strncasecmp((char*)link, valid_uris[i], len) == 0) && (isalnum(link[len]) != 0)) {
 			return 1;
 		}
 	}
@@ -46,7 +46,7 @@ int sd_autolink_issafe(const uint8_t *link, size_t link_len)
 	return 0;
 }
 
-static size_t autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, size_t size)
+static size_t autolink_delim(uint8_t* data, size_t link_end, size_t max_rewind, size_t size)
 {
 	for (size_t i = 0; i < link_end; ++i) {
 		if (data[i] == '<') {
@@ -157,7 +157,7 @@ static size_t autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, 
 	return link_end;
 }
 
-static size_t check_domain(uint8_t *data, size_t size, int allow_short)
+static size_t check_domain(uint8_t* data, size_t size, int allow_short)
 {
 	if (isalnum(data[0]) == 0) {
 		return 0;
@@ -191,7 +191,7 @@ static size_t check_domain(uint8_t *data, size_t size, int allow_short)
 	}
 }
 
-size_t sd_autolink__www(size_t *rewind_p, struct buf *link, uint8_t *data, size_t max_rewind, size_t size, unsigned int flags)
+size_t sd_autolink__www(size_t* rewind_p, struct buf* link, uint8_t* data, size_t max_rewind, size_t size, unsigned int flags)
 {
 	if ((max_rewind > 0) && (ispunct(data[-1]) == 0) && (isspace(data[-1]) == 0)) {
 		return 0;
@@ -223,7 +223,7 @@ size_t sd_autolink__www(size_t *rewind_p, struct buf *link, uint8_t *data, size_
 	return (int)link_end;
 }
 
-size_t sd_autolink__email(size_t *rewind_p, struct buf *link, uint8_t *data, size_t max_rewind, size_t size, unsigned int flags)
+size_t sd_autolink__email(size_t* rewind_p, struct buf* link, uint8_t* data, size_t max_rewind, size_t size, unsigned int flags)
 {
 	size_t rewind;
 
@@ -281,7 +281,7 @@ size_t sd_autolink__email(size_t *rewind_p, struct buf *link, uint8_t *data, siz
 	return link_end;
 }
 
-size_t sd_autolink__url(size_t *rewind_p, struct buf *link, uint8_t *data, size_t max_rewind, size_t size, unsigned int flags)
+size_t sd_autolink__url(size_t* rewind_p, struct buf* link, uint8_t* data, size_t max_rewind, size_t size, unsigned int flags)
 {
 	if ((size < 4) || (data[1] != '/') || (data[2] != '/')) {
 		return 0;

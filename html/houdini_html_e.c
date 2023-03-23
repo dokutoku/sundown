@@ -37,7 +37,7 @@ static const char HTML_ESCAPE_TABLE[] =
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-static const char *HTML_ESCAPES[] =
+static const char* HTML_ESCAPES[] =
 {
 	"\0",
 	"&quot;",
@@ -48,7 +48,7 @@ static const char *HTML_ESCAPES[] =
 	"&gt;",
 };
 
-void houdini_escape_html0(struct buf *ob, const uint8_t *src, size_t size, int secure)
+void houdini_escape_html0(struct buf* ob, const uint8_t* src, size_t size, int secure)
 {
 	if (bufgrow(ob, ESCAPE_GROW_FACTOR(size)) != BUF_OK) {
 		return;
@@ -84,7 +84,7 @@ void houdini_escape_html0(struct buf *ob, const uint8_t *src, size_t size, int s
 	}
 }
 
-void houdini_escape_html(struct buf *ob, const uint8_t *src, size_t size)
+void houdini_escape_html(struct buf* ob, const uint8_t* src, size_t size)
 {
 	houdini_escape_html0(ob, src, size, 1);
 }
