@@ -396,7 +396,7 @@ static void rndr_paragraph(struct buf *ob, const struct buf *text, void *opaque)
 			 * do not insert a line break if this newline
 			 * is the last character on the paragraph
 			 */
-			if (i >= text->size - 1) {
+			if (i >= (text->size - 1)) {
 				break;
 			}
 

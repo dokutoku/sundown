@@ -66,7 +66,7 @@ static size_t autolink_delim(uint8_t *data, size_t link_end, size_t max_rewind, 
 				new_end--;
 			}
 
-			if ((new_end < link_end - 2) && (data[new_end] == '&')) {
+			if ((new_end < (link_end - 2)) && (data[new_end] == '&')) {
 				link_end = new_end;
 			} else {
 				link_end--;
@@ -166,7 +166,7 @@ static size_t check_domain(uint8_t *data, size_t size, int allow_short)
 	size_t i;
 	size_t np = 0;
 
-	for (i = 1; i < size - 1; ++i) {
+	for (i = 1; i < (size - 1); ++i) {
 		if (data[i] == '.') {
 			np++;
 		} else if ((!isalnum(data[i])) && (data[i] != '-')) {
@@ -258,7 +258,7 @@ size_t sd_autolink__email(size_t *rewind_p, struct buf *link, uint8_t *data, siz
 
 		if (c == '@') {
 			nb++;
-		} else if ((c == '.') && (link_end < size - 1)) {
+		} else if ((c == '.') && (link_end < (size - 1))) {
 			np++;
 		} else if ((c != '-') && (c != '_')) {
 			break;
